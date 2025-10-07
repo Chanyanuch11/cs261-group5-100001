@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Bookstore</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    input {
+      width: 90%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #27ae60;
+    }
+    .signup-link {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .signup-link a {
+      color: #3498db;
+      text-decoration: none;
+    }
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+    #result {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>🔑 Login</h2>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit">Login</button>
+    </form>
+    <p id="result"></p>
+
+    <div class="signup-link">
+      Don’t have an account? <a href="signup.html">Sign up here</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      fetch("http://localhost:8080/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value.trim()
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(errData => {
+            throw new Error(errData.message || "Invalid login");
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        // Save user info for session
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("userId", data.id); // must match backend field name exactly
+
+        // ✅ Redirect to home
+        window.location.href = `home.html?username=${encodeURIComponent(data.username)}&email=${encodeURIComponent(data.email)}`;
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "❌ Login failed: " + err.message;
+      });
+    });
+  </script>
+
+</body>
+</html>

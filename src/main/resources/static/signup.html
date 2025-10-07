@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sign Up - Bookstore</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .signup-container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: center;
+    }
+    input {
+      width: 90%;
+      padding: 8px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .login-link {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .login-link a {
+      color: #2ecc71;
+      text-decoration: none;
+    }
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+    #result {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="signup-container">
+    <h2>📝 Sign Up</h2>
+    <form id="signupForm">
+      <input type="text" id="username" placeholder="Username" required><br>
+      <input type="email" id="email" placeholder="Email" required><br>
+      <input type="password" id="password" placeholder="Password" required><br>
+      <button type="submit">Sign Up</button>
+    </form>
+    <p id="result"></p>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      fetch("http://localhost:8080/api/users/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("username").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          password: document.getElementById("password").value.trim()
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(errData => {
+            throw new Error(errData.message || "Signup failed");
+          });
+        }
+        return res.json();
+      })
+      .then(data => {
+        alert("✅ Signup successful! Please login now.");
+        window.location.href = "login.html";
+      })
+      .catch(err => {
+        document.getElementById("result").innerText = "❌ Signup failed: " + err.message;
+      });
+    });
+  </script>
+
+</body>
+</html>

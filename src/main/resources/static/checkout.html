@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📋 Checkout / My Orders</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #2c3e50; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f4f4f4; }
+        .back-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .back-btn:hover { background-color: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <h1>✅ Your Orders</h1>
+    <p id="userInfo"></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Items</th>
+            </tr>
+        </thead>
+        <tbody id="ordersBody">
+            <tr><td colspan="4">Loading your orders...</td></tr>
+        </tbody>
+    </table>
+
+    <button class="back-btn" onclick="goHome()">🏠 Back to Home</button>
+
+    <script>
+        const userId = localStorage.getItem("userId");
+        const username = localStorage.getItem("username");
+        const apiOrders = "http://localhost:8080/api/orders";
+
+        if (!userId) {
+            alert("Please log in first!");
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("userInfo").innerText = `Welcome, ${username}`;
+        }
+
+        // ✅ Load orders for the logged-in user
+        function loadOrders() {
+            fetch(`${apiOrders}/${userId}`)
+                .then(res => res.json())
+                .then(data => renderOrders(data))
+                .catch(err => console.error("Error loading orders:", err));
+        }
+
+        // ✅ Render orders in table
+        function renderOrders(orders) {
+            const body = document.getElementById("ordersBody");
+            body.innerHTML = "";
+
+            if (orders.length === 0) {
+                body.innerHTML = `<tr><td colspan="4">No orders found 🕳️</td></tr>`;
+                return;
+            }
+
+            orders.forEach(order => {
+                const itemsText = order.items
+                    .map(it => `${it.title} (x${it.quantity}) - $${it.price.toFixed(2)}`)
+                    .join("<br>");
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${new Date(order.orderDate).toLocaleString()}</td>
+                    <td>$${order.total.toFixed(2)}</td>
+                    <td>${itemsText}</td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        // ✅ Back to home
+        function goHome() {
+            window.location.href = "home.html";
+        }
+
+        // 🚀 Load orders on page load
+        loadOrders();
+    </script>
+</body>
+</html>

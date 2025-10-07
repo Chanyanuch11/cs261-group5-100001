@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bookstore - Home</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; display: inline-block; margin-right: 20px; }
+        .logout-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-btn:hover { background-color: #c0392b; }
+        .cart-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .cart-btn:hover { background-color: #27ae60; }
+        .book { padding: 10px; border-bottom: 1px solid #ccc; }
+        .book strong { color: #2c3e50; }
+        button { margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>📚 Bookstore</h1>
+            <p id="welcome"></p>
+        </div>
+        <div>
+            <button class="cart-btn" onclick="goToCart()">🛒 View Cart</button>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- 🔍 Search -->
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Search for a book by title...">
+        <select id="categorySelect">
+            <option value="">All Categories</option>
+        </select>
+        <button type="submit">Search</button>
+        <button type="button" onclick="resetFilters()">Reset</button>
+    </form>
+
+    <h2>Available Books</h2>
+    <div id="bookList">Loading...</div>
+
+    <script>
+        const apiBase = "http://localhost:8080/api/books";
+
+        // ✅ Display username/email
+        const username = localStorage.getItem("username");
+        const email = localStorage.getItem("email");
+        const userId = localStorage.getItem("userId");
+
+        if (!userId) {
+            // Not logged in → redirect to login page
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("welcome").innerText = `Welcome, ${username} (${email})`;
+        }
+
+        // ✅ Logout
+        function logout() {
+            localStorage.clear();
+            alert("You have been logged out!");
+            window.location.href = "login.html";
+        }
+
+        // ✅ View Cart button
+        function goToCart() {
+            window.location.href = "cart.html";
+        }
+
+        // ✅ Reset filters
+        function resetFilters() {
+            document.getElementById("searchInput").value = "";
+            document.getElementById("categorySelect").value = "";
+            loadBooks();
+        }
+
+        // ✅ Load all books
+        function loadBooks() {
+            fetch(apiBase)
+                .then(res => res.json())
+                .then(data => renderBooks(data))
+                .catch(err => console.error("Error loading books:", err));
+        }
+
+        // ✅ Load categories
+        function loadCategories() {
+            fetch(`${apiBase}/categories`)
+                .then(res => res.json())
+                .then(categories => {
+                    const select = document.getElementById("categorySelect");
+                    categories.forEach(c => {
+                        const opt = document.createElement("option");
+                        opt.value = c;
+                        opt.textContent = c;
+                        select.appendChild(opt);
+                    });
+                })
+                .catch(err => console.error("Error loading categories:", err));
+        }
+
+        // ✅ Search books (combined: keyword + category)
+        document.getElementById("searchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const keyword = document.getElementById("searchInput").value.trim();
+            const category = document.getElementById("categorySelect").value;
+
+            const params = new URLSearchParams();
+            if (keyword) params.append("keyword", keyword);
+            if (category) params.append("category", category);
+
+            fetch(`${apiBase}/search?${params.toString()}`)
+                .then(res => res.json())
+                .then(data => renderBooks(data))
+                .catch(err => console.error("Error searching books:", err));
+        });
+
+        // ✅ Render books to the page
+        function renderBooks(books) {
+            const container = document.getElementById("bookList");
+            container.innerHTML = "";
+            if (books.length === 0) {
+                container.innerHTML = "<p>No books found.</p>";
+                return;
+            }
+            books.forEach(book => {
+                const div = document.createElement("div");
+                div.className = "book";
+                div.innerHTML = `
+                    <strong>${book.title}</strong> by ${book.author} <br>
+                    💰 Price: $${book.price} <br>
+                    ISBN: ${book.isbn || "N/A"} <br>
+                    📂 Category: ${book.category || "Uncategorized"} <br>
+                    <button onclick="addToCart(${book.id})">🛒 Add to Cart</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // ✅ Add to Cart
+        function addToCart(bookId) {
+            if (!userId) {
+                alert("Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+
+            fetch("http://localhost:8080/api/cart/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: userId,
+                    book: { id: bookId },
+                    quantity: 1
+                })
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert("Book added to cart!");
+                } else {
+                    alert("Failed to add to cart ❌");
+                }
+            })
+            .catch(err => console.error("Error adding to cart:", err));
+        }
+
+        // 🚀 Load books + categories on page load
+        loadBooks();
+        loadCategories();
+    </script>
+</body>
+</html>
