@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <title>Book Store</title>
     <link rel="stylesheet" href="cart.css" />
-    <link rel="stylesheet" href="stylesheet.css" />    
+    <link rel="stylesheet" href="checkout.css" />
+    <link rel="stylesheet" href="stylesheet.css" />  
 </head>
 <body>
     <header class="header">
@@ -35,6 +39,60 @@
     </div>
     </header>
 
+    <div class="content">
+        <div class = "Step">
+        <p>Step 1 : Shipping Address
+            <img class="icon" width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
+        </p>
+        </div>
+
+        <div class="Detail">
+            <form class="Address">
+                <div class="Address-Row">
+                        <label class="Address-Text" for="fname">*Name / ชื่อ</label>
+                        <input class="Address-Form" type="text" id="fname" name="fname" placeholder="*Name / ชื่อ">
+                </div>
+
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">*Surname / นามสกุล</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Surname / นามสกุล">
+                </div>
+                    
+                <div class="Address-Row">
+                <label class="Address-Text" for="lname">*Telephone / เบอร์โทรศัพท์</label>
+                <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Telephone / เบอร์โทรศัพท์">
+                </div>
+
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">*Address 1 / ที่อยู่</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Address 1 / ที่อยู่">
+                </div>
+                    
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">Address 2 / ที่อยู่ (ต่อ)</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Address 2 / ที่อยู่ (ต่อ)">
+                </div>
+
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">*Province / จังหวัด</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Province / จังหวัด">
+                </div>
+
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">*District / อำเภอ</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="District / อำเภอ">
+                </div>
+
+                <div class="Address-Row">
+                    <label class="Address-Text" for="lname">*Postcode / รหัสไปรษณีย์</label>
+                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Postcode / รหัสไปรษณีย์">
+                </div>
+                <div class="Address-Row Button-Row">
+                    <input class="Address-Confirm" type="submit" value="Confirm">
+                </div>
+            </form>  
+        </div>
+    </div>
     
 </body>
 </html>

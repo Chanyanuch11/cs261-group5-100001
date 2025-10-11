@@ -1,9 +1,13 @@
 *{margin:0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "libre-baskerville";
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Libre Baskerville", serif;
+    color: #6D6553;
 }
 
+.content{
+    padding: 50px;
+}
 
 .Step{
     width: 1296px;
@@ -14,6 +18,61 @@
     background-color: #F6F0BE;
     border-radius: 20px;
     font-size: 20px;
-    color: #6D6553;
+}
 
+.Detail{
+    width: 1296px;
+    height: 669px;
+    margin: 24px;
+    background-color: #EEF3E7;
+    border-radius: 20px;
+    font-size: 20px;
+}
+
+.Address-Row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Button-Row {
+    display: flex;     
+    justify-content: flex-end; 
+}
+
+.Address{
+    padding: 22px 52px;
+    row-gap: 22px;
+    column-gap: 90px;
+}
+
+.Address-Form{
+    width: 848px;
+    height: 47px;
+    padding: 20px;
+    margin: 10px;
+    background-color: #FFFEFA;
+    border: 0;
+    border-radius: 4px;
+    font-size: 20px;
+}
+
+.Address-Confirm{
+    width: 180px;
+    height: 60px;
+    margin: 10px;
+    padding: 10px 20px;
+    gap: 10;
+    background-color: #B6A88A;
+    border: 0;
+    border-radius: 4px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.Address-Confirm:hover {
+    box-shadow: 0 0 10px #B6A88A;
 }
