@@ -1,0 +1,73 @@
+
+/* GLOBAL SETTINGS */
+:root {
+  --primary-color: #E2DCD0;
+  --secondary-color: #FFFEFA;
+  --accent-color: #dfd6c6;
+  --text-color: #6d6553;
+  --font-family: "Poppins", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+}
+
+
+/* LAYOUT */
+.header {
+  background-color: #F6EFAE;
+  padding: 10px 20px;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo img {
+  height: 40px;
+  cursor: pointer;
+}
+
+.search-bar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  margin: 0 40px;
+  background-color: #fff8f8; /* pale pink like Figma */
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 14px;
+  color: #6D6558;
+  padding: 8px;
+}
+
+.search-bar input:focus {
+  outline: none;
+}
+
+.search-bar button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #6D6558;
+}
+
