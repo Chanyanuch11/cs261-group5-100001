@@ -1,0 +1,19 @@
+*{margin:0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "libre-baskerville";
+}
+
+
+.Step{
+    width: 1296px;
+    height: 73px;
+    padding: 31px;
+    gap: 34px;
+    margin: 24px;
+    background-color: #F6F0BE;
+    border-radius: 20px;
+    font-size: 20px;
+    color: #6D6553;
+
+}
