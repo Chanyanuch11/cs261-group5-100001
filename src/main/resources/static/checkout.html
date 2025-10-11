@@ -59,33 +59,33 @@
                 </div>
                     
                 <div class="Address-Row">
-                <label class="Address-Text" for="lname">*Telephone / เบอร์โทรศัพท์</label>
-                <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Telephone / เบอร์โทรศัพท์">
+                <label class="Address-Text" for="telephone">*Telephone / เบอร์โทรศัพท์</label>
+                <input class="Address-Form" type="number" id="telephone" name="telephone" placeholder="Telephone / เบอร์โทรศัพท์">
                 </div>
 
                 <div class="Address-Row">
-                    <label class="Address-Text" for="lname">*Address 1 / ที่อยู่</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Address 1 / ที่อยู่">
+                    <label class="Address-Text" for="address1">*Address 1 / ที่อยู่</label>
+                    <input class="Address-Form" type="text" id="address1" name="address1" placeholder="Address 1 / ที่อยู่">
                 </div>
                     
                 <div class="Address-Row">
-                    <label class="Address-Text" for="lname">Address 2 / ที่อยู่ (ต่อ)</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Address 2 / ที่อยู่ (ต่อ)">
+                    <label class="Address-Text" for="address2">Address 2 / ที่อยู่ (ต่อ)</label>
+                    <input class="Address-Form" type="text" id="address2" name="address2" placeholder="Address 2 / ที่อยู่ (ต่อ)">
                 </div>
 
                 <div class="Address-Row">
-                    <label class="Address-Text" for="lname">*Province / จังหวัด</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Province / จังหวัด">
+                    <label class="Address-Text" for="province">*Province / จังหวัด</label>
+                    <input class="Address-Form" type="text" id="province" name="province" placeholder="Province / จังหวัด">
                 </div>
 
                 <div class="Address-Row">
-                    <label class="Address-Text" for="lname">*District / อำเภอ</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="District / อำเภอ">
+                    <label class="Address-Text" for="district">*District / อำเภอ</label>
+                    <input class="Address-Form" type="text" id="district" name="district" placeholder="District / อำเภอ">
                 </div>
 
                 <div class="Address-Row">
-                    <label class="Address-Text" for="lname">*Postcode / รหัสไปรษณีย์</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Postcode / รหัสไปรษณีย์">
+                    <label class="Address-Text" for="postcode">*Postcode / รหัสไปรษณีย์</label>
+                    <input class="Address-Form" type="number" id="postcode" name="postcode" placeholder="Postcode / รหัสไปรษณีย์">
                 </div>
                 <div class="Address-Row Button-Row">
                     <input class="Address-Confirm" type="submit" value="Confirm">
@@ -93,6 +93,13 @@
             </form>  
         </div>
     </div>
-    
 </body>
+<script>
+const step = document.querySelector('.Step');
+const detail = document.querySelector('.Detail');
+
+step.addEventListener('click', () => {
+  detail.classList.toggle('active');
+});
+</script>
 </html>

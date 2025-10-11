@@ -12,9 +12,9 @@
 .Step{
     width: 1296px;
     height: 73px;
-    padding: 31px;
-    gap: 34px;
-    margin: 24px;
+    padding: 24px 31px;
+    gap: 10px;
+    margin: 24px 24px 0 24px;
     background-color: #F6F0BE;
     border-radius: 20px;
     font-size: 20px;
@@ -23,10 +23,16 @@
 .Detail{
     width: 1296px;
     height: 669px;
-    margin: 24px;
+    max-height: 0;
+    opacity: 0;
+    margin: 0px 24px;
     background-color: #EEF3E7;
     border-radius: 20px;
     font-size: 20px;
+    overflow: hidden;
+    transition: opacity 0.3s ease-out, transform 300ms ease-out;
+    transform: translateY(-20px);
+    transition-property: max-height, opacity, transform;
 }
 
 .Address-Row {
@@ -75,4 +81,16 @@
 
 .Address-Confirm:hover {
     box-shadow: 0 0 10px #B6A88A;
+}
+
+.Detail.active {
+  max-height: 1000px; 
+  opacity: 1;
+  transform: translateY(0);
+}
+.Step {
+  background-color: #F6F0BE;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
 }
