@@ -13,30 +13,28 @@
 </head>
 <body>
     <header class="header">
-    <div class="header-container">
-        <div class="logo">
-        <img src="img/logo.png" alt="Bookstore Logo">
-        </div>
-
-        <div class="search-bar">
-        <input type="text" placeholder="Search">
-        <button><i class="fa fa-search"></i></button>
-        </div>
-
-        <div class="header-icons">
-            <a href="cart.html">
-            <div class="circle">
-                <img src="img/cart-icon.png" alt="Cart Icon">
-            </div>
-            </a> 
-        </a>
-        <a href="login.html" class="icon">
-            <div class="circle">
+        <div class="header-container">
+            <div class="logo">
                 <img src="img/logo.png" alt="Bookstore Logo">
             </div>
-        </a>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search" aria-label="Search books">
+                <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            <div class="header-cart">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.png" alt="">
+                </a>
+            </div>
+
+            <div class="header-profile">
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
         </div>
-    </div>
     </header>
 
     <div class="content">
@@ -92,14 +90,34 @@
                 </div>
             </form>  
         </div>
+
+        <div class="Step">
+            <p>Step 3 : Confirm Order
+            <img class="icon" width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
+            </p>
+        </div>
+        <div class="Detail">
+        </div>
+
+        <div class="Step">
+            <p>Step 3 : Payment Method
+            <img class="icon" width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
+            </p>
+        </div>
+        <div class="Detail">
+        </div>
+
     </div>
 </body>
-<script>
-const step = document.querySelector('.Step');
-const detail = document.querySelector('.Detail');
 
-step.addEventListener('click', () => {
-  detail.classList.toggle('active');
-});
+<script>
+    document.querySelectorAll('.Step').forEach(stepEl => {
+    const detailEl = stepEl.nextElementSibling;
+    if (detailEl && detailEl.classList.contains('Detail')) {
+      stepEl.addEventListener('click', () => {
+        detailEl.classList.toggle('active'); 
+      });
+    }
+  });
 </script>
 </html>
