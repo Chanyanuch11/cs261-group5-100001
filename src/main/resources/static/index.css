@@ -1,0 +1,202 @@
+/* ============ a11y utility ============ */
+.sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ============ variables ============ */
+:root {
+    --banner-h: 486px;
+    /* ความสูงสไลด์ */
+    --rail-w: 84px;
+    /* กว้างแทบซ้าย/ขวา */
+    --rail-bg: #efefec;
+    /* สีแทบ */
+    --arrow-box: 84px;
+    /* กรอบปุ่มลูกศร */
+    --arrow-w: 39px;
+    /* กว้างตัวลูกศร */
+    --arrow-h: 49px;
+    /* สูงตัวลูกศร */
+    --arrow-fill: #6b6455;
+    /* สีลูกศร */
+}
+
+/* กันการสกรอลล์แนวนอนกรณีหน้าจอแคบ */
+html,
+body {
+    overflow-x: hidden;
+}
+
+/* ============ slider (เต็มจอแนวกว้าง) ============ */
+#slider {
+    width: 100vw;
+    height: var(--banner-h);
+    margin: 0 calc(50% - 50vw);
+    /* ดันให้กินเต็มขอบจอจริง */
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+
+/* ซ่อนปุ่ม radio */
+#slider input[type=radio] {
+    position: absolute;
+    opacity: 0;
+}
+
+/* ============ slides (พื้นที่รูปตรงกลางระหว่างแทบ) ============ */
+#slides {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: calc(100vw - (2 * var(--rail-w)));
+    height: 100%;
+    transform: translateX(-50%);
+    overflow: hidden;
+}
+
+#slides .inner {
+    width: 300%;
+    height: 100%;
+    display: flex;
+    transition: margin-left 700ms cubic-bezier(.77, 0, .175, 1);
+}
+
+#slides .slide {
+    width: 33.3333%;
+    height: 100%;
+}
+
+#slides .slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* ครอบเต็มกรอบสูง 486px */
+}
+
+/* เลื่อนด้วย radio */
+#slide1:checked~#slides .inner {
+    margin-left: 0;
+}
+
+#slide2:checked~#slides .inner {
+    margin-left: -100%;
+}
+
+#slide3:checked~#slides .inner {
+    margin-left: -200%;
+}
+
+/* ============ side rails 84x486 ============ */
+.rail {
+    position: absolute;
+    top: 0;
+    width: var(--rail-w);
+    height: var(--banner-h);
+    background: var(--rail-bg);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, .12);
+}
+
+.rail.left {
+    left: 0;
+}
+
+.rail.right {
+    right: 0;
+}
+
+/* ============ arrow buttons 84x84 (fixed center) ============ */
+.rail label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--arrow-box);
+    height: var(--arrow-box);
+    border-radius: 12px;
+    background: rgba(0, 0, 0, .06);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    display: block;
+    cursor: pointer;
+
+    /* เริ่มซ่อน (จะเปิดเฉพาะคู่ที่ตรงสไลด์) */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition: transform .15s ease, opacity .15s ease, background .15s ease;
+}
+
+.rail label:hover {
+    background: rgba(0, 0, 0, .08);
+    transform: translate(-50%, -50%) scale(1.03);
+}
+
+/* รูปลูกศร: สามเหลี่ยมทึบ 39x49 */
+.rail label::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--arrow-w);
+    height: var(--arrow-h);
+    background: var(--arrow-fill);
+    transform: translate(-50%, -50%);
+    /* ค่าเริ่มต้น = ชี้ขวา */
+    -webkit-clip-path: polygon(100% 50%, 0 0, 0 100%);
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+}
+
+/* ปุ่มฝั่งซ้ายให้หมุน 180° เพื่อชี้ซ้าย */
+.rail.left label::before {
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* แสดงเฉพาะปุ่มที่ตรงกับสไลด์ (และเปิดคลิก) */
+#slide1:checked~.rail.right .n1,
+#slide2:checked~.rail.right .n2,
+#slide3:checked~.rail.right .n3,
+#slide1:checked~.rail.left .p1,
+#slide2:checked~.rail.left .p2,
+#slide3:checked~.rail.left .p3 {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ============ bullets ============ */
+#bullets {
+    position: absolute;
+    left: 50%;
+    bottom: 12px;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+}
+
+#bullets label {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #d1d5db;
+    cursor: pointer;
+    transition: transform .2s, background .2s;
+}
+
+#bullets label:hover {
+    transform: scale(1.12);
+}
+
+#slide1:checked~#bullets label:nth-child(1),
+#slide2:checked~#bullets label:nth-child(2),
+#slide3:checked~#bullets label:nth-child(3) {
+    background: #374151;
+}

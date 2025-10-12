@@ -5,8 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bookstore</title>
+
+    <!-- ไฟล์สไตล์หลักของคุณ (ถ้ามี) -->
     <link rel="stylesheet" href="stylesheet.css" />
+
+    <!-- Font Awesome 6 (อัปเดตไอคอนค้นหา) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- สไตล์ของหน้านี้ -->
+    <link rel="stylesheet" href="index.css" />
 </head>
 
 <body>
@@ -17,24 +24,63 @@
             </div>
 
             <div class="search-bar">
-                <input type="text" placeholder="Search">
-                <button><i class="fa fa-search"></i></button>
+                <input type="text" placeholder="Search" aria-label="Search books">
+                <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
 
             <div class="header-cart">
-                <a href="cart.html" class="cart">
-                    <img src="img/cart-icon.png" alt="Cart Icon">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.png" alt="">
                 </a>
             </div>
-            
-            <!-- กล่องสำหรับ profile -->
+
             <div class="header-profile">
-                <a href="login.html" class="icon">
-                    <img src="img/BlankPF.png" alt="Profile Icon">
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
                 </a>
             </div>
         </div>
     </header>
+
+    <!-- ===== Full-width banner with fixed side rails ===== -->
+    <section id="slider" aria-roledescription="carousel" aria-label="Promotion Slides">
+        <h2 class="sr-only">Promotion Slides</h2>
+    
+        <input type="radio" name="slider" id="slide1" checked>
+        <input type="radio" name="slider" id="slide2">
+        <input type="radio" name="slider" id="slide3">
+    
+        <!-- main track -->
+        <div id="slides">
+            <div class="inner">
+                <article class="slide"><img src="img/promotion.png" alt="Promotion 1"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 2"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 3"></article>
+            </div>
+        </div>
+    
+        <!-- side rails -->
+        <div class="rail left">
+            <label for="slide3" class="prev p1"></label>
+            <label for="slide1" class="prev p2"></label>
+            <label for="slide2" class="prev p3"></label>
+        </div>
+    
+        <div class="rail right">
+            <label for="slide2" class="next n1"></label>
+            <label for="slide3" class="next n2"></label>
+            <label for="slide1" class="next n3"></label>
+        </div>
+    
+        <!-- bullets -->
+        <div id="bullets">
+            <label for="slide1"></label>
+            <label for="slide2"></label>
+            <label for="slide3"></label>
+        </div>
+    </section>
+
+
 </body>
 
 </html>
