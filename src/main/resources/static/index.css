@@ -113,16 +113,13 @@ body {
     transform: translate(-50%, -50%);
     width: var(--arrow-box);
     height: var(--arrow-box);
-    border-radius: 12px;
+    /* ไม่มี border-radius แล้ว */
     background: var(--arrow-bg);
-  
     display: block;
     cursor: pointer;
-
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-
     transition: transform .15s ease, opacity .15s ease;
 }
 
