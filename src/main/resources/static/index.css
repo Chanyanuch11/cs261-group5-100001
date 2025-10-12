@@ -1,4 +1,3 @@
-/* ============ a11y utility ============ */
 .sr-only {
     position: absolute !important;
     width: 1px;
@@ -14,39 +13,33 @@
 /* ============ variables ============ */
 :root {
     --banner-h: 486px;
-    /* ความสูงสไลด์ */
     --rail-w: 84px;
-    /* กว้างแทบซ้าย/ขวา */
-    --rail-bg: #efefec;
-    /* สีแทบ */
+    --rail-bg: rgb(255, 247, 235);
     --arrow-box: 84px;
-    /* กรอบปุ่มลูกศร */
     --arrow-w: 39px;
-    /* กว้างตัวลูกศร */
     --arrow-h: 49px;
-    /* สูงตัวลูกศร */
-    --arrow-fill: #6b6455;
-    /* สีลูกศร */
+    --arrow-fill: #6D6553;
+    --arrow-bg: #E2DCD0;
+
 }
 
-/* กันการสกรอลล์แนวนอนกรณีหน้าจอแคบ */
+/* กันสกรอลล์แนวนอน */
 html,
 body {
     overflow-x: hidden;
 }
 
-/* ============ slider (เต็มจอแนวกว้าง) ============ */
+/* ============ slider ============ */
 #slider {
     width: 100vw;
     height: var(--banner-h);
     margin: 0 calc(50% - 50vw);
-    /* ดันให้กินเต็มขอบจอจริง */
     position: relative;
     text-align: center;
     overflow: hidden;
 }
 
-/* ซ่อนปุ่ม radio */
+/* ซ่อน radios */
 #slider input[type=radio] {
     position: absolute;
     opacity: 0;
@@ -79,7 +72,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* ครอบเต็มกรอบสูง 486px */
 }
 
 /* เลื่อนด้วย radio */
@@ -95,14 +87,14 @@ body {
     margin-left: -200%;
 }
 
-/* ============ side rails 84x486 ============ */
+/* ============ side rails ============ */
 .rail {
     position: absolute;
     top: 0;
     width: var(--rail-w);
     height: var(--banner-h);
     background: var(--rail-bg);
-    box-shadow: inset 0 0 24px rgba(0, 0, 0, .12);
+    
 }
 
 .rail.left {
@@ -113,7 +105,7 @@ body {
     right: 0;
 }
 
-/* ============ arrow buttons 84x84 (fixed center) ============ */
+/* ============ arrow buttons  ============ */
 .rail label {
     position: absolute;
     top: 50%;
@@ -122,25 +114,20 @@ body {
     width: var(--arrow-box);
     height: var(--arrow-box);
     border-radius: 12px;
-    background: rgba(0, 0, 0, .06);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+    background: var(--arrow-bg);
+  
     display: block;
     cursor: pointer;
 
-    /* เริ่มซ่อน (จะเปิดเฉพาะคู่ที่ตรงสไลด์) */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
 
-    transition: transform .15s ease, opacity .15s ease, background .15s ease;
+    transition: transform .15s ease, opacity .15s ease;
 }
 
-.rail label:hover {
-    background: rgba(0, 0, 0, .08);
-    transform: translate(-50%, -50%) scale(1.03);
-}
 
-/* รูปลูกศร: สามเหลี่ยมทึบ 39x49 */
+/* รูปลูกศร */
 .rail label::before {
     content: "";
     position: absolute;
@@ -150,17 +137,15 @@ body {
     height: var(--arrow-h);
     background: var(--arrow-fill);
     transform: translate(-50%, -50%);
-    /* ค่าเริ่มต้น = ชี้ขวา */
     -webkit-clip-path: polygon(100% 50%, 0 0, 0 100%);
     clip-path: polygon(100% 50%, 0 0, 0 100%);
 }
 
-/* ปุ่มฝั่งซ้ายให้หมุน 180° เพื่อชี้ซ้าย */
 .rail.left label::before {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
-/* แสดงเฉพาะปุ่มที่ตรงกับสไลด์ (และเปิดคลิก) */
+/* แสดงเฉพาะปุ่มที่ตรงกับสไลด์ และเปิดคลิก */
 #slide1:checked~.rail.right .n1,
 #slide2:checked~.rail.right .n2,
 #slide3:checked~.rail.right .n3,
@@ -198,5 +183,5 @@ body {
 #slide1:checked~#bullets label:nth-child(1),
 #slide2:checked~#bullets label:nth-child(2),
 #slide3:checked~#bullets label:nth-child(3) {
-    background: #374151;
+    background: #6D6553;
 }
