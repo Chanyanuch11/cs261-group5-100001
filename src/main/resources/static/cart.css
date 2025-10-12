@@ -1,0 +1,162 @@
+/* ========================
+   Base + Tokens (Warm theme)
+   ======================== */
+:root{
+  --bg:#f7f2e7; --card:#f5eebf; --ink:#403a2a; --muted:#7a7461; --line:#e6e0cf;
+  --brand:#b79d72; --panel:#dfead5; --btn:#9ab48d; --btn-ink:#fff;
+  --danger:#e74c3c; --danger-ink:#fff;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  color:var(--ink); background:var(--bg);
+}
+a{color:inherit; text-decoration:none}
+
+/* ======================== Header ======================== */
+.sitebar{position:sticky; top:0; z-index:5; background:#efe9dd; border-bottom:1px solid var(--line)}
+.sitebar .row{max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:12px}
+.logo{display:flex; align-items:center; gap:8px; font-weight:700}
+.logo i{font-size:24px}
+.search{flex:1; display:flex; align-items:center; gap:8px; background:#fff; padding:8px 10px; border:1px solid var(--line); border-radius:8px}
+.search input{border:0; outline:0; width:100%; font:inherit}
+.icons{display:flex; align-items:center; gap:12px}
+.badge{position:relative}
+.badge small{position:absolute; top:-6px; right:-6px; background:#d86; color:#fff; border-radius:999px; padding:0 6px; font-size:11px}
+
+/* ======================== Page header ======================== */
+.container{max-width:1100px; margin:0 auto; padding:16px; flex:1}
+.crumb{display:inline-flex; align-items:center; gap:8px; color:var(--muted); margin:8px 0 6px}
+.title{font-size:28px; margin:6px 0 18px}
+
+/* ======================== Layout ======================== */
+.grid{
+  display:grid;
+  grid-template-columns: minmax(0,1fr) 400px; /* ซ้ายยืด, ขวาคงที่ & กว้างขึ้น */
+  gap:24px;
+  align-items:start;
+  justify-items:stretch;
+}
+.summary{ justify-self:end; }     /* ชิดขวาเสมอ */
+
+/* ======================== Item list ======================== */
+.itemlist{display:flex; flex-direction:column; gap:12px}
+.item{
+  display:grid; grid-template-columns:72px 1fr auto; align-items:center; gap:14px;
+  background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px;
+  position:relative; box-shadow:0 1px 0 rgba(0,0,0,.03), 0 2px 8px rgba(0,0,0,.02);
+}
+.thumb{width:72px; height:72px; border-radius:10px; object-fit:cover; background:#ddd}
+.meta b{display:block}
+.meta small{color:var(--muted)}
+.price{font-weight:600}
+.qty{display:inline-flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:5px 10px; background:#fff}
+.qty span{min-width:18px; text-align:center; display:inline-block}
+.qty button{border:0; background:transparent; font-size:18px; cursor:pointer}
+.remove{border:0; padding:8px 10px; border-radius:8px; background:var(--danger); color:var(--danger-ink); cursor:pointer}
+
+/* ======================== Summary panel ======================== */
+.summary{
+  background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px;
+  width:100%; max-width:400px; box-shadow:0 1px 0 rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.05);
+}
+.summary h3{margin:0 0 12px; font-size:20px}
+.rows{display:flex; flex-direction:column; gap:8px}
+.rowline{padding:10px 0; border-top:1px dashed #cbd5bd}
+.rowline:first-child{border-top:0}
+.rowline span, .rowline b{font-size:16px}
+.rows .rowline span:last-child, .total b{ text-align:right; min-width:72px; display:inline-block; }
+#discount{color:#d45555}
+.total{border-top:1px solid #cbd5bd; padding-top:12px}
+.total b{font-size:18px}
+.checkout{width:100%; margin-top:12px; padding:12px 14px; font-size:14px; border-radius:12px; background:var(--btn); color:var(--btn-ink); border:0}
+.checkout:hover{filter:brightness(.95)}
+
+/* ======================== Reference footer ======================== */
+.reference{background:#d7cfbe; border-top:1px solid #d0c7b0; margin-top:0}
+.foot{max-width:1100px; margin:0 auto; padding:24px 16px}
+.foot h4{margin:0 0 8px}
+.cols{display:grid; gap:20px; grid-template-columns:repeat(3,1fr)}
+.cols ul{list-style:none; padding:0; margin:0}
+.cols li{color:var(--muted); font-size:12.5px}
+.reference .brandline{margin:16px 0 6px; text-align:center; color:#7a7461; font-weight:600; font-size:16px}
+
+/* ===== Bottom bar ===== */
+.bottombar{background:#a69678; border-top:1px solid #95886c}
+.bottombar .barin{
+  max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  color:#efe9dd; font-size:13px;
+}
+.bottombar .brand .book{font-size:22px}
+.bottombar .social{display:flex; gap:12px}
+.bottombar .social a{color:inherit; text-decoration:none; font-size:18px; line-height:1; transition:opacity .15s}
+.bottombar .social a:hover{opacity:.8}
+
+/* ===== Divider & debug table (คงไว้ได้) ===== */
+.container hr,.section-divider{border:0; border-top:1px solid #e6e0cf; margin:10px 0 18px}
+details.debug{margin:22px 0}
+table{width:100%; border-collapse:collapse}
+th,td{padding:10px; border-bottom:1px solid var(--line); text-align:left}
+th{background:#f4f0e4}
+.back-btn{background:#3498db; color:#fff; padding:8px 12px; border:0; border-radius:6px; cursor:pointer}
+
+/* ===== Sticky footer technique ===== */
+body{display:flex; flex-direction:column}
+html,body{height:100%}
+.container{flex:1}
+
+/* ======================== Responsive ======================== */
+@media (max-width: 720px){
+  .grid{grid-template-columns:1fr}
+  /* ถ้าอยากเต็มแถวบนหน้าจอเล็ก ให้ใช้ stretch; ถ้าอยากชิดขวาให้ใช้ end; */
+  .summary{justify-self:stretch; max-width:100%}
+}
+
+
+/* === Layout คงที่: ซ้ายรายการ, ขวาสรุป (กว้างขึ้น) === */
+.container{ max-width:1060px; margin:0 auto; padding:16px 20px; }
+.grid{
+  display:grid;
+  grid-template-columns: minmax(0, 660px) 360px; /* ซ้าย ~660, ขวา 360 */
+  gap:24px;
+  align-items:start;
+  justify-items:stretch;
+}
+.summary{
+  justify-self:end;          /* ชิดขวาเสมอ */
+  width:100%;
+  max-width:360px;           /* ให้ตรงกับคอลัมน์ขวา */
+}
+
+/* จอกว้าง: ให้สรุป “ลอยขวา” จริง ๆ แม้ซ้ายจะมีของน้อย */
+@media (min-width: 721px){
+  #emptyState{ min-height: 20px; }  /* กันกริดหดจนจัดกึ่งกลาง */
+}
+
+/* จอเล็ก: สรุปเต็มแถว (เหมือนตัวอย่าง) */
+@media (max-width: 720px){
+  .grid{ grid-template-columns:1fr; }
+  .summary{ justify-self:stretch; max-width:100%; }
+}
+
+/* ขยายกล่องสรุป + ตัวอักษรให้เท่าม็อค */
+.summary{ padding:18px; border-radius:14px; }
+.summary h3{ font-size:18px; margin:0 0 10px; }
+.rowline{ padding:10px 0; border-top:1px dashed #cbd5bd; }
+.rowline:first-child{ border-top:0; }
+.rowline span,.rowline b{ font-size:15px; }
+.rows .rowline span:last-child,.total b{ min-width:80px; text-align:right; display:inline-block; }
+.total{ border-top:1px solid #cbd5bd; padding-top:12px; }
+.checkout{ padding:12px 14px; border-radius:12px; font-weight:600; }
+
+/* รายการฝั่งซ้าย – ความกว้างและระยะตามภาพ */
+.itemlist{ display:flex; flex-direction:column; gap:14px; }
+.item{ padding:12px 14px; border-radius:12px; }
+
+/* เส้นแบ่งใต้หัวข้อ My Cart ให้คมขึ้นและตรงระยะ */
+.section-divider{ border:0; border-top:1px solid #e6e0cf; margin:10px 0 18px; }
+
+/* Reference + แถบล่าง: ความกว้างเท่าคอนเทนต์ */
+.reference .foot, .bottombar .barin{ max-width:1060px; }

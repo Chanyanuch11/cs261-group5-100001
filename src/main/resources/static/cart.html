@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="stylesheet.css" />
+   <link rel="stylesheet" href="./cart.css">
     <title>🛒 My Cart</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
@@ -39,29 +42,127 @@
 </head>
 <body>
 
-    <h1>🛒 My Shopping Cart</h1>
-    <div id="userInfo"></div>
+  <header class="sitebar">
+    <div class="row">
+      <div class="header-container">
+            <div class="logo">
+                <img src="img/logo.png" alt="Bookstore Logo">
+            </div>
+      <div class="search-bar">
+                <input type="text" placeholder="Search" aria-label="Search books">
+                <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+              <div class="header-cart">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.png" alt="">
+                </a>
+            </div>
+     
+         <div class="header-profile">
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
+    </div>
+  </header>
 
-    <table id="cartTable">
+  <main class="container">
+    <a class="crumb" href="#" onclick="goHome()">← Continue Shopping</a>
+    <h2 class="title">My Cart</h2>
+
+    <section class="grid">
+      <div>
+        <div id="emptyState" style="display:none; color:var(--muted); padding:12px">Your cart is empty 🕳️</div>
+        <div class="itemlist" id="cartList"></div>
+      </div>
+
+      <aside class="summary">
+        <h3>Order Summary</h3>
+        <div class="rows">
+          <div class="rowline"><span>Subtotal</span><b id="subtotal">฿0</b></div>
+          <div class="rowline"><span>Shipping Fee</span><span id="shipping">฿0</span></div>
+          <div class="rowline"><span>Discount</span><span id="discount">-฿0</span></div>
+          <div class="rowline total"><span>Total</span><b id="grandTotal">฿0</b></div>
+        </div>
+        <button class="checkout" onclick="checkout()">Go to Checkout</button>
+      </aside>
+    </section>
+
+    <details class="debug">
+      <summary>🔧 Original table UI (kept exactly, for debug)</summary>
+
+      <h1>🛒 My Shopping Cart</h1>
+      <div id="userInfo"></div>
+
+      <table id="cartTable">
         <thead>
-            <tr>
-                <th>Book Title</th>
-                <th>Author</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-                <th>Action</th>
-            </tr>
+          <tr>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+            <th>Action</th>
+          </tr>
         </thead>
         <tbody id="cartBody">
-            <tr><td colspan="6">Loading cart...</td></tr>
+          <tr><td colspan="6">Loading cart...</td></tr>
         </tbody>
-    </table>
+      </table>
 
-    <p id="total">Total: $0.00</p>
+      <p id="total">Total: $0.00</p>
 
-    <button class="back-btn" onclick="goHome()">← Continue Shopping</button>
-    <button class="checkout-btn" onclick="checkout()">✅ Checkout</button>
+      <button class="back-btn" onclick="goHome()">← Continue Shopping</button>
+      <button class="checkout" onclick="checkout()">✅ Checkout</button>
+    </details>
+  </main>
+
+ <!-- Reference section -->
+<footer class="reference">
+  <div class="foot">
+    <h3>Reference</h3>
+    <div class="cols">
+      <div>
+        <h4>Genre:</h4>
+        <ul>
+          <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
+          <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div>
+        <h4>FAQ:</h4>
+        <ul>
+          <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
+          <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact us:</h4>
+        <ul>
+          <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
+          <li style="display:flex; align-items:center; gap:8px">📞 <span>000-000-0000</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="brandline">“สโลแกน” • Power by BookStore.com</div>
+  </div>
+</footer>
+
+<!-- Bottom Bar -->
+<div class="bottombar">
+  <div class="barin">
+    <div class="brand">
+      <span class="book">📚</span>
+    </div>
+    <div class="copy">Power by BookStore.com</div>
+    <div class="social">
+      <a href="#" aria-label="YouTube">▶️</a>
+      <a href="#" aria-label="Facebook">📘</a>
+      <a href="#" aria-label="Instagram">📷</a>
+      <a href="#" aria-label="Mail">✉️</a>
+    </div>
+  </div>
+</div>
 
     <script>
         const userId = localStorage.getItem("userId");
@@ -69,12 +170,7 @@
         const apiCart = "http://localhost:8080/api/cart";
         const apiOrders = "http://localhost:8080/api/orders";
 
-        if (!userId) {
-            alert("Please log in first!");
-            window.location.href = "login.html";
-        } else {
-            document.getElementById("userInfo").innerText = `Welcome, ${username}`;
-        }
+       
 
         // ✅ Load cart items
         function loadCart() {
