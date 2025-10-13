@@ -17,18 +17,18 @@
                 <img src="img/logo.png" alt="Bookstore Logo">
             </div>
 
-            <div class="search-bar">
-                <input type="text" placeholder="Search" aria-label="Search books">
-                <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-            </div>
+            <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search"
+                    aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.png" alt="Search">
+                </button>
+            </form>
 
-            <div class="header-cart">
+            <div class="header-icons">
                 <a href="cart.html" class="cart" aria-label="Open cart">
                     <img src="img/cart-icon.png" alt="">
                 </a>
-            </div>
-
-            <div class="header-profile">
                 <a href="login.html" class="icon" aria-label="Login">
                     <img src="img/BlankPF.png" alt="">
                 </a>
@@ -39,12 +39,10 @@
     <!-- Banner-->
     <section id="slider" aria-roledescription="carousel" aria-label="Promotion Slides">
         <h2 class="sr-only">Promotion Slides</h2>
-    
-        <!-- radios -->
         <input type="radio" name="slider" id="slide1" checked>
         <input type="radio" name="slider" id="slide2">
         <input type="radio" name="slider" id="slide3">
-    
+
         <!-- กล่องสไลด์ตรงกลาง -->
         <div id="slides">
             <div class="inner">
@@ -59,21 +57,18 @@
                 </article>
             </div>
         </div>
-    
-        <!-- แทบซ้าย/ขวา + ปุ่มลูกศร -->
+
         <div class="rail left">
-            <!-- prev targets -->
             <label for="slide3" class="prev p1"></label>
             <label for="slide1" class="prev p2"></label>
             <label for="slide2" class="prev p3"></label>
         </div>
         <div class="rail right">
-            <!-- next targets -->
             <label for="slide2" class="next n1"></label>
             <label for="slide3" class="next n2"></label>
             <label for="slide1" class="next n3"></label>
         </div>
-    
+
         <!-- bullets -->
         <div id="bullets">
             <label for="slide1" aria-label="Slide 1"></label>
@@ -81,9 +76,85 @@
             <label for="slide3" aria-label="Slide 3"></label>
         </div>
     </section>
-    
-    <!-- Auto-slide JS  -->
+
+    <!--แก้ด้วย-->
+    <section class="books-section">
+        <div class="books-header">
+            <h2>All Books</h2>
+        </div>
+        <div id="bookList" class="books-grid">Loading...</div>
+    </section>
+
+
     <script>
+        const apiBase = "http://localhost:8080/api/books";
+
+        function loadBooks() {
+            fetch(apiBase)
+                .then(r => r.json())
+                .then(renderBooks)
+                .catch(() => { });
+        }
+
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const keyword = document.getElementById("searchInput").value.trim();
+            if (!keyword) {
+                loadBooks();
+                return;
+            }
+            const params = new URLSearchParams();
+            params.append("keyword", keyword);
+            fetch(`${apiBase}/search?${params.toString()}`)
+                .then(r => r.json())
+                .then(renderBooks)
+                .catch(() => { });
+        });
+
+        function renderBooks(books) {
+                const container = document.getElementById("bookList");
+                container.innerHTML = "";
+                if (!books || books.length === 0) {
+                    container.innerHTML = `<div class="empty">No books found.</div>`;
+                    return;
+                }
+                books.forEach(b => {
+                    const title = b.title || "Untitled";
+                    const author = b.author || "Unknown";
+                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                    const cover = b.coverUrl || "https://picsum.photos/300/420?blur=1";
+
+                    const card = document.createElement("article");
+                    card.className = "book-card";
+                    card.innerHTML = `
+        <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+        <h3 class="book-title">${title}</h3>
+        <div class="book-author">${author}</div>
+        <span class="price-chip">฿${price}</span>
+        <button class="btn-add">+ Add to cart</button>
+      `;
+                    card.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
+                    container.appendChild(card);
+                });
+            }
+
+        function addToCart(bookId) {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+            fetch("http://localhost:8080/api/cart/add", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ userId, book: { id: bookId }, quantity: 1 })
+            })
+                .then(res => { if (res.ok) alert("Book added to cart!"); else alert("Failed to add to cart ❌"); })
+                .catch(() => { });
+        }
+
+        // Auto-slide JS
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
             const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
@@ -105,12 +176,14 @@
             slider.addEventListener('change', (e) => {
                 if (e.target.name === 'slider') {
                     idx = radios.indexOf(e.target);
-                    start(); // รีเซ็ตเวลาใหม่หลังผู้ใช้กด
+                    start();
                 }
             });
 
             start();
         });
+
+        loadBooks();
     </script>
 </body>
 
