@@ -101,6 +101,25 @@
     </div>
 
     <div class="content">
+            <div class="Step">
+                <p>Step 2 : Confirm Order
+                <img class="icon" width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
+                </p>
+            </div>
+
+        <div class="Detail" id="ConfirmDetail">
+            <div class="Confirm-List" id="cartList"></div>
+            <div class="Summary" id="summary">
+            <div class="Sum-Row"><span>Sub Total :</span><span id="subTotal">฿0.00</span></div>
+            <div class="Sum-Row"><span>Shipping Fee :</span><span id="shipping">฿0.00</span></div>
+            <div class="Sum-Row"><span>Discount :</span><span id="discount">-฿0.00</span></div>
+            <div class="Sum-Row total"><span>Total :</span><span id="grandTotal">฿0.00</span></div>
+            <button class="Confirm-Btn" id="confirmBtn">Confirm</button>
+        </div>
+    </div>
+     
+
+    <div class="content">
         <div class="Step">
             <p>Step 3 : Payment Method
             <img class="icon" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
@@ -113,7 +132,7 @@
                 </div>
 
                 <div class="Payment-Detail-Container Payment-Box">
-                    <input class="Select-Bank" type="radio" id="KBANK" name="choices" value="kbank">
+                    <input class="Select-Bank" type="radio" id="KBANK" name="bank" value="kbank">
                     <img class="Bank-Logo" src="https://image.tnews.co.th/uploads/images/contents/w1024/2025/01/CxaKtWLdkIgsdkMFfda3.webp?x-image-process=style/lg-webp">
                     <div class="Bank-Text">
                         <p class="font-20">ธนาคารกสิกรไทย</p>
@@ -123,7 +142,7 @@
                 </div>
     
                 <div class="Payment-Detail-Container Payment-Box">
-                    <input class="Select-Bank" type="radio" id="SCB" name="choices" value="scb">
+                    <input class="Select-Bank" type="radio" id="SCB" name="bank" value="scb">
                     <img class="Bank-Logo" src="https://img.salehere.co.th/p/1200x0/2019/01/29/ph5b5aiwe7hl.jpg">
                     <div class="Bank-Text">
                         <p class="font-20">ธนาคารไทยพาณิชย์</p>
