@@ -6,7 +6,30 @@
 }
 
 .content{
-    padding: 50px;
+    padding: 0px;
+    margin: 0 auto; 
+}
+
+hr{
+    margin: 20px 0px 30px 0px;
+}
+.Title{
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.back{
+    padding: 0px 52px;
+    margin: 55px 24px 30px 24px;
+}
+
+.back-to-cart-btn{
+    font-size: 24px;
+}
+
+.icon{
+    width: 10px;
+    height: 10px;
 }
 
 .Step{
@@ -14,18 +37,17 @@
     height: 73px;
     padding: 24px 31px;
     gap: 10px;
-    margin: 24px 24px 0 24px;
+    margin: 34px 24px 0px 24px;
     background-color: #F6F0BE;
     border-radius: 20px;
     font-size: 20px;
 }
 
 .Detail{
-    width: 1296px;
-    height: 669px;
     max-height: 0;
     opacity: 0;
-    margin: 0px 24px;
+    padding: 0px 52px;
+    margin: 0px 24px ;
     background-color: #EEF3E7;
     border-radius: 20px;
     font-size: 20px;
@@ -35,10 +57,10 @@
     transition-property: max-height, opacity, transform;
 }
 
-.Address-Row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.Row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .Button-Row {
@@ -47,7 +69,6 @@
 }
 
 .Address{
-    padding: 22px 52px;
     row-gap: 22px;
     column-gap: 90px;
 }
@@ -61,9 +82,14 @@
     border: 0;
     border-radius: 4px;
     font-size: 20px;
+    color: #6D6553;
 }
 
-.Address-Confirm{
+::placeholder{
+    color: #92866E;
+}
+
+.Confirm-Btn{
     width: 180px;
     height: 60px;
     margin: 10px;
@@ -79,18 +105,120 @@
     transition: 0.2s;
 }
 
-.Address-Confirm:hover {
+.Confirm-Btn:hover {
     box-shadow: 0 0 10px #B6A88A;
 }
 
 .Detail.active {
-  max-height: 1000px; 
-  opacity: 1;
-  transform: translateY(0);
+    padding: 22px 52px;
+    max-height: 1000px; 
+    opacity: 1;
+    transform: translateY(0);
 }
 .Step {
   background-color: #F6F0BE;
   padding: 20px;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.Payment-Detail-Container{
+    margin: 10px 0px;
+}
+
+.font-20{
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+}
+
+.bold{
+    font-weight: 700;
+}
+
+.Payment-Box{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 1190px;
+    height: 102px;
+    border-radius: 4px;
+    background-color: #FFFEFA;
+}
+
+.Select-Bank{
+    display: flex;
+    justify-content: flex-start; 
+    width: 25px;
+    height: 25px;
+    margin: 32px;
+}
+
+.Bank-Logo{
+    display: flex;
+    align-self: center;
+    width: 77px;
+    height: 77px;
+    border-radius: 10px;
+    margin: 15px 13px;
+}
+
+.Bank-Text{
+    display: flex;
+    flex-direction: column;
+    margin: 15px 13px;
+}
+
+.Column{
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+}
+
+.Amount{
+    display: flex;
+}
+
+.Payment-Form{
+    width: 359px;
+    height: 47px;
+    background-color: #FFFEFA;
+    border-radius: 4px;
+    font-size: 20px;
+    color: #6D6553;
+}
+
+.Date{
+    display: flex;
+}
+
+.Select-Slip {
+    display: none;
+}
+
+.choose-file-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 47px;
+    background-color: #FFFEFA;
+    color: #6D6553;
+    font-size: 24px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#file-name{
+    display: flex;
+    font-size: 20px;
+    color: #6D6553;
+}
+
+.file-upload-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
