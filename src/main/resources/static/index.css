@@ -1,3 +1,4 @@
+/* index.css */
 .sr-only {
     position: absolute !important;
     width: 1px;
@@ -21,6 +22,10 @@
     --arrow-fill: #6D6553;
     --arrow-bg: #E2DCD0;
 
+    --card-bg: #E2DCD0;
+    --text-dk: #6D6553;
+    --text-md: #7d715d;
+    --btn-bg: #B6A88A;
 }
 
 /* กันสกรอลล์แนวนอน */
@@ -94,7 +99,6 @@ body {
     width: var(--rail-w);
     height: var(--banner-h);
     background: var(--rail-bg);
-    
 }
 
 .rail.left {
@@ -113,7 +117,6 @@ body {
     transform: translate(-50%, -50%);
     width: var(--arrow-box);
     height: var(--arrow-box);
-    /* ไม่มี border-radius แล้ว */
     background: var(--arrow-bg);
     display: block;
     cursor: pointer;
@@ -122,7 +125,6 @@ body {
     pointer-events: none;
     transition: transform .15s ease, opacity .15s ease;
 }
-
 
 /* รูปลูกศร */
 .rail label::before {
@@ -142,7 +144,6 @@ body {
     transform: translate(-50%, -50%) rotate(180deg);
 }
 
-/* แสดงเฉพาะปุ่มที่ตรงกับสไลด์ และเปิดคลิก */
 #slide1:checked~.rail.right .n1,
 #slide2:checked~.rail.right .n2,
 #slide3:checked~.rail.right .n3,
@@ -185,7 +186,7 @@ body {
 
 .books-section {
     max-width: 1200px;
-    margin: 20px auto 60px;
+    margin: 55px auto 60px;
     padding: 0 12px;
 }
 
@@ -193,80 +194,98 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* จัดกึ่งกลางแนวนอน */
-    margin-bottom: 14px;
+    margin-bottom: 100px;
 }
 
 .books-header h2 {
-    margin: 0;
-    text-align: center;
-    /* ให้ตัวอักษรอยู่กลาง */
+    font-size: 36px;
+    font-family: "Libre Baskerville", serif;
+    color: #92866E;
 }
-
 
 /* กริดการ์ด */
 .books-grid {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
+    gap: 125px;
+    justify-content: center;
 }
 
 /* การ์ดเล่มหนังสือ */
-.book-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, .05);
+.book-wrap {
+    width: 201px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    position: relative;
+    align-items: center;
+    gap: 25px;
 }
 
-.book-cover {
-    width: 100%;
-    height: 160px;
+.book-card {
+    width: 201px;
+    height: 310px;
+    padding: 16px 0 10px;
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    text-align: center;
+}
+
+/* ขนาดรูป */
+.book-cover,
+.book-s-pic {
+    width: 150px;
+    height: 181px;
+    aspect-ratio: 150/181;
     object-fit: cover;
     border-radius: 10px;
-    background: #f6f6f6;
+    margin-top: 12px;
+    margin-bottom: 16px;
+    background: #eee;
 }
 
 .book-title {
-    font-weight: 700;
-    color: #2c2a25;
-    line-height: 1.25;
-    min-height: 2.2em;
-    font-size: .98rem;
+    font-size: 20px;
+    font-family: "Libre Baskerville", serif;
+    margin-top: 0;
 }
 
 .book-author {
-    color: #857a65;
-    font-size: .88rem;
+    font-size: 18px;
+    font-family: "Libre Baskerville", serif;
 }
 
-.price-chip {
+.price-tag {
     position: absolute;
-    right: 10px;
-    bottom: 54px;
-    background: #efe9dc;
-    color: #6d6553;
-    border-radius: 8px;
-    padding: 2px 8px;
-    font-size: .85rem;
+    right: 12px;
+    bottom: 12px;
+    font-family: "Libre Baskerville", serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #6D6553;
+    background: transparent;
+    padding: 0;
+    border: 0;
 }
 
 /* ปุ่ม */
 .btn-add {
-    align-self: flex-start;
-    background: #b6a88a;
+    align-self: center;
+    background: var(--btn-bg);
     color: #fff;
     border: 0;
     border-radius: 6px;
-    padding: 6px 10px;
-    font-size: .85rem;
+    padding: 8px 14px;
+    width: 173px;
+    height: 47px;
+    font-size: 20px;
     cursor: pointer;
     transition: filter .15s ease, transform .05s ease;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .08);
 }
 
 .btn-add:hover {
@@ -274,13 +293,15 @@ body {
 }
 
 .btn-add:active {
-    transform: scale(.98);
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, .08);
 }
 
 /* state */
 .books-grid .empty {
-    grid-column: 1/-1;
+    flex: 1 1 100%;
     text-align: center;
     color: #9c927c;
     padding: 24px 0;
 }
+
