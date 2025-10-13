@@ -1,7 +1,7 @@
 *{margin:0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Libre Baskerville", serif;
+    font-family: "Libre Baskerville", "Noto Sans Thai" , serif;
     color: #6D6553;
 }
 
@@ -27,9 +27,10 @@ hr{
     font-size: 24px;
 }
 
-.icon{
-    width: 10px;
-    height: 10px;
+.arrow {
+    display: inline-block;
+    font-size: 14px;
+    transition: transform 0.3s ease-out;
 }
 
 .Step{
@@ -41,6 +42,10 @@ hr{
     background-color: #F6F0BE;
     border-radius: 20px;
     font-size: 20px;
+}
+
+.Step.active .arrow {
+    transform: rotate(180deg);
 }
 
 .Detail{
@@ -55,6 +60,10 @@ hr{
     transition: opacity 0.3s ease-out, transform 300ms ease-out;
     transform: translateY(-20px);
     transition-property: max-height, opacity, transform;
+}
+
+.Detail.open {
+    max-height: 500px;
 }
 
 .Row {
@@ -180,9 +189,11 @@ hr{
 }
 
 .Payment-Form{
+    padding: 25px;
     width: 359px;
     height: 47px;
     background-color: #FFFEFA;
+    border: 0;
     border-radius: 4px;
     font-size: 20px;
     color: #6D6553;
