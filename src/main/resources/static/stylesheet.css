@@ -139,3 +139,149 @@ body {
 .search-image-btn:active {
   transform: translateY(-50%) scale(.98);
 }
+
+/* ===== Footer ===== */
+.footer {
+  background: var(--primary-color);
+  color: var(--text-color);
+}
+
+/* 3 คอลัมน์แนวเดียวกัน */
+/* ทำ grid 2 แถว: บรรทัดบน = Reference, บรรทัดล่าง = 3 คอลัมน์ */
+.footer-top {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 12px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  grid-template-areas:
+    "ref ref ref"
+    "genre faq contact";
+  column-gap: 48px;
+  row-gap: 12px;
+  align-items: start;
+}
+
+.ft-ref {
+  grid-area: ref;
+}
+
+.ft-genre {
+  grid-area: genre;
+}
+
+.ft-faq {
+  grid-area: faq;
+}
+
+.ft-contact {
+  grid-area: contact;
+}
+
+/* สไตล์หัวข้อ/รายการเดิม */
+.ft-title {
+  font-family: "Libre Baskerville", serif;
+  font-size: 26px;
+  margin: 0;
+}
+
+.ft-sub {
+  font-family: "Libre Baskerville", serif;
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.ft-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ft-list li {
+  margin: 4px 0;
+  font-size: 16px;
+}
+
+.ft-phone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ft-phone-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+/* มือถือ */
+@media (max-width:900px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "ref"
+      "genre"
+      "faq"
+      "contact";
+    row-gap: 18px;
+  }
+}
+
+/* สโลแกนตรงกลาง */
+.footer-slogan {
+  text-align: center;
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 20px 0 10px;
+}
+
+/* แถบล่าง */
+.footer-bar {
+  margin-top: 10px;
+  background: #92866E;
+  color: #EDE7DB;
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+}
+
+.ft-logo {
+  width: 90px;
+  height: auto;
+}
+
+.ft-power {
+  text-align: center;
+  font-size: 18px;
+}
+
+.ft-socials {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ft-socials img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    row-gap: 24px;
+  }
+
+  .footer-bar {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 10px;
+  }
+}
