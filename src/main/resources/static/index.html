@@ -18,8 +18,7 @@
             </div>
 
             <form id="searchForm" class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search"
-                    aria-label="Search books">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
                 <button type="submit" class="search-image-btn" aria-label="Search">
                     <img src="img/search.png" alt="Search">
                 </button>
@@ -36,14 +35,14 @@
         </div>
     </header>
 
-    <!-- Banner-->
+    <!-- Banner -->
     <section id="slider" aria-roledescription="carousel" aria-label="Promotion Slides">
         <h2 class="sr-only">Promotion Slides</h2>
         <input type="radio" name="slider" id="slide1" checked>
         <input type="radio" name="slider" id="slide2">
         <input type="radio" name="slider" id="slide3">
 
-        <!-- กล่องสไลด์ตรงกลาง -->
+        <!-- Slides -->
         <div id="slides">
             <div class="inner">
                 <article class="slide" aria-label="1 of 3">
@@ -77,14 +76,13 @@
         </div>
     </section>
 
-    <!--แก้ด้วย-->
+    <!-- Books Section -->
     <section class="books-section">
         <div class="books-header">
             <h2>All Books</h2>
         </div>
         <div id="bookList" class="books-grid">Loading...</div>
     </section>
-
 
     <script>
         const apiBase = "http://localhost:8080/api/books";
@@ -93,7 +91,9 @@
             fetch(apiBase)
                 .then(r => r.json())
                 .then(renderBooks)
-                .catch(() => { });
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML = "<div class='empty'>❌ Failed to load books.</div>";
+                });
         }
 
         document.getElementById("searchForm").addEventListener("submit", function (e) {
@@ -108,55 +108,88 @@
             fetch(`${apiBase}/search?${params.toString()}`)
                 .then(r => r.json())
                 .then(renderBooks)
-                .catch(() => { });
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML = "<div class='empty'>❌ Search failed.</div>";
+                });
         });
 
         function renderBooks(books) {
-                const container = document.getElementById("bookList");
-                container.innerHTML = "";
-                if (!books || books.length === 0) {
-                    container.innerHTML = `<div class="empty">No books found.</div>`;
-                    return;
-                }
-                books.forEach(b => {
-                    const title = b.title || "Book’s name";
-                    const author = b.author || "Author’s name";
-                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
-                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
-
-                    const wrap = document.createElement("div");
-                    wrap.className = "book-wrap";
-                    wrap.innerHTML = `
-      <article class="book-card" tabindex="0">
-        <img class="book-cover" src="${cover}" alt="Cover of ${title}">
-        <h3 class="book-title">${title}</h3>
-        <div class="book-author">${author}</div>
-        <div class="price-tag">฿${price}</div>
-      </article>
-      <button class="btn-add">+ Add to cart</button>
-    `;
-                    wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
-                    container.appendChild(wrap);
-                });
+            const container = document.getElementById("bookList");
+            container.innerHTML = "";
+            if (!books || books.length === 0) {
+                container.innerHTML = `<div class="empty">No books found.</div>`;
+                return;
             }
+            books.forEach(b => {
+                const title = b.title || "Book’s name";
+                const author = b.author || "Author’s name";
+                const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
 
+                const wrap = document.createElement("div");
+                wrap.className = "book-wrap";
+                wrap.innerHTML = `
+                    <article class="book-card" tabindex="0">
+                        <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+                        <h3 class="book-title">${title}</h3>
+                        <div class="book-author">${author}</div>
+                        <div class="price-tag">฿${price}</div>
+                    </article>
+                    <button class="btn-add">+ Add to cart</button>
+                `;
+                wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
+                container.appendChild(wrap);
+            });
+        }
+
+        // ✅ FIXED FUNCTION
         function addToCart(bookId) {
-            const userId = localStorage.getItem("userId");
+            let userId = localStorage.getItem("userId");
+
             if (!userId) {
-                alert("Please log in first!");
+                alert("⚠️ Please log in first!");
                 window.location.href = "login.html";
                 return;
             }
+
+            // Convert to number for Spring Boot
+            userId = Number(userId);
+
+            if (!bookId) {
+                alert("❌ Missing book ID");
+                return;
+            }
+
+            const cartItem = {
+                userId: userId,
+                book: { id: bookId },
+                quantity: 1
+            };
+
+            console.log("🛒 Sending to backend:", cartItem);
+
             fetch("http://localhost:8080/api/cart/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId, book: { id: bookId }, quantity: 1 })
+                body: JSON.stringify(cartItem)
             })
-                .then(res => { if (res.ok) alert("Book added to cart!"); else alert("Failed to add to cart ❌"); })
-                .catch(() => { });
+                .then(async res => {
+                    const text = await res.text();
+                    if (res.ok) {
+                        console.log("✅ Backend response:", text);
+                        alert("✅ Book added to cart!");
+                    } else {
+                        console.error("❌ Backend error:", text);
+                        alert("❌ Failed to add to cart — check console for details");
+                    }
+                })
+                .catch(err => {
+                    console.error("⚠️ Network or backend error:", err);
+                    alert("⚠️ Could not reach backend (is Spring Boot running?)");
+                });
         }
 
-        // Auto-slide JS
+        // Auto-slide carousel
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
             const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
