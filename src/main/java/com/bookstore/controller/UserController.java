@@ -19,7 +19,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // ✅ Signup endpoint
+    // Signup endpoint
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody User user) {
         User savedUser = userService.signup(user);
@@ -33,7 +33,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    // ✅ Login endpoint (now includes user ID)
+    // Login endpoint (now includes user ID)
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody User loginRequest) {
         Optional<User> user = userService.login(
