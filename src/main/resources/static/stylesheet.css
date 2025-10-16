@@ -215,19 +215,6 @@ body {
   object-fit: contain;
 }
 
-/* มือถือ */
-@media (max-width:900px) {
-  .footer-top {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "ref"
-      "genre"
-      "faq"
-      "contact";
-    row-gap: 18px;
-  }
-}
-
 /* สโลแกนตรงกลาง */
 .footer-slogan {
   text-align: center;
