@@ -1,9 +1,11 @@
-// Support both signup and login pages
+// --- Support both signup and login pages ---
 const form = document.getElementById('signupForm') || document.getElementById('loginForm');
 const toggle = document.getElementById('toggleEye');
 const pass = document.getElementById('password');
 
-// Toggle password visibility (if present)
+const API_BASE = "http://localhost:8080/api/users"; // backend base URL
+
+// Toggle password visibility
 if (toggle && pass) {
   toggle.addEventListener('click', () => {
     const isPwd = pass.type === 'password';
@@ -12,77 +14,81 @@ if (toggle && pass) {
   });
 }
 
-// Email validation helper function
-function isValidEmail(email) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-// Form submission handler (only if a form exists)
+// Handle signup / login
 if (form) {
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
     const isSignup = form.id === 'signupForm';
 
-    // Basic validation
-    if (isSignup) {
-      if (!data.name || !data.email || !data.password) {
-        alert('Please fill in all fields.');
-        return;
+    try {
+      if (isSignup) {
+        // --- Signup ---
+        const res = await fetch(`${API_BASE}/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: data.name,
+            email: data.email,
+            password: data.password
+          })
+        });
+
+        if (!res.ok) {
+          alert("❌ Signup failed (check console)");
+          console.error(await res.text());
+          return;
+        }
+
+        alert("✅ Signup successful!");
+        window.location.href = "login.html"; // redirect to login after signup
+
+      } else {
+        // --- Login ---
+        const res = await fetch(`${API_BASE}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password
+          })
+        });
+
+        const user = await res.json();
+
+        if (!res.ok) {
+          alert("❌ Login failed: " + user.message);
+          return;
+        }
+
+        localStorage.setItem("username", user.username);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("userId", user.userId);
+
+        alert(`✅ Welcome ${user.username}!`);
+        window.location.href = "index.html"; // ✅ changed from home.html to index.html
       }
-    } else {
-      if (!data.email || !data.password) {
-        alert('Please fill in email and password.');
-        return;
-      }
-    }
 
-    // Email format validation
-    if (!isValidEmail(data.email)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-
-    if (data.password && data.password.length < 8) {
-      alert('Password must be at least 8 characters.');
-      return;
-    }
-
-    if (isSignup) {
-      alert(`Registered!\nName: ${data.name}\nEmail: ${data.email}`);
-    } else {
-      alert(`Logged in!\nEmail: ${data.email}`);
-    }
-
-    form.reset();
-    if (pass && toggle) {
-      pass.type = 'password';
-      toggle.textContent = 'Show';
+    } catch (err) {
+      console.error("⚠️ Error:", err);
+      alert("⚠️ Backend not reachable — check if Spring Boot is running.");
     }
   });
 }
 
 // Navigation helpers
 function goLogin() {
-  // Navigate to the login page
-  window.location.href = 'login.html';
+  window.location.href = "login.html";
+}
+
+function goSignup() {
+  window.location.href = "signup.html";
 }
 
 function goBack() {
   if (window.history.length > 1) {
     window.history.back();
   } else {
-    // Fallback to signup page if no history
-    window.location.href = 'index.html';
+    window.location.href = "index.html";
   }
-}
-
-function forgotPassword() {
-  alert('Password reset flow not implemented.');
-}
-
-function goSignup() {
-  // Navigate to the signup page
-  window.location.href = 'signup.html';
 }
