@@ -72,18 +72,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Testing -->
-		<dependency>
-		  <groupId>com.h2database</groupId>
-		  <artifactId>h2</artifactId>
-		  <scope>runtime</scope>
-		</dependency>
-		<!-- เอาไว้ hash password โดยไม่เปิด security ทั้งระบบ -->
-		<dependency>
-		  <groupId>org.springframework.security</groupId>
-		  <artifactId>spring-security-crypto</artifactId>
-		</dependency>
-		<!-- Testing -->
 	</dependencies>
 
 	<build>
