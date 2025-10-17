@@ -27,6 +27,7 @@
             <div class="header-icons">
                 <a href="cart.html" class="cart" aria-label="Open cart">
                     <img src="img/cart-icon.png" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
                 </a>
                 <a href="login.html" class="icon" aria-label="Login">
                     <img src="img/BlankPF.png" alt="">
@@ -42,18 +43,11 @@
         <input type="radio" name="slider" id="slide2">
         <input type="radio" name="slider" id="slide3">
 
-        <!-- Slides -->
         <div id="slides">
             <div class="inner">
-                <article class="slide" aria-label="1 of 3">
-                    <img src="img/promotion.png" alt="Promotion 1">
-                </article>
-                <article class="slide" aria-label="2 of 3">
-                    <img src="img/BlankSlide.png" alt="Promotion 2">
-                </article>
-                <article class="slide" aria-label="3 of 3">
-                    <img src="img/BlankSlide.png" alt="Promotion 3">
-                </article>
+                <article class="slide"><img src="img/promotion.png" alt="Promotion 1"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 2"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 3"></article>
             </div>
         </div>
 
@@ -68,11 +62,10 @@
             <label for="slide1" class="next n3"></label>
         </div>
 
-        <!-- bullets -->
         <div id="bullets">
-            <label for="slide1" aria-label="Slide 1"></label>
-            <label for="slide2" aria-label="Slide 2"></label>
-            <label for="slide3" aria-label="Slide 3"></label>
+            <label for="slide1"></label>
+            <label for="slide2"></label>
+            <label for="slide3"></label>
         </div>
     </section>
 
@@ -84,6 +77,7 @@
         <div id="bookList" class="books-grid">Loading...</div>
     </section>
 
+    <!-- ✅ Script zone -->
     <script>
         const apiBase = "http://localhost:8080/api/books";
 
@@ -99,10 +93,7 @@
         document.getElementById("searchForm").addEventListener("submit", function (e) {
             e.preventDefault();
             const keyword = document.getElementById("searchInput").value.trim();
-            if (!keyword) {
-                loadBooks();
-                return;
-            }
+            if (!keyword) return loadBooks();
             const params = new URLSearchParams();
             params.append("keyword", keyword);
             fetch(`${apiBase}/search?${params.toString()}`)
@@ -125,49 +116,34 @@
                 const author = b.author || "Author’s name";
                 const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
                 const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
-
                 const wrap = document.createElement("div");
                 wrap.className = "book-wrap";
                 wrap.innerHTML = `
-                    <article class="book-card" tabindex="0">
-                        <img class="book-cover" src="${cover}" alt="Cover of ${title}">
-                        <h3 class="book-title">${title}</h3>
-                        <div class="book-author">${author}</div>
-                        <div class="price-tag">฿${price}</div>
-                    </article>
-                    <button class="btn-add">+ Add to cart</button>
-                `;
+          <article class="book-card">
+            <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+            <h3 class="book-title">${title}</h3>
+            <div class="book-author">${author}</div>
+            <div class="price-tag">฿${price}</div>
+          </article>
+          <button class="btn-add">+ Add to cart</button>
+        `;
                 wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
                 container.appendChild(wrap);
             });
         }
 
-        // ✅ FIXED FUNCTION
+        // ✅ Add to cart (update badge)
         function addToCart(bookId) {
             let userId = localStorage.getItem("userId");
-
             if (!userId) {
                 alert("⚠️ Please log in first!");
                 window.location.href = "login.html";
                 return;
             }
-
-            // Convert to number for Spring Boot
             userId = Number(userId);
+            if (!bookId) return alert("❌ Missing book ID");
 
-            if (!bookId) {
-                alert("❌ Missing book ID");
-                return;
-            }
-
-            const cartItem = {
-                userId: userId,
-                book: { id: bookId },
-                quantity: 1
-            };
-
-            console.log("🛒 Sending to backend:", cartItem);
-
+            const cartItem = { userId, book: { id: bookId }, quantity: 1 };
             fetch("http://localhost:8080/api/cart/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -176,116 +152,91 @@
                 .then(async res => {
                     const text = await res.text();
                     if (res.ok) {
-                        console.log("✅ Backend response:", text);
+                        const current = getCartCount(userId);
+                        setCartCount(userId, current + 1);
                         alert("✅ Book added to cart!");
                     } else {
-                        console.error("❌ Backend error:", text);
                         alert("❌ Failed to add to cart — check console for details");
                     }
                 })
-                .catch(err => {
-                    console.error("⚠️ Network or backend error:", err);
-                    alert("⚠️ Could not reach backend (is Spring Boot running?)");
-                });
+                .catch(() => alert("⚠️ Could not reach backend (is Spring Boot running?)"));
         }
 
-        // Auto-slide carousel
+        // ✅ Badge functions
+        function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
+        function getCartCount(userId) { const v = localStorage.getItem(badgeKey(userId)); return v ? Number(v) : 0; }
+        function setCartCount(userId, n) { localStorage.setItem(badgeKey(userId), String(Math.max(0, n | 0))); renderCartBadge(userId); }
+        function renderCartBadge(userId) {
+            const el = document.getElementById('cartBadge');
+            if (!el) return;
+            const n = getCartCount(userId);
+            el.textContent = n;
+            el.classList.toggle('is-zero', n <= 0);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const uid = localStorage.getItem("userId");
+            renderCartBadge(uid);
+        });
+
+        // ✅ Slider auto-change
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
             const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
             if (!radios.length) return;
-
             let idx = radios.findIndex(r => r.checked);
-            if (idx < 0) idx = 0;
-
-            const go = (n) => {
-                idx = (n + radios.length) % radios.length;
-                radios[idx].checked = true;
-            };
+            const go = (n) => { idx = (n + radios.length) % radios.length; radios[idx].checked = true; };
             const next = () => go(idx + 1);
-
             let timer;
             const start = () => { stop(); timer = setInterval(next, 5000); };
             const stop = () => { if (timer) clearInterval(timer); };
-
-            slider.addEventListener('change', (e) => {
-                if (e.target.name === 'slider') {
-                    idx = radios.indexOf(e.target);
-                    start();
-                }
-            });
-
+            slider.addEventListener('change', (e) => { if (e.target.name === 'slider') { idx = radios.indexOf(e.target); start(); } });
             start();
         });
 
         loadBooks();
     </script>
-    
-<!-- Footer -->
-<footer class="footer">
-<div class="footer-top">
-    <!-- แถวที่ 1 -->
-    <div class="ft-ref">
-        <h3 class="ft-title">Reference</h3>
-    </div>
 
-    <!-- แถวที่ 2 (สามคอลัมน์) -->
-    <div class="ft-genre">
-        <div class="ft-sub">Genre:</div>
-        <ul class="ft-list">
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-        </ul>
-    </div>
-
-    <div class="ft-faq">
-        <div class="ft-sub">FAQ:</div>
-        <ul class="ft-list">
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-        </ul>
-    </div>
-
-    <div class="ft-contact">
-        <div class="ft-sub">Contact us:</div>
-        <ul class="ft-list">
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-            <li>- xxxxxxxxxxxx</li>
-        </ul>
-        <div class="ft-phone">
-            <img src="img/phone.svg" alt="" class="ft-phone-icon">
-            <span>000-000-0000</span>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="ft-ref">
+                <h3 class="ft-title">Reference</h3>
+            </div>
+            <div class="ft-genre">
+                <div class="ft-sub">Genre:</div>
+                <ul class="ft-list">
+                    <li>- xxxxxxxxxxxx</li>
+                    <li>- xxxxxxxxxxxx</li>
+                </ul>
+            </div>
+            <div class="ft-faq">
+                <div class="ft-sub">FAQ:</div>
+                <ul class="ft-list">
+                    <li>- xxxxxxxxxxxx</li>
+                    <li>- xxxxxxxxxxxx</li>
+                </ul>
+            </div>
+            <div class="ft-contact">
+                <div class="ft-sub">Contact us:</div>
+                <ul class="ft-list">
+                    <li>- xxxxxxxxxxxx</li>
+                    <li>- xxxxxxxxxxxx</li>
+                </ul>
+                <div class="ft-phone"><img src="img/phone.svg" class="ft-phone-icon"><span>000-000-0000</span></div>
+            </div>
         </div>
-    </div>
-</div>
 
+        <div class="footer-slogan">“สโลแกน”</div>
 
-    <div class="footer-slogan">“สโลแกน”</div>
-
-    <div class="footer-bar">
-        <img src="img/logo.png" alt="Bookstore" class="ft-logo">
-        <div class="ft-power">Power by BookStore.com</div>
-        <div class="ft-socials">
-            <img src="img/youtube.svg" alt="YouTube">
-            <img src="img/facebook.svg" alt="Facebook">
-            <img src="img/instagram.svg" alt="Instagram">
-            <img src="img/mail.svg" alt="Email">
+        <div class="footer-bar">
+            <img src="img/logo.png" class="ft-logo">
+            <div class="ft-power">Power by BookStore.com</div>
+            <div class="ft-socials">
+                <img src="img/youtube.svg"><img src="img/facebook.svg"><img src="img/instagram.svg"><img
+                    src="img/mail.svg">
+            </div>
         </div>
-    </div>
-</footer>
-
-
+    </footer>
 </body>
 
 </html>

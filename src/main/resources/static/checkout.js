@@ -24,14 +24,14 @@ document.querySelectorAll('.Step').forEach(stepEl => {
   }
 });
 
-const addressForm  = document.getElementById('addressForm');
-const paymentForm  = document.getElementById('paymentForm');   
+const addressForm = document.getElementById('addressForm');
+const paymentForm = document.getElementById('paymentForm');
 const successMessage = document.getElementById('successMessage');
-const backHomeBtn    = document.getElementById('backHomeBtn');
-const step1Wrapper  = addressForm?.closest('.Detail');
-const step1Header   = step1Wrapper?.previousElementSibling;
-const step2Header   = document.querySelectorAll('.Step')[1];
-const step2Wrapper  = step2Header?.nextElementSibling;
+const backHomeBtn = document.getElementById('backHomeBtn');
+const step1Wrapper = addressForm?.closest('.Detail');
+const step1Header = step1Wrapper?.previousElementSibling;
+const step2Header = document.querySelectorAll('.Step')[1];
+const step2Wrapper = step2Header?.nextElementSibling;
 
 /* STEP 1 */
 
@@ -39,13 +39,13 @@ addressForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const requiredFields = [
-    { id: 'fname',     name: 'First name' },
-    { id: 'lname',     name: 'Last name' },
+    { id: 'fname', name: 'First name' },
+    { id: 'lname', name: 'Last name' },
     { id: 'telephone', name: 'Phone number' },
-    { id: 'address1',  name: 'Address' },
-    { id: 'province',  name: 'Province' },
-    { id: 'district',  name: 'District' },
-    { id: 'postcode',  name: 'Postal code' },
+    { id: 'address1', name: 'Address' },
+    { id: 'province', name: 'Province' },
+    { id: 'district', name: 'District' },
+    { id: 'postcode', name: 'Postal code' },
   ];
 
   let hasError = false;
@@ -80,14 +80,14 @@ addressForm?.addEventListener('submit', async (e) => {
   }
 
   const payload = {
-    firstName:  document.getElementById('fname').value.trim(),
-    lastName:   document.getElementById('lname').value.trim(),
-    phone:      document.getElementById('telephone').value.trim(),
-    address1:   document.getElementById('address1').value.trim(),
-    address2:   document.getElementById('address2').value.trim(),
-    province:   document.getElementById('province').value.trim(),
-    district:   document.getElementById('district').value.trim(),
-    postcode:   document.getElementById('postcode').value.trim()
+    firstName: document.getElementById('fname').value.trim(),
+    lastName: document.getElementById('lname').value.trim(),
+    phone: document.getElementById('telephone').value.trim(),
+    address1: document.getElementById('address1').value.trim(),
+    address2: document.getElementById('address2').value.trim(),
+    province: document.getElementById('province').value.trim(),
+    district: document.getElementById('district').value.trim(),
+    postcode: document.getElementById('postcode').value.trim()
   };
 
   const userId = getUserId();
@@ -127,13 +127,13 @@ const fileInput = document.getElementById("slip");
 const fileName = document.getElementById("file-name");
 
 fileInput.addEventListener("change", () => {
-    if (fileInput.files.length > 0) {
-            fileName.textContent = fileInput.files[0].name;
-    } else {
-        fileName.textContent = "ยังไม่ได้เลือกไฟล์";
-    }
+  if (fileInput.files.length > 0) {
+    fileName.textContent = fileInput.files[0].name;
+  } else {
+    fileName.textContent = "ยังไม่ได้เลือกไฟล์";
+  }
 
-paymentForm.addEventListener("submit", function(event) {
+  paymentForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const amount = document.getElementById("amount").value.trim();
@@ -143,9 +143,9 @@ paymentForm.addEventListener("submit", function(event) {
 
     let selectedBank = false;
     document.querySelectorAll('input[name="bank"]').forEach(radio => {
-        if (radio.checked) selectedBank = true;
+      if (radio.checked) selectedBank = true;
     });
-    
+
     let message = "";
     if (!selectedBank) message += "กรุณาเลือกธนาคาร\n";
     if (amount === "") message += "กรุณากรอกยอดเงิน\n";
@@ -154,16 +154,16 @@ paymentForm.addEventListener("submit", function(event) {
     if (slip === 0) message += "กรุณาแนบสลิป\n";
 
     if (message) {
-        const fullMessage = "กรุณากรอกรายละเอียดการชำระเงินให้ครบ:\n" + message;
-        alert(fullMessage);
-        return;
+      const fullMessage = "กรุณากรอกรายละเอียดการชำระเงินให้ครบ:\n" + message;
+      alert(fullMessage);
+      return;
     }
-    
+
     document.querySelectorAll(".content").forEach(d => d.style.display = "none");
     successMessage.style.display = "flex";
     addressForm.reset();
     paymentForm.reset();
-}); 
+  });
 });
 
 
