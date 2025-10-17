@@ -1,16 +1,128 @@
-function toggleDetail(stepDiv) {
-    stepDiv.classList.toggle("active");
+
+function getUserId() {
+  const id = localStorage.getItem('userId');
+  if (!id) alert('Please log in first!');
+  return id;
 }
- 
+
+function toggleDetail(stepDiv) {
+  stepDiv.classList.toggle('active');
+}
+
+function setBtnLoading(btn, isLoading) {
+  if (!btn) return;
+  btn.disabled = !!isLoading;
+  btn.classList.toggle('is-loading', !!isLoading);
+}
+
 document.querySelectorAll('.Step').forEach(stepEl => {
-const detailEl = stepEl.nextElementSibling;
-if (detailEl && detailEl.classList.contains('Detail')) {
-        stepEl.addEventListener('click', () => {
-            detailEl.classList.toggle('active'); 
-        });
-    }
+  const detailEl = stepEl.nextElementSibling;
+  if (detailEl && detailEl.classList.contains('Detail')) {
+    stepEl.addEventListener('click', () => {
+      detailEl.classList.toggle('active');
+    });
+  }
 });
 
+const addressForm  = document.getElementById('addressForm');
+const paymentForm  = document.getElementById('paymentForm');   
+const successMessage = document.getElementById('successMessage');
+const backHomeBtn    = document.getElementById('backHomeBtn');
+const step1Wrapper  = addressForm?.closest('.Detail');
+const step1Header   = step1Wrapper?.previousElementSibling;
+const step2Header   = document.querySelectorAll('.Step')[1];
+const step2Wrapper  = step2Header?.nextElementSibling;
+
+/* STEP 1 */
+
+addressForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const requiredFields = [
+    { id: 'fname',     name: 'First name' },
+    { id: 'lname',     name: 'Last name' },
+    { id: 'telephone', name: 'Phone number' },
+    { id: 'address1',  name: 'Address' },
+    { id: 'province',  name: 'Province' },
+    { id: 'district',  name: 'District' },
+    { id: 'postcode',  name: 'Postal code' },
+  ];
+
+  let hasError = false;
+  let message = '';
+
+  requiredFields.forEach(field => {
+    const el = document.getElementById(field.id);
+    if (!el || el.value.trim() === '') {
+      hasError = true;
+      message += `Please fill in ${field.name}\n`;
+      el?.classList.add('input-error');
+    } else {
+      el.classList.remove('input-error');
+    }
+  });
+
+  const phone = document.getElementById('telephone')?.value.trim();
+  if (phone && !/^\d{9,10}$/.test(phone)) {
+    hasError = true;
+    message += 'Invalid phone number (should be 9–10 digits)\n';
+  }
+
+  const postcode = document.getElementById('postcode')?.value.trim();
+  if (postcode && !/^\d{5}$/.test(postcode)) {
+    hasError = true;
+    message += 'Postal code must be 5 digits\n';
+  }
+
+  if (hasError) {
+    alert('Please check your address details:\n' + message);
+    return;
+  }
+
+  const payload = {
+    firstName:  document.getElementById('fname').value.trim(),
+    lastName:   document.getElementById('lname').value.trim(),
+    phone:      document.getElementById('telephone').value.trim(),
+    address1:   document.getElementById('address1').value.trim(),
+    address2:   document.getElementById('address2').value.trim(),
+    province:   document.getElementById('province').value.trim(),
+    district:   document.getElementById('district').value.trim(),
+    postcode:   document.getElementById('postcode').value.trim()
+  };
+
+  const userId = getUserId();
+  if (!userId) return;
+
+  const submitBtn = addressForm.querySelector('.Confirm-Btn');
+  setBtnLoading(submitBtn, true);
+
+  try {
+    const res = await fetch(`/api/addresses/add/${userId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || `HTTP ${res.status}`);
+    }
+
+    step1Wrapper?.classList.remove('active');
+    step1Header?.classList.remove('active');
+    step2Header?.classList.add('active');
+    step2Wrapper?.classList.add('active');
+
+
+  } catch (err) {
+    alert('Failed to save address: ' + err.message);
+  } finally {
+    setBtnLoading(submitBtn, false);
+  }
+});
+
+/* STEP 3 */
 const fileInput = document.getElementById("slip");
 const fileName = document.getElementById("file-name");
 
@@ -20,86 +132,6 @@ fileInput.addEventListener("change", () => {
     } else {
         fileName.textContent = "ยังไม่ได้เลือกไฟล์";
     }
-});
-
-
-const addressForm = document.getElementById("addressForm");
-const paymentForm = document.getElementById("paymentForm");
-const successMessage = document.getElementById("successMessage");
-const backHomeBtn = document.getElementById("backHomeBtn");
-
-addressForm.addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    const requiredFields = [
-        { id: "fname", name: "ชื่อ" },
-        { id: "lname", name: "นามสกุล" },
-        { id: "telephone", name: "เบอร์โทรศัพท์" },
-        { id: "address1", name: "ที่อยู่" },
-        { id: "province", name: "จังหวัด" },
-        { id: "district", name: "อำเภอ" },
-        { id: "postcode", name: "รหัสไปรษณีย์" },
-    ];
-
-    let hasError = false;
-    let message = "";
-
-    requiredFields.forEach(field => {
-        const el = document.getElementById(field.id);
-        if (el.value.trim() === "") {
-            hasError = true;
-            message += `กรุณากรอก ${field.name}\n`;
-            el.classList.add("input-error");
-        } else {
-            el.classList.remove("input-error");
-        }
-    });
-
-    const phone = document.getElementById("telephone").value.trim();
-    if (phone && !/^\d{9,10}$/.test(phone)) {
-        hasError = true;
-        message += "เบอร์โทรศัพท์ไม่ถูกต้อง (ควรเป็นตัวเลข 9–10 หลัก)\n";
-    }
-
-    const postcode = document.getElementById("postcode").value.trim();
-    if (postcode && !/^\d{5}$/.test(postcode)) {
-        hasError = true;
-        message += "รหัสไปรษณีย์ควรเป็นตัวเลข 5 หลัก\n";
-    }
-
-    if (hasError) {
-        const fullMessage = "กรุณากรอกที่อยู่ให้ถูกต้อง:\n" + message;
-        alert(fullMessage);
-        return;
-    }
-
-    else{
-        const step1Detail = addressForm.closest(".Detail");
-        const step1 = step1Detail.previousElementSibling;
-        step1Detail.classList.remove("active");
-        step1.classList.remove("active");
-
-        const step2 = document.querySelectorAll(".Step")[1];
-        const step2Detail = step2.nextElementSibling;
-        step2.classList.add("active");
-        step2Detail.classList.add("active");
-    }
-    
-});
-
-//button ของ step 2
-confirmBtn.addEventListener("click", function(){
-    const step2 = document.querySelectorAll(".Step")[1];
-    const step2Detail = step2.nextElementSibling;
-    step2.classList.remove("active");
-    step2Detail.classList.remove("active");
-
-    const step3 = document.querySelectorAll(".Step")[2];
-    const step3Detail = step3.nextElementSibling;
-    step3.classList.add("active");
-    step3Detail.classList.add("active");
-});
-//
 
 paymentForm.addEventListener("submit", function(event) {
     event.preventDefault();
@@ -132,4 +164,20 @@ paymentForm.addEventListener("submit", function(event) {
     addressForm.reset();
     paymentForm.reset();
 }); 
-backHomeBtn.addEventListener("click", () => {window.location.href = "index.html";});
+});
+
+
+/* FINISH PAGE */
+
+function showFinishPage() {
+  document.querySelectorAll('.content').forEach(el => el.style.display = 'none');
+  successMessage?.style.setProperty('display', 'flex');
+}
+
+backHomeBtn?.addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
+
+
+
+
