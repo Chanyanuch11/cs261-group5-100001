@@ -160,3 +160,138 @@ html,body{height:100%}
 
 /* Reference + แถบล่าง: ความกว้างเท่าคอนเทนต์ */
 .reference .foot, .bottombar .barin{ max-width:1060px; }
+
+/* ===== Order Summary: จัดบรรทัดแบบ 2 คอลัมน์ + ตัวเลขชิดขวาสุด ===== */
+.rows .rowline{
+  display:flex;                 /* แยกคอลัมน์ซ้าย/ขวา */
+  align-items:center;
+  gap:12px;
+  padding:10px 0;
+  border-top:1px dashed #cbd5bd;
+}
+.rows .rowline:first-child{ border-top:0; }
+
+/* คอลัมน์ซ้าย = label กินพื้นที่ที่เหลือ */
+.rows .rowline > :first-child{
+  flex:1 1 auto;
+}
+
+/* คอลัมน์ขวา = amount ชิดขวา “สุดก้าน” ของการ์ด */
+.rows .rowline > :last-child{
+  flex:0 0 auto;
+  min-width:96px;               /* ปรับได้ 80–110 ตามใจ */
+  text-align:right;
+}
+
+/* แถว Total ให้โครงเดียวกัน */
+.total{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border-top:1px solid #cbd5bd;
+  padding-top:12px;
+}
+.total > b:first-child{ flex:1 1 auto; }
+.total > b:last-child{
+  flex:0 0 auto;
+  min-width:96px;
+  text-align:right;
+}
+
+/* ===== ปุ่ม Go to Checkout: โทนน้ำตาลตาม Figma ===== */
+.checkout{
+  background:#b79d72;           /* น้ำตาลอ่อน */
+  color:#fff;
+  border:0;
+  padding:12px 14px;
+  border-radius:12px;
+  font-weight:600;
+}
+.checkout:hover{ background:#a38b64; }
+
+details.debug { display: none !important; }
+
+
+/* การ์ดโครงตอนกำลังโหลด */
+.item.skeleton{ position:relative; overflow:hidden; }
+.item.skeleton *{ color:transparent !important; }
+.item.skeleton::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer{ 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+
+/* ===== Skeleton placeholders ===== */
+.item.skeleton{
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 14px;
+}
+
+/* ก้อนเทาแทนรูป/ตัวหนังสือ */
+.skel, .skel-sm, .skel-btn{
+  background: #efe7c7;
+  border-radius: 8px;
+}
+.skel{ height: 16px; }
+.skel-sm{ height: 12px; opacity:.7 }
+.skel-btn{ height: 36px; border-radius: 999px; width: 120px; }
+
+/* รูป */
+.skel-thumb{
+  width:72px; height:72px; border-radius:10px; background:#eadfb8;
+}
+
+/* แถบวิ่ง */
+.item.skeleton::after{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer{
+  100% { transform: translateX(100%); }
+}
+
+/* ระยะห่างการ์ดสินค้าแนวตั้ง = 29px */
+.itemlist{
+  display: flex;
+  flex-direction: column;
+  row-gap: 29px;   /* หรือใช้ gap: 29px; ถ้าไม่มีระยะอื่น */
+}
+
+/* ถ้าบางที่ยังมี margin เดิมติดอยู่ ให้กันซ้อนระยะ */
+.item{ margin-bottom: 0 !important; }
+
+/* === Force spacing between yellow cards to 29px === */
+
+/* กำหนดกับลิสต์จริง (#cartList) */
+#cartList {
+  display: flex;
+  flex-direction: column;
+  gap: 29px !important;     /* ทับตัวเก่าแน่นอน */
+}
+
+/* กันกรณีมี margin เดิมบนการ์ด */
+#cartList .item { margin: 0 !important; }
+
+/* ใช้ fallback แบบคู่ถัดไปด้วย เผื่อเบราว์เซอร์/สไตล์บล็อค gap */
+#cartList .item + .item { margin-top: 29px !important; }
+
+/* ให้ skeleton เว้น 29px ด้วย */
+#placeholders {
+  display: flex;
+  flex-direction: column;
+  gap: 29px !important;
+}
+#placeholders .item { margin: 0 !important; }
+#placeholders .item + .item { margin-top: 29px !important; }
