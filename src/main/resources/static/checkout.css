@@ -271,3 +271,55 @@ hr{
     border-radius: 4px;
     cursor: pointer;
 }
+
+.Summary-Head {
+  font-weight: 600;
+}
+
+.Item-Row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 21px 0;
+  border-bottom: 1px solid #E3DEBB;
+}
+.Item-Row:last-child { border-bottom: 1px solid #E3DEBB; }
+
+.Item-Title { text-align: left; }
+.Item-Price {
+  width: 120px;
+  text-align: right;
+}
+
+.Summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.Sum-Row {
+  display: flex;
+  padding: 21px 0;
+  border-bottom: 1px solid #E3DEBB;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 84px;          
+  width: 1203px;       
+}
+
+.Sum-Row span:first-child,
+.Sum-Row b:first-child {
+  width: 250px;      
+  text-align: right;
+}
+
+.Sum-Row span:last-child,
+.Sum-Row b:last-child {
+  width: 100px;       
+  text-align: right;
+}
+
+.Sum-Row.total {
+  font-weight: 700;
+  border-bottom: none;
+}

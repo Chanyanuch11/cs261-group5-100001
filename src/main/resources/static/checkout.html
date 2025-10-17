@@ -108,19 +108,25 @@
             <span class="arrow">&#9660;</span>
             </p>
         </div>
-
-        <div class="Detail" id="ConfirmDetail">
-            <div class="Confirm-List" id="cartList"></div>
+        <div class="Detail" id="OrderDetail">
+            <div class="Summary-Head">
+                <div class="Item-Row">
+                    <span class="Item-Title">BOOK TITLE / ชื่อหนังสือ</span>
+                    <span class="Item-Price">TOTAL / ยอดรวม</span>
+                </div>
+            </div>
+            <div class="Order-List" id="cartList">
+                    
+            </div>
             <div class="Summary" id="summary">
-                <div class="Sum-Row"><span>Sub Total :</span><span id="subTotal">฿0.00</span></div>
-                <div class="Sum-Row"><span>Shipping Fee :</span><span id="shipping">฿0.00</span></div>
-                <div class="Sum-Row"><span>Discount :</span><span id="discount">-฿0.00</span></div>
-                <div class="Sum-Row total"><span>Total :</span><span id="grandTotal">฿0.00</span></div>
+                <div class="Sum-Row"><span>Sub Total / ยอดรวม :</span><span id="subTotal">฿0.00</span></div>
+                <div class="Sum-Row"><span>Shipping Fee / ค่าจัดส่ง :</span><span id="shipping">฿0.00</span></div>
+                <div class="Sum-Row"><span>Discount / ส่วนลด :</span><span id="discount">-฿0.00</span></div>
+                <div class="Sum-Row total"><span>Total / ยอดรวมทั้งสิ้น :</span><span id="grandTotal">฿0.00</span></div>
                 <button class="Confirm-Btn" id="confirmBtn">Confirm</button>
             </div>
         </div>
     </div>
-     
 
     <div class="content">
         <div class="Step"  onclick="toggleDetail(this)">
@@ -218,6 +224,61 @@
         <p>Your order has been successfully placed.</p>
         <button id="backHomeBtn">Back to Homepage</button>
     </div>
+
+<footer class="footer">
+<div class="footer-top">
+    <div class="ft-ref">
+        <h3 class="ft-title">Reference</h3>
+    </div>
+    <div class="ft-genre">
+        <div class="ft-sub">Genre:</div>
+        <ul class="ft-list">
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+        </ul>
+    </div>
+    <div class="ft-faq">
+        <div class="ft-sub">FAQ:</div>
+        <ul class="ft-list">
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+        </ul>
+    </div>
+    <div class="ft-contact">
+        <div class="ft-sub">Contact us:</div>
+        <ul class="ft-list">
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+            <li>- xxxxxxxxxxxx</li>
+        </ul>
+        <div class="ft-phone">
+            <img src="img/phone.svg" alt="" class="ft-phone-icon">
+            <span>000-000-0000</span>
+        </div>
+    </div>
 </div>
+<div class="footer-slogan">“สโลแกน”</div>
+    <div class="footer-bar">
+        <img src="img/logo.png" alt="Bookstore" class="ft-logo">
+        <div class="ft-power">Power by BookStore.com</div>
+        <div class="ft-socials">
+            <img src="img/youtube.svg" alt="YouTube">
+            <img src="img/facebook.svg" alt="Facebook">
+            <img src="img/instagram.svg" alt="Instagram">
+            <img src="img/mail.svg" alt="Email">
+        </div>
+    </div>
+</footer>
 </body>
 </html>
+

@@ -144,6 +144,7 @@ body {
 .footer {
   background: var(--primary-color);
   color: var(--text-color);
+  margin-top: 100px;
 }
 
 /* 3 คอลัมน์แนวเดียวกัน */
