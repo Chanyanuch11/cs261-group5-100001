@@ -23,10 +23,10 @@ if (form) {
     const isSignup = form.id === 'signupForm';
 
     // Basic validation
-    if (!data.email || !data.password || (isSignup && !data.name)) {
-      alert('Please fill in all fields.');
-      return;
-    }
+	if (!data.email || !data.password || (isSignup && !data.username)) {
+	  alert('Please fill in all fields.');
+	  return;
+	}
     if (!isValidEmail(data.email)) {
       alert('Please enter a valid email.');
       return;
