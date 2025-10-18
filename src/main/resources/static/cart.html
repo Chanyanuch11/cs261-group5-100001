@@ -96,57 +96,69 @@
           <div class="rowline"><span>Discount</span><span id="discount">-฿0</span></div>
           <div class="rowline total"><span>Total</span><b id="grandTotal">฿0</b></div>
         </div>
-        <button class="checkout" onclick="checkout()">Go to Checkout</button>
+        <!-- เปลี่ยนให้เรียก goToCheckout() -->
+        <button class="checkout" onclick="goToCheckout()">Go to Checkout</button>
       </aside>
     </section>
   </main>
 
-  <footer class="reference">
-    <div class="foot">
-      <h3>Reference</h3>
-      <div class="cols">
-        <div>
-          <h4>Genre:</h4>
-          <ul>
-            <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
-            <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
-          </ul>
-        </div>
-        <div>
-          <h4>FAQ:</h4>
-          <ul>
-            <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
-            <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
-          </ul>
-        </div>
-        <div>
-          <h4>Contact us:</h4>
-          <ul>
-            <li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li><li>- xxxxxxxxxx</li>
-            <li style="display:flex; align-items:center; gap:8px">📞 <span>000-000-0000</span></li>
-          </ul>
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="ft-ref"><h3 class="ft-title">Reference</h3></div>
+      <div class="ft-genre">
+        <div class="ft-sub">Genre:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-faq">
+        <div class="ft-sub">FAQ:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-contact">
+        <div class="ft-sub">Contact us:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+        <div class="ft-phone">
+          <img src="img/phone.svg" alt="" class="ft-phone-icon">
+          <span>000-000-0000</span>
         </div>
       </div>
-      <div class="brandline">“สโลแกน” • Power by BookStore.com</div>
+    </div>
+
+    <div class="footer-slogan">“สโลแกน”</div>
+
+    <div class="footer-bar">
+      <img src="img/logo.png" alt="Bookstore" class="ft-logo">
+      <div class="ft-power">Power by BookStore.com</div>
+      <div class="ft-socials">
+        <img src="img/youtube.svg" alt="YouTube">
+        <img src="img/facebook.svg" alt="Facebook">
+        <img src="img/instagram.svg" alt="Instagram">
+        <img src="img/mail.svg" alt="Email">
+      </div>
     </div>
   </footer>
 
-  <div class="bottombar">
-    <div class="barin">
-      <div class="brand"><span class="book">📚</span></div>
-      <div class="copy">Power by BookStore.com</div>
-      <div class="social">
-        <a href="#" aria-label="YouTube">▶️</a>
-        <a href="#" aria-label="Facebook">📘</a>
-        <a href="#" aria-label="Instagram">📷</a>
-        <a href="#" aria-label="Mail">✉️</a>
-      </div>
-    </div>
-  </div>
-
   <script>
     const apiCart   = "http://localhost:8080/api/cart";
-    const apiOrders = "http://localhost:8080/api/orders";
     const userIdRaw = localStorage.getItem("userId");
     const userId    = userIdRaw && userIdRaw !== "null" ? Number(userIdRaw) : null;
 
@@ -232,15 +244,9 @@
       document.getElementById("grandTotal").textContent = THB(subtotal + shipping - discount);
     }
 
-    function checkout() {
-      if (!confirm("Proceed to checkout?")) return;
-      fetch(`${apiOrders}/checkout/${userId}`, { method: "POST" })
-        .then(res => res.text())
-        .then(msg => {
-          alert(msg);
-          window.location.href = "checkout.html";
-        })
-        .catch(err => console.error("Error during checkout:", err));
+    // ✅ ใช้อันนี้แทนการยิง POST
+    function goToCheckout(){
+      window.location.href = "checkout.html";
     }
 
     function goHome() { window.location.href = "index.html"; }

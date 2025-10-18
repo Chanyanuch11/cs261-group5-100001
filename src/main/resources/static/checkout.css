@@ -276,6 +276,10 @@ hr{
   font-weight: 700;
 }
 
+.Order-List {
+border-bottom: 1px solid #E3DEBB;
+}
+
 .Item-Row {
   display: flex;
   justify-content: space-between;
