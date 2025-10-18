@@ -1,177 +1,235 @@
+// checkout.js — Step 1: Order, Step 2: Address, Step 3: Payment
 const API_BASE = 'http://localhost:8080';
 
+const $ = (sel, p = document) => p.querySelector(sel);
+const $$ = (sel, p = document) => Array.from(p.querySelectorAll(sel));
+const $id = (id) => document.getElementById(id);
+const THB = (n) => `฿${Number(n || 0).toFixed(2)}`;
+
 function getUserId() {
-  const id = localStorage.getItem('userId');
+  const id = Number(localStorage.getItem('userId'));
   if (!id) {
     alert('Please log in first!');
     window.location.href = 'login.html';
+    return null;
   }
   return id;
 }
-
-function setBtnLoading(btn, isLoading) {
-  if (!btn) return;
-  btn.disabled = !!isLoading;
-  btn.classList.toggle('is-loading', !!isLoading);
+function badgeKey(uid){ return `cartCount_${uid}`; }
+function updateCartBadge(uid, n){
+  const badge = $id('cartBadge');
+  if (!badge) return;
+  const val = Math.max(0, Number(n)||0);
+  badge.textContent = val > 0 ? String(val) : '';
+  badge.style.display = val > 0 ? 'inline-block' : 'none';
 }
 
-document.querySelectorAll('.Step').forEach(stepEl => {
-  const detailEl = stepEl.nextElementSibling;
-  if (detailEl && detailEl.classList.contains('Detail')) {
-    stepEl.addEventListener('click', () => {
-      detailEl.classList.toggle('active');
-      stepEl.classList.toggle('active');
+/* ---------- accordion & step gating ---------- */
+const stepEls = $$('.Step');
+const detailEls = stepEls.map(s => s.nextElementSibling);
+const state = { step1Done:false, step2Done:false };
+
+function goToStep(n){
+  stepEls.forEach((s,i)=>{
+    s.classList.toggle('active', i === n-1);
+    detailEls[i]?.classList.toggle('active', i === n-1);
+  });
+}
+function canOpen(i){
+  if (i===0) return true;                         // Step 1 always openable
+  if (i===1) return state.step1Done;              // Step 2 after Step 1
+  if (i===2) return state.step1Done && state.step2Done; // Step 3 after Step 2
+  return false;
+}
+function bindAccordion(){
+  stepEls.forEach((step, i)=>{
+    const tryOpen = () => {
+      if (!canOpen(i)) {
+        if (i===1) alert('Please confirm your order (Step 1) first.');
+        if (i===2) alert('Please complete shipping address (Step 2) first.');
+        return;
+      }
+      goToStep(i+1);
+    };
+    step.setAttribute('role','button');
+    step.setAttribute('tabindex','0');
+    step.addEventListener('click', tryOpen);
+    step.addEventListener('keydown', e=>{
+      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); tryOpen(); }
     });
-  }
-});
+  });
+}
 
-const addressForm    = document.getElementById('addressForm');
-const paymentForm    = document.getElementById('paymentForm');
-const confirmBtn     = document.getElementById('confirmBtn');
-const successMessage = document.getElementById('successMessage');
-const backHomeBtn    = document.getElementById('backHomeBtn');
+/* ---------- Step 1: Order Summary ---------- */
+const listBox   = $id('cartList');
+const subEl     = $id('subTotal');
+const shipEl    = $id('shipping');
+const discEl    = $id('discount');
+const totalEl   = $id('grandTotal');
 
-const step1Wrapper = addressForm?.closest('.Detail');
-const step1Header  = step1Wrapper?.previousElementSibling;
-const step2Header  = document.querySelectorAll('.Step')[1];
-const step2Wrapper = step2Header?.nextElementSibling;
+async function loadCartSummary(){
+  const uid = getUserId(); if (!uid) return;
+  const res = await fetch(`${API_BASE}/api/cart/${uid}`);
+  if (!res.ok) { alert(await res.text()); return; }
+  const items = await res.json();
 
-/* - STEP 1 - */
-addressForm?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const required = [
-    { id: 'fname',     label: 'First name' },
-    { id: 'lname',     label: 'Last name' },
-    { id: 'telephone', label: 'Phone number' },
-    { id: 'address1',  label: 'Address' },
-    { id: 'province',  label: 'Province' },
-    { id: 'district',  label: 'District' },
-    { id: 'postcode',  label: 'Postal code' },
-  ];
-
-  let hasError = false, msg = '';
-  required.forEach(f => {
-    const el = document.getElementById(f.id);
-    if (!el || el.value.trim() === '') {
-      hasError = true; msg += `Please fill in ${f.label}\n`;
-      el?.classList.add('input-error');
-    } else el.classList.remove('input-error');
+  listBox.innerHTML = '';
+  let subtotal = 0;
+  items.forEach(it=>{
+    const line = Number(it.price) * Number(it.quantity);
+    subtotal += line;
+    const row = document.createElement('div');
+    row.className = 'Order-Item';
+    row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 0;';
+    row.innerHTML = `
+      <div>
+        <div style="font-weight:600">${it.title}</div>
+        <div style="opacity:.7">${it.quantity} × ${THB(it.price)}</div>
+      </div>
+      <div>${THB(line)}</div>
+    `;
+    listBox.appendChild(row);
   });
 
-  const phone = document.getElementById('telephone')?.value.trim();
-  if (phone && !/^\d{9,10}$/.test(phone)) { hasError = true; msg += 'Invalid phone (9–10 digits)\n'; }
-  const postcode = document.getElementById('postcode')?.value.trim();
-  if (postcode && !/^\d{5}$/.test(postcode)) { hasError = true; msg += 'Postal code must be 5 digits\n'; }
-  if (hasError) { alert('Please check your address:\n' + msg); return; }
+  const shipping = subtotal > 0 ? 40 : 0;
+  const discount = items.length > 0 ? 80 : 0;
+  const total    = subtotal + shipping - discount;
 
-  const userId = getUserId();
-  if (!userId) return;
+  subEl.textContent   = THB(subtotal);
+  shipEl.textContent  = THB(shipping);
+  discEl.textContent  = `-${THB(discount).slice(1)}`;
+  totalEl.textContent = THB(total);
+}
+
+// Step 1 → Step 2
+$('#step1NextBtn')?.addEventListener('click', ()=>{
+  state.step1Done = true;
+  goToStep(2);
+});
+
+/* ---------- Step 2: Address (save & go next) ---------- */
+const addressForm = $id('addressForm');
+
+addressForm?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  // basic validation
+  const need = (id, label) => ($id(id)?.value.trim() ? '' : `Please fill in ${label}\n`);
+  let msg = '';
+  msg += need('fname','First name');
+  msg += need('lname','Last name');
+  msg += need('telephone','Phone number');
+  msg += need('address1','Address');
+  msg += need('province','Province');
+  msg += need('district','District');
+  msg += need('postcode','Postal code');
+
+  const phone = $id('telephone')?.value.trim();
+  if (phone && !/^\d{9,10}$/.test(phone)) msg += 'Invalid phone number (9–10 digits)\n';
+  const pc = $id('postcode')?.value.trim();
+  if (pc && !/^\d{5}$/.test(pc)) msg += 'Postal code must be 5 digits\n';
+
+  if (msg){ alert('Please check your address:\n' + msg); return; }
+
+  const uid = getUserId(); if (!uid) return;
 
   const payload = {
-    userId:    Number(userId),
-    name:      document.getElementById('fname').value.trim(),
-    surname:   document.getElementById('lname').value.trim(),
-    telephone: document.getElementById('telephone').value.trim(),
-    address1:  document.getElementById('address1').value.trim(),
-    address2:  document.getElementById('address2').value.trim(),
-    province:  document.getElementById('province').value.trim(),
-    district:  document.getElementById('district').value.trim(),
-    postcode:  document.getElementById('postcode').value.trim()
+    userId: uid,
+    name: $id('fname').value.trim(),
+    surname: $id('lname').value.trim(),
+    telephone: $id('telephone').value.trim(),
+    address1: $id('address1').value.trim(),
+    address2: $id('address2').value.trim(),
+    province: $id('province').value.trim(),
+    district: $id('district').value.trim(),
+    postcode: $id('postcode').value.trim()
   };
 
-  const submitBtn = addressForm.querySelector('.Confirm-Btn');
-  setBtnLoading(submitBtn, true);
+  const btn = $('#step2ConfirmBtn');
+  btn?.setAttribute('disabled','true');
 
-  try {
+  try{
+    // save address (optional but typical)
     const res = await fetch(`${API_BASE}/api/addresses`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
     });
     if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
-
     const saved = await res.json();
     localStorage.setItem('checkout_address_id', String(saved.id));
 
-    step1Wrapper?.classList.remove('active');
-    step1Header?.classList.remove('active');
-    step2Header?.classList.add('active');
-    step2Wrapper?.classList.add('active');
-
-  } catch (err) {
+    state.step2Done = true;
+    goToStep(3);
+  }catch(err){
     alert('Failed to save address: ' + err.message);
-  } finally {
-    setBtnLoading(submitBtn, false);
+  }finally{
+    btn?.removeAttribute('disabled');
   }
 });
 
-/* - STEP 2 (mock) - */
-confirmBtn?.addEventListener('click', async () => {
-  const userId    = getUserId();
-  const addressId = Number(localStorage.getItem('checkout_address_id'));
-  if (!userId) return;
-  if (!addressId) { alert('ยังไม่มีที่อยู่จัดส่ง โปรดกรอก Step 1 ก่อน'); return; }
+/* ---------- Step 3: Payment (place order) ---------- */
+const paymentForm = $id('paymentForm');
+const fileInput   = $id('slip');
+const fileName    = $id('file-name');
+const successMessage = $id('successMessage');
+const backHomeBtn    = $id('backHomeBtn');
 
-  try {
-    const res = await fetch(`${API_BASE}/api/orders/checkout/${userId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ addressId })
+fileInput?.addEventListener('change', ()=>{
+  fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'No file selected';
+});
+
+paymentForm?.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+
+  if (!state.step1Done) { alert('Please confirm your order (Step 1) first.'); return; }
+  if (!state.step2Done) { alert('Please complete shipping address (Step 2) first.'); return; }
+
+  const amount = $id('amount')?.value.trim();
+  const date   = $id('date')?.value.trim();
+  const time   = $id('time')?.value.trim();
+  const slip   = $id('slip')?.files.length;
+
+  let bankOK = false;
+  $$('input[name="bank"]').forEach(r => { if (r.checked) bankOK = true; });
+
+  let msg = '';
+  if (!bankOK) msg += 'Please select a bank\n';
+  if (!amount) msg += 'Please enter the amount\n';
+  if (!date)   msg += 'Please select transfer date\n';
+  if (!time)   msg += 'Please select transfer time\n';
+  if (!slip)   msg += 'Please attach the payment slip\n';
+  if (msg){ alert('Please complete all payment details:\n' + msg); return; }
+
+  const uid = getUserId(); if (!uid) return;
+  const addressId = Number(localStorage.getItem('checkout_address_id'));
+  if (!addressId) { alert('Missing shipping address.'); return; }
+
+  try{
+    // place order (backend clears DB cart)
+    const res = await fetch(`${API_BASE}/api/orders/checkout/${uid}`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ addressId })
     });
     if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
 
-    const step2 = document.querySelectorAll('.Step')[1];
-    const step2Detail = step2.nextElementSibling;
-    step2.classList.remove('active');
-    step2Detail.classList.remove('active');
+    // reset per-user cart badge
+    localStorage.setItem(badgeKey(uid), '0');
+    updateCartBadge(uid, 0);
 
-    const step3 = document.querySelectorAll('.Step')[2];
-    const step3Detail = step3.nextElementSibling;
-    step3.classList.add('active');
-    step3Detail.classList.add('active');
-
-  } catch (err) {
+    // show success
+    $$('.content, footer').forEach(el => el.style.display = 'none');
+    successMessage.style.display = 'flex';
+    addressForm?.reset();
+    paymentForm?.reset();
+  }catch(err){
     alert('Checkout failed: ' + err.message);
   }
 });
 
-/* - STEP 3 (mock) - */
-const fileInput = document.getElementById('slip');
-const fileName  = document.getElementById('file-name');
+backHomeBtn?.addEventListener('click', () => window.location.href = 'index.html');
 
-fileInput?.addEventListener('change', () => {
-  fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'ยังไม่ได้เลือกไฟล์';
-});
-
-paymentForm?.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const amount = document.getElementById('amount').value.trim();
-  const date   = document.getElementById('date').value.trim();
-  const time   = document.getElementById('time').value.trim();
-  const slip   = document.getElementById('slip').files.length;
-
-  let selectedBank = false;
-  document.querySelectorAll('input[name="bank"]').forEach(r => { if (r.checked) selectedBank = true; });
-
-  let message = '';
-  if (!selectedBank) message += 'กรุณาเลือกธนาคาร\n';
-  if (!amount)       message += 'กรุณากรอกยอดเงิน\n';
-  if (!date)         message += 'กรุณาเลือกวันที่โอน\n';
-  if (!time)         message += 'กรุณาเลือกเวลาโอน\n';
-  if (!slip)         message += 'กรุณาแนบสลิป\n';
-
-  if (message) { alert('กรุณากรอกรายละเอียดการชำระเงินให้ครบ:\n' + message); return; }
-
-  document.querySelectorAll('.content').forEach(d => d.style.display = 'none');
-  document.querySelectorAll('footer').forEach(d => d.style.display = 'none');
-  successMessage.style.display = 'flex';
-  addressForm.reset();
-  paymentForm.reset();
-});
-
-/* - Finish - */
-backHomeBtn?.addEventListener('click', () => {
-  window.location.href = 'index.html';
+/* ---------- init ---------- */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const uid = getUserId(); if (!uid) return;
+  bindAccordion();
+  goToStep(1);
+  loadCartSummary();
+  updateCartBadge(uid, Number(localStorage.getItem(badgeKey(uid)) || 0));
 });
