@@ -80,7 +80,9 @@
     <!-- ✅ Script zone -->
     <script>
         const apiBase = "http://localhost:8080/api/books";
+        const cartApi = "http://localhost:8080/api/cart";
 
+        // โหลดหนังสือทั้งหมด
         function loadBooks() {
             fetch(apiBase)
                 .then(r => r.json())
@@ -90,6 +92,7 @@
                 });
         }
 
+        // ค้นหาหนังสือ
         document.getElementById("searchForm").addEventListener("submit", function (e) {
             e.preventDefault();
             const keyword = document.getElementById("searchInput").value.trim();
@@ -104,6 +107,7 @@
                 });
         });
 
+        // แสดงหนังสือ
         function renderBooks(books) {
             const container = document.getElementById("bookList");
             container.innerHTML = "";
@@ -132,8 +136,8 @@
             });
         }
 
-        // ✅ Add to cart (update badge)
-        function addToCart(bookId) {
+        // ✅ Add to cart และอัปเดต badge ตาม backend
+        async function addToCart(bookId) {
             let userId = localStorage.getItem("userId");
             if (!userId) {
                 alert("⚠️ Please log in first!");
@@ -144,25 +148,42 @@
             if (!bookId) return alert("❌ Missing book ID");
 
             const cartItem = { userId, book: { id: bookId }, quantity: 1 };
-            fetch("http://localhost:8080/api/cart/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(cartItem)
-            })
-                .then(async res => {
-                    const text = await res.text();
-                    if (res.ok) {
-                        const current = getCartCount(userId);
-                        setCartCount(userId, current + 1);
-                        alert("✅ Book added to cart!");
-                    } else {
-                        alert("❌ Failed to add to cart — check console for details");
-                    }
-                })
-                .catch(() => alert("⚠️ Could not reach backend (is Spring Boot running?)"));
+            try {
+                const res = await fetch(`${cartApi}/add`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cartItem)
+                });
+                const text = await res.text();
+                if (res.ok) {
+                    await fetchCartCount(userId); // ✅ ดึงข้อมูลจริงจาก backend
+                    alert("✅ Book added to cart!");
+                } else {
+                    console.error("❌ Backend error:", text);
+                    alert("❌ Failed to add to cart");
+                }
+            } catch (err) {
+                console.error("⚠️ Network error:", err);
+                alert("⚠️ Could not reach backend");
+            }
         }
 
-        // ✅ Badge functions
+        // ✅ ดึงจำนวนสินค้าในตะกร้าจริงจาก backend
+        async function fetchCartCount(userId) {
+            try {
+                const res = await fetch(`${cartApi}/${userId}`);
+                if (!res.ok) throw new Error("Fetch failed");
+                const items = await res.json();
+                const count = Array.isArray(items)
+                    ? items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+                    : 0;
+                setCartCount(userId, count);
+            } catch (err) {
+                console.error("⚠️ Failed to fetch cart count:", err);
+            }
+        }
+
+        // === badge helpers ===
         function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
         function getCartCount(userId) { const v = localStorage.getItem(badgeKey(userId)); return v ? Number(v) : 0; }
         function setCartCount(userId, n) { localStorage.setItem(badgeKey(userId), String(Math.max(0, n | 0))); renderCartBadge(userId); }
@@ -173,12 +194,18 @@
             el.textContent = n;
             el.classList.toggle('is-zero', n <= 0);
         }
-        document.addEventListener('DOMContentLoaded', () => {
+
+        // ✅ โหลดข้อมูลจริงเมื่อหน้าเริ่ม
+        document.addEventListener('DOMContentLoaded', async () => {
             const uid = localStorage.getItem("userId");
-            renderCartBadge(uid);
+            if (uid) {
+                await fetchCartCount(uid); // ดึงข้อมูลจาก backend
+            } else {
+                renderCartBadge(uid);
+            }
         });
 
-        // ✅ Slider auto-change
+        // ✅ Auto slide
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
             const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
