@@ -20,13 +20,13 @@
             <form id="searchForm" class="search-bar">
                 <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
                 <button type="submit" class="search-image-btn" aria-label="Search">
-                    <img src="img/search.png" alt="Search">
+                    <img src="img/search.svg" alt="Search">
                 </button>
             </form>
 
             <div class="header-icons">
                 <a href="cart.html" class="cart" aria-label="Open cart">
-                    <img src="img/cart-icon.png" alt="">
+                    <img src="img/cart-icon.svg" alt="">
                     <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
                 </a>
                 <a href="login.html" class="icon" aria-label="Login">
@@ -77,7 +77,7 @@
         <div id="bookList" class="books-grid">Loading...</div>
     </section>
 
-    <!-- ✅ Script zone -->
+    <!--  Script zone -->
     <script>
         const apiBase = "http://localhost:8080/api/books";
         const cartApi = "http://localhost:8080/api/cart";
@@ -136,7 +136,7 @@
             });
         }
 
-        // ✅ Add to cart และอัปเดต badge ตาม backend
+        // Add to cart และอัปเดต badge ตาม backend
         async function addToCart(bookId) {
             let userId = localStorage.getItem("userId");
             if (!userId) {
@@ -168,7 +168,7 @@
             }
         }
 
-        // ✅ ดึงจำนวนสินค้าในตะกร้าจริงจาก backend
+        // ดึงจำนวนสินค้าในตะกร้าจริงจาก backend
         async function fetchCartCount(userId) {
             try {
                 const res = await fetch(`${cartApi}/${userId}`);
@@ -195,7 +195,7 @@
             el.classList.toggle('is-zero', n <= 0);
         }
 
-        // ✅ โหลดข้อมูลจริงเมื่อหน้าเริ่ม
+        // โหลดข้อมูลจริงเมื่อหน้าเริ่ม
         document.addEventListener('DOMContentLoaded', async () => {
             const uid = localStorage.getItem("userId");
             if (uid) {
@@ -205,7 +205,7 @@
             }
         });
 
-        // ✅ Auto slide
+        // Auto slide
         document.addEventListener('DOMContentLoaded', () => {
             const slider = document.getElementById('slider');
             const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
