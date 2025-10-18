@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ShippingAddressRepository extends JpaRepository<ShippingAddress, Long> {
     List<ShippingAddress> findByUserId(Long userId);
+    
+    
 }
