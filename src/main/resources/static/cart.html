@@ -6,29 +6,21 @@
   <link rel="stylesheet" href="stylesheet.css" />
   <link rel="stylesheet" href="./cart.css" />
   <title>🛒 My Cart</title>
-  <!-- (ถ้าใช้ไอคอนแว่นจาก FA ให้เปิดบรรทัดนี้)
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  -->
 </head>
 <body>
-
-  <!-- Header -->
   <header class="sitebar">
     <div class="row">
       <div class="header-container" style="display:flex;align-items:center;gap:12px;width:100%;">
         <div class="logo"><img src="img/logo.png" alt="Bookstore Logo" /></div>
-
         <div class="search-bar" style="flex:1;display:flex;gap:8px;align-items:center;">
           <input type="text" placeholder="Search" aria-label="Search books" />
           <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
-
         <div class="header-cart">
           <a href="cart.html" class="cart" aria-label="Open cart">
             <img src="img/cart-icon.png" alt="" />
           </a>
         </div>
-
         <div class="header-profile">
           <a href="login.html" class="icon" aria-label="Login">
             <img src="img/BlankPF.png" alt="" />
@@ -38,22 +30,18 @@
     </div>
   </header>
 
-  <!-- Main -->
   <main class="container">
     <a class="crumb" href="#" onclick="goHome()">← Continue Shopping</a>
     <h2 class="title">My Cart</h2>
 
     <section class="grid">
-      <!-- ซ้าย: รายการหนังสือ -->
       <div>
         <div id="emptyState" style="display:none; color:var(--muted); padding:12px">
           Your cart is empty 🕳️
         </div>
 
-        <!-- ลิสต์จริง -->
         <div class="itemlist" id="cartList"></div>
 
-        <!-- ช่องรอ (skeleton) -->
         <div id="placeholders">
           <div class="item skeleton">
             <div class="skel-thumb"></div>
@@ -80,7 +68,6 @@
           </div>
         </div>
 
-        <!-- เทมเพลตการ์ด 1 ใบ (รอเติมข้อมูล) -->
         <template id="cart-item-tpl">
           <div class="item">
             <img class="thumb" src="" alt="book" />
@@ -101,7 +88,6 @@
         </template>
       </div>
 
-      <!-- ขวา: สรุปออเดอร์ -->
       <aside class="summary">
         <h3>Order Summary</h3>
         <div class="rows">
@@ -113,29 +99,8 @@
         <button class="checkout" onclick="checkout()">Go to Checkout</button>
       </aside>
     </section>
-
-    <!-- เก็บ UI เก่าไว้ (ซ่อน) เพื่อให้ JS เดิมใช้งาน/ทดสอบได้ -->
-    <div aria-hidden="true" style="display:none">
-      <h1>🛒 My Shopping Cart</h1>
-      <div id="userInfo"></div>
-      <table id="cartTable">
-        <thead>
-          <tr>
-            <th>Book Title</th><th>Author</th><th>Price</th>
-            <th>Quantity</th><th>Subtotal</th><th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="cartBody"><tr><td colspan="6">Loading cart...</td></tr></tbody>
-      </table>
-
-      <p id="total">Total: $0.00</p>
-
-      <button class="back-btn" onclick="goHome()">← Continue Shopping</button>
-      <button class="checkout" onclick="checkout()">✅ Checkout</button>
-    </div>
   </main>
 
-  <!-- Reference -->
   <footer class="reference">
     <div class="foot">
       <h3>Reference</h3>
@@ -166,7 +131,6 @@
     </div>
   </footer>
 
-  <!-- Bottom Bar -->
   <div class="bottombar">
     <div class="barin">
       <div class="brand"><span class="book">📚</span></div>
@@ -180,84 +144,108 @@
     </div>
   </div>
 
-    <script>
-        const userId = localStorage.getItem("userId");
-        const username = localStorage.getItem("username");
-        const apiCart = "http://localhost:8080/api/cart";
-        const apiOrders = "http://localhost:8080/api/orders";
+  <script>
+    const apiCart   = "http://localhost:8080/api/cart";
+    const apiOrders = "http://localhost:8080/api/orders";
+    const userIdRaw = localStorage.getItem("userId");
+    const userId    = userIdRaw && userIdRaw !== "null" ? Number(userIdRaw) : null;
 
-       
+    if (!userId || !Number.isFinite(userId)) {
+      alert("Please log in first.");
+      window.location.href = "login.html";
+    }
 
-        // ✅ Load cart items
-        function loadCart() {
-            fetch(`${apiCart}/${userId}`)
-                .then(res => res.json())
-                .then(data => renderCart(data))
-                .catch(err => console.error("Error loading cart:", err));
-        }
+    const THB = n => `฿${n.toFixed(0)}`;
 
-        // ✅ Render cart table
-        function renderCart(items) {
-            const body = document.getElementById("cartBody");
-            body.innerHTML = "";
-            let total = 0;
+    function loadCart() {
+      fetch(`${apiCart}/${userId}`)
+        .then(res => res.json())
+        .then(items => renderCart(items))
+        .catch(err => console.error("Error loading cart:", err));
+    }
 
-            if (items.length === 0) {
-                body.innerHTML = `<tr><td colspan="6">Your cart is empty 🕳️</td></tr>`;
-                document.getElementById("total").innerText = "Total: $0.00";
-                return;
-            }
+    function renderCart(items) {
+      const list = document.getElementById("cartList");
+      const emptyState = document.getElementById("emptyState");
+      const placeholders = document.getElementById("placeholders");
+      const tpl = document.getElementById("cart-item-tpl");
 
-            items.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
+      list.innerHTML = "";
+      placeholders.style.display = "none";
 
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${item.title}</td>
-                    <td>${item.author}</td>
-                    <td>$${item.price.toFixed(2)}</td>
-                    <td>${item.quantity}</td>
-                    <td>$${subtotal.toFixed(2)}</td>
-                    <td><button class="remove-btn" onclick="removeItem(${item.id})">Remove</button></td>
-                `;
-                body.appendChild(tr);
-            });
+      if (!items || items.length === 0) {
+        emptyState.style.display = "block";
+        updateSummary(0, 0, 0);
+        return;
+      }
+      emptyState.style.display = "none";
 
-            document.getElementById("total").innerText = `Total: $${total.toFixed(2)}`;
-        }
+      let subtotal = 0;
+      items.forEach(it => {
+        subtotal += it.price * it.quantity;
+        const $ = tpl.content.cloneNode(true);
+        $.querySelector(".thumb").src = "img/book-placeholder.png";
+        $.querySelector(".title").textContent = it.title;
+        $.querySelector(".author").textContent = it.author || "";
+        $.querySelector(".price").textContent = THB(it.price);
+        $.querySelector(".qty-num").textContent = it.quantity;
 
-        // ✅ Remove item
-        function removeItem(id) {
-            if (!confirm("Remove this item from cart?")) return;
-            fetch(`${apiCart}/remove/${id}`, { method: "DELETE" })
-                .then(res => {
-                    if (res.ok) loadCart();
-                    else alert("❌ Failed to remove item");
-                })
-                .catch(err => console.error("Error removing item:", err));
-        }
+        $.querySelector(".remove").addEventListener("click", () => {
+          if (!confirm("Remove this item from cart?")) return;
+          fetch(`${apiCart}/remove/${it.id}`, { method: "DELETE" })
+            .then(r => r.ok ? loadCart() : alert("Failed to remove item."))
+            .catch(console.error);
+        });
 
-        // ✅ Checkout
-        function checkout() {
-            if (!confirm("Proceed to checkout?")) return;
+        $.querySelector(".btn-inc").addEventListener("click", () => {
+          fetch(`${apiCart}/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, book: { id: it.bookId }, quantity: 1 })
+          }).then(() => loadCart());
+        });
 
-            fetch(`${apiOrders}/checkout/${userId}`, { method: "POST" })
-                .then(res => res.text())
-                .then(msg => {
-                    alert(msg);
-                    window.location.href = "checkout.html";
-                })
-                .catch(err => console.error("Error during checkout:", err));
-        }
+        $.querySelector(".btn-dec").addEventListener("click", () => {
+          if (it.quantity <= 1) {
+            fetch(`${apiCart}/remove/${it.id}`, { method: "DELETE" }).then(() => loadCart());
+          } else {
+            fetch(`${apiCart}/add`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId, book: { id: it.bookId }, quantity: -1 })
+            }).then(() => loadCart());
+          }
+        });
 
-        // ✅ Back to Home
-        function goHome() {
-            window.location.href = "index.html";
-        }
+        list.appendChild($);
+      });
 
-        // 🚀 Load cart on page load
-        loadCart();
-    </script>
+      const shipping = subtotal > 0 ? 40 : 0;
+      const discount = 0;
+      updateSummary(subtotal, shipping, discount);
+    }
+
+    function updateSummary(subtotal, shipping, discount) {
+      document.getElementById("subtotal").textContent = THB(subtotal);
+      document.getElementById("shipping").textContent = THB(shipping);
+      document.getElementById("discount").textContent = `- ${THB(discount)}`;
+      document.getElementById("grandTotal").textContent = THB(subtotal + shipping - discount);
+    }
+
+    function checkout() {
+      if (!confirm("Proceed to checkout?")) return;
+      fetch(`${apiOrders}/checkout/${userId}`, { method: "POST" })
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+          window.location.href = "checkout.html";
+        })
+        .catch(err => console.error("Error during checkout:", err));
+    }
+
+    function goHome() { window.location.href = "index.html"; }
+
+    loadCart();
+  </script>
 </body>
 </html>
