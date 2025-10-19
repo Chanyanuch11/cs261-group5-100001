@@ -92,8 +92,12 @@ async function loadCartSummary(){
   });
 
   const shipping = subtotal > 0 ? 40 : 0;
-  const discount = items.length > 0 ? 80 : 0;
-  const total    = subtotal + shipping - discount;
+
+  // ✅ Use the same rule as cart page
+  const discount = subtotal >= 300 ? 40 : 0;
+
+  const total = subtotal + shipping - discount;
+
 
   subEl.textContent   = THB(subtotal);
   shipEl.textContent  = THB(shipping);
@@ -176,52 +180,68 @@ fileInput?.addEventListener('change', ()=>{
   fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'No file selected';
 });
 
-paymentForm?.addEventListener('submit', async (e)=>{
+paymentForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  if (!state.step1Done) { alert('Please confirm your order (Step 1) first.'); return; }
-  if (!state.step2Done) { alert('Please complete shipping address (Step 2) first.'); return; }
-
-  const amount = $id('amount')?.value.trim();
-  const date   = $id('date')?.value.trim();
-  const time   = $id('time')?.value.trim();
-  const slip   = $id('slip')?.files.length;
-
-  let bankOK = false;
-  $$('input[name="bank"]').forEach(r => { if (r.checked) bankOK = true; });
-
-  let msg = '';
-  if (!bankOK) msg += 'Please select a bank\n';
-  if (!amount) msg += 'Please enter the amount\n';
-  if (!date)   msg += 'Please select transfer date\n';
-  if (!time)   msg += 'Please select transfer time\n';
-  if (!slip)   msg += 'Please attach the payment slip\n';
-  if (msg){ alert('Please complete all payment details:\n' + msg); return; }
+  if (!state.step1Done) return alert('Please confirm your order (Step 1) first.');
+  if (!state.step2Done) return alert('Please complete shipping address (Step 2) first.');
 
   const uid = getUserId(); if (!uid) return;
   const addressId = Number(localStorage.getItem('checkout_address_id'));
-  if (!addressId) { alert('Missing shipping address.'); return; }
+  if (!addressId) return alert('Missing shipping address.');
 
-  try{
-    // place order (backend clears DB cart)
-    const res = await fetch(`${API_BASE}/api/orders/checkout/${uid}`, {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ addressId })
+  const amount = $id('amount').value.trim();
+  const date   = $id('date').value.trim();
+  const time   = $id('time').value.trim();
+  const file   = $id('slip').files[0];
+  const bankEl = $$('input[name="bank"]').find(r => r.checked);
+  if (!bankEl) return alert('Please select a bank.');
+  const bank = bankEl.value.toUpperCase();
+
+  if (!amount || !date || !time || !file)
+    return alert('Please complete all payment details.');
+
+  try {
+    // ✅ 1. First make sure an order exists
+    const orderRes = await fetch(`${API_BASE}/api/orders/checkout/${uid}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ addressId })
     });
-    if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
+    if (!orderRes.ok) throw new Error(await orderRes.text());
+    const order = await orderRes.json();
 
-    // reset per-user cart badge
+    // ✅ 2. Upload payment slip (multipart/form-data)
+    const formData = new FormData();
+    formData.append('orderId', order.id);
+    formData.append('bankName', bank);
+    formData.append('accountNumber', '1234567890'); // can make dynamic later
+    formData.append('amount', amount);
+    formData.append('transferDate', date);
+    formData.append('transferTime', time);
+    formData.append('file', file);
+
+    const payRes = await fetch(`${API_BASE}/api/payments/upload/summary`, {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!payRes.ok) throw new Error(await payRes.text());
+    const result = await payRes.json();
+
+    console.log('✅ Payment success:', result);
+
+    // ✅ Reset cart badge and show thank-you
     localStorage.setItem(badgeKey(uid), '0');
     updateCartBadge(uid, 0);
-
-    // show success
     $$('.content, footer').forEach(el => el.style.display = 'none');
     successMessage.style.display = 'flex';
-    addressForm?.reset();
-    paymentForm?.reset();
-  }catch(err){
-    alert('Checkout failed: ' + err.message);
+
+  } catch (err) {
+    alert('Payment failed: ' + err.message);
   }
 });
+
 
 backHomeBtn?.addEventListener('click', () => window.location.href = 'index.html');
 

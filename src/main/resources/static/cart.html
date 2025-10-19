@@ -232,9 +232,13 @@
         list.appendChild($);
       });
 
-      const shipping = subtotal > 0 ? 40 : 0;
-      const discount = 0;
-      updateSummary(subtotal, shipping, discount);
+	  const shipping = subtotal > 0 ? 40 : 0;
+
+	  // ✅ Apply discount if subtotal ≥ 300
+	  const discount = subtotal >= 300 ? 40 : 0;
+
+	  updateSummary(subtotal, shipping, discount);
+
     }
 
     function updateSummary(subtotal, shipping, discount) {

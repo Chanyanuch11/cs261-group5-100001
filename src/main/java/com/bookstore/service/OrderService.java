@@ -17,19 +17,25 @@ public class OrderService {
         this.cartRepo = cartRepo;
     }
 
+    // ✅ Create order from cart
     @Transactional
-    public Order confirmOrder(Long userId, double shippingFee, double discount) {
+    public Order confirmOrder(Long userId) {
         List<CartItem> cartItems = cartRepo.findByUserId(userId);
         if (cartItems.isEmpty()) {
             throw new IllegalStateException("Cart is empty");
         }
 
+        // ✅ Calculate subtotal
         double subTotal = cartItems.stream()
                 .mapToDouble(ci -> ci.getBook().getPrice() * ci.getQuantity())
                 .sum();
 
+        // ✅ Automatically compute shipping + discount
+        double shippingFee = subTotal > 0 ? 40 : 0;
+        double discount = subTotal >= 300 ? 40 : 0;
         double total = subTotal + shippingFee - discount;
 
+        // ✅ Build and save order
         Order order = new Order();
         order.setUserId(userId);
         order.setSubTotal(subTotal);
@@ -43,11 +49,22 @@ public class OrderService {
             oi.setOrder(order);
             oi.setBook(ci.getBook());
             oi.setQuantity(ci.getQuantity());
+            oi.setPrice(ci.getBook().getPrice()); // ✅ include price
             order.getItems().add(oi);
         }
 
         Order saved = orderRepo.save(order);
-        cartRepo.deleteByUserId(userId); // เคลียร์ตะกร้า
+        cartRepo.deleteByUserId(userId); // ✅ Clear cart
         return saved;
+    }
+
+    // ✅ Update order (for address or status updates)
+    public Order updateOrder(Order order) {
+        return orderRepo.save(order);
+    }
+
+    // ✅ Get all orders for one user
+    public List<Order> getOrdersForUser(Long userId) {
+        return orderRepo.findByUserId(userId);
     }
 }
