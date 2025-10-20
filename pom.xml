@@ -13,7 +13,7 @@
 	<groupId>com.bookstore</groupId>
 	<artifactId>bookstore</artifactId>
 	<version>0.0.1-Bookstore</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>Bookstore</name>
 	<description>Bookstore Project Sprint 1</description>
 	<url/>
