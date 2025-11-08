@@ -148,13 +148,12 @@ body {
 }
 
 /* 3 คอลัมน์แนวเดียวกัน */
-/* ทำ grid 2 แถว: บรรทัดบน = Reference, บรรทัดล่าง = 3 คอลัมน์ */
 .footer-top {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 12px;
+  padding: 40px 60px 12px; 
   display: grid;
-  grid-template-columns: 1.1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "ref ref ref"
     "genre faq contact";
@@ -163,33 +162,34 @@ body {
   align-items: start;
 }
 
-.ft-ref {
-  grid-area: ref;
-}
-
 .ft-genre {
   grid-area: genre;
+  justify-self: start;
 }
 
 .ft-faq {
   grid-area: faq;
+  justify-self: center;
+  
 }
 
 .ft-contact {
   grid-area: contact;
+  justify-self: end;
+  
 }
 
-/* สไตล์หัวข้อ/รายการเดิม */
 .ft-title {
   font-family: "Libre Baskerville", serif;
-  font-size: 26px;
+  font-size: 36px;
   margin: 0;
 }
 
 .ft-sub {
   font-family: "Libre Baskerville", serif;
-  font-size: 18px;
+  font-size: 24px;
   margin: 0 0 8px;
+  font-weight: bold;
 }
 
 .ft-list {
@@ -200,7 +200,7 @@ body {
 
 .ft-list li {
   margin: 4px 0;
-  font-size: 16px;
+  font-size: 20px;
 }
 
 .ft-phone {

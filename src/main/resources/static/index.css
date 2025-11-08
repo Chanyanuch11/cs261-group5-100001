@@ -194,13 +194,14 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 100px;
+    margin-bottom:20px;
 }
 
 .books-header h2 {
     font-size: 36px;
     font-family: "Libre Baskerville", serif;
     color: #92866E;
+
 }
 
 /* กริดการ์ด */
@@ -329,4 +330,20 @@ body {
 
 .cart-badge.is-zero {
     display: none;
+}
+
+
+
+
+.view-all-link {
+    display: block;
+    font-family: 'Libre Baskerville', serif;
+    font-weight: bold;
+    font-size: 24px;
+    color: #92866E;
+    text-decoration: none;
+    text-align: right;
+    margin-right: -80px;
+    margin-top: -110;
+    transition: color 0.3s ease;
 }
