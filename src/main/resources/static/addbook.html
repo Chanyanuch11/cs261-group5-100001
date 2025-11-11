@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="addbook.css" />
+    <link rel="stylesheet" href="stylesheet.css" />
+</head>
+<body>
+    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile"> 
+            <img src="\cs261-group5-100001\src\main\resources\static\img\BlankPF.png" alt="Profile">
+            <p>admin</p> 
+        </div>
+
+        <hr>
+        
+        <a href="booklist.html">Book List</a>
+        <a>Add New Book</a>
+        <a href="#">Order List</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>เพิ่มรายการหนังสือ</h1>
+        <div class="form-box">
+            <form class="form" action="/books/add" method="post">
+                <div class="top-row">
+                    <!-- รูป -->
+                    <div class="cover-wrapper">
+                        <input type="file" name="cover" id="coverInput" accept="image/*" style="display:none;">
+                        <div id="coverPlaceholder" class="cover-placeholder"></div>
+                        <img id="coverPreview" src="" alt="">
+                        <button type="button" id="insertPhotoBtn">Insert Photo</button>
+                    </div>
+
+                    <!-- ฟิลด์ชื่อ ผู้เขียน ราคา -->
+                    <div class="fields-section">
+                        <label>ชื่อ* <input type="text" name="title" required></label>
+                        <label>ผู้เขียน* <input type="text" name="author" required></label>
+                        <label>ราคา* <input type="number" name="price" step="0.01" required></label>
+                    </div>
+                </div>
+
+                <!-- ฟิลด์รายละเอียด + หมวดหมู่ อยู่ด้านล่าง -->
+                <div class="bottom-row">
+                    <label>รายละเอียดหนังสือ* <textarea name="description" rows="4" required></textarea></label>
+                    <label>หมวดหมู่*
+                        <select name="category" required>
+                            <option value="">-- Select category --</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Action">Action</option>
+                            <option value="History">History</option>
+                            <option value="Science fiction">Science fiction</option>
+                            <option value="Classic">Classic</option>
+                            <option value="Dystopian">Dystopian</option>
+                            <option value="Philosophy">Philosophy</option>
+                            <option value="Self-Help">Self-Help</option>
+                            <option value="Self-Improvement">Self-Improvement</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Biography">Biography</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="button-row"><button type="submit">Add</button></div>        
+                </div> 
+                   
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+const insertPhotoBtn = document.getElementById('insertPhotoBtn');
+const coverInput = document.getElementById('coverInput');
+const coverPreview = document.getElementById('coverPreview');
+
+// กดปุ่มเปิด dialog
+insertPhotoBtn.addEventListener('click', () => coverInput.click());
+
+coverInput.addEventListener('change', function() {
+    const file = this.files[0];
+    if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+            coverPreview.src = e.target.result;
+            coverPreview.style.display = 'block'; // แสดง img
+        }
+        reader.readAsDataURL(file);
+    } else {
+        coverPreview.src = '';
+        coverPreview.style.display = 'none'; // ซ่อน img ถ้าไม่เลือกไฟล์
+    }
+});
+
+
+</script>
+</html>

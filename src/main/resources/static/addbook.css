@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    color: #494337;
+    box-sizing: border-box;
+    font-family: "Libre Baskerville", "Noto Sans Thai", serif;
+}
+
+/* Container หลัก */
+.container {
+    display: flex;
+    min-height: 100vh; 
+}
+
+/* Sidebar */
+.sidebar {
+    width: 291px;
+    background-color: #F6F0BE;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px 90px;
+}
+
+.top-row {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+}
+
+
+/* กล่องฟอร์ม */
+.form-box {
+    background-color: #fff;
+    border-radius: 10px;
+    min-width: 964px;
+}
+
+/* ฟอร์มในกล่อง */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form label {
+    flex-direction: row;
+    font-size: 36px;
+    color: #6D6553;
+}
+
+.form input {
+    padding: 10px;
+    border: 1px solid #6D6553;
+    border-radius: 4px;
+}
+
+.form-container {
+    display: flex;
+    gap: 38px;
+    align-items: flex-start;
+    margin-top: 20px;
+}
+
+.cover-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#coverInput{
+    display:none;
+}
+
+.cover-placeholder {
+    width: 181px;
+    height: 218px;
+    border: 2px dashed #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+
+#coverPreview {
+    display: none;
+    width: 181px;
+    height: 218px;
+    object-fit: cover;
+    border-radius: 5px;
+    position: absolute;
+}
+
+
+#insertPhotoBtn {
+    padding: 8px 5px;
+    width: 170px;
+    height: 47px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #92866E;
+    background-color: #FFFEFA;
+    border: 1px solid #B6A88A;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.fields-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    gap: 15px;
+}
+
+.fields-section label {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fields-section input {
+    width: 100%;
+    width: 625px;
+    height: 47px;
+}
+
+.info-fields {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* เริ่มตรงด้านบน */
+    gap: 10px;
+    flex: 1;
+}
+
+.bottom-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+textarea{
+    width: 100%;
+    height: 140px;
+    border: 1px solid #6D6553;
+    border-radius: 4px;
+}
+
+.bottom-row select{
+    width: 232px;
+    height: 47px;
+    border: 1px solid #6D6553;
+    border-radius: 4px;
+}
+
+button {
+    padding: 10 20px;
+    background-color: #B6A88A;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4d473b;
+}
+
