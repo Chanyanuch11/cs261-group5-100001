@@ -1,106 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="addbook.css" />
-    <link rel="stylesheet" href="stylesheet.css" />
-</head>
-<body>
-    <div class="container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="profile"> 
-            <img src="\cs261-group5-100001\src\main\resources\static\img\BlankPF.png" alt="Profile">
-            <p>admin</p> 
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Book Store</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="addbook.css" />
+        <link rel="stylesheet" href="stylesheet.css" />
+    </head>
+    <body>
+        <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile"> 
+                <img src="\img\BlankPF.png" alt="Profile">
+                <p>admin</p> 
+            </div>
+
+            <hr>
+            
+            <nav>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                <a href="booklist.html" class="nav-link">Book List</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link active" >Add New Book</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" href="#">Order List</a>
+                </li>
+            </ul>
+            </nav>
+
+            <button>Logout</button>
         </div>
 
-        <hr>
-        
-        <a href="booklist.html">Book List</a>
-        <a>Add New Book</a>
-        <a href="#">Order List</a>
-    </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>เพิ่มรายการหนังสือ</h1>
+            <div class="form-box">
+                <form id="bookForm" class="form" action="/api/books/books/add" method="post" enctype="multipart/form-data">   
+                    <div class="top-row">
+                        <!-- รูป -->
+                        <div class="cover-wrapper">
+                            <input type="file" name="cover" id="coverInput" accept="image/*" required>
+                            <img id="coverPreview" src="" alt="">
+                            <div id="coverPlaceholder" class="cover-placeholder"></div>
+                            <button type="button" id="insertPhotoBtn">Insert Photo</button>
+                        </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <h1>เพิ่มรายการหนังสือ</h1>
-        <div class="form-box">
-            <form class="form" action="/books/add" method="post">
-                <div class="top-row">
-                    <!-- รูป -->
-                    <div class="cover-wrapper">
-                        <input type="file" name="cover" id="coverInput" accept="image/*" style="display:none;">
-                        <div id="coverPlaceholder" class="cover-placeholder"></div>
-                        <img id="coverPreview" src="" alt="">
-                        <button type="button" id="insertPhotoBtn">Insert Photo</button>
+                        <!-- ฟิลด์ชื่อ ผู้เขียน ราคา -->
+                        <div class="fields-section">
+                            <label>ชื่อหนังสือ* </label><input type="text" name="title" required>
+                            <label>ผู้เขียน* </label><input type="text" name="author" required>
+                            <div class="fields-wrapper">
+                                <div class="field-group">
+                                    <label>ราคา*</label> <input type="number" name="price" step="0.01" required>
+                                </div>
+                                <div class="field-group">
+                                    <label>หมวดหมู่*</label>
+                                        <select name="category" required>
+                                            <option value="">- เลือกหมวดหมู่ -</option>
+                                            <option value="Romance">Romance</option>
+                                            <option value="Fantasy">Fantasy</option>
+                                            <option value="Drama">Drama</option>
+                                            <option value="Action">Action</option>
+                                            <option value="History">History</option>
+                                            <option value="Science fiction">Science fiction</option>
+                                            <option value="Classic">Classic</option>
+                                            <option value="Dystopian">Dystopian</option>
+                                            <option value="Philosophy">Philosophy</option>
+                                            <option value="Self-Help">Self-Help</option>
+                                            <option value="Self-Improvement">Self-Improvement</option>
+                                            <option value="Fiction">Fiction</option>
+                                            <option value="Biography">Biography</option>
+                                        </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        
+                        
                     </div>
 
-                    <!-- ฟิลด์ชื่อ ผู้เขียน ราคา -->
-                    <div class="fields-section">
-                        <label>ชื่อ* <input type="text" name="title" required></label>
-                        <label>ผู้เขียน* <input type="text" name="author" required></label>
-                        <label>ราคา* <input type="number" name="price" step="0.01" required></label>
+                    <!-- ฟิลด์รายละเอียด + หมวดหมู่ อยู่ด้านล่าง -->
+                    <div class="bottom-row">
+                        <label>รายละเอียดหนังสือ* </label><textarea name="description" rows="4" required></textarea>
+                        
                     </div>
-                </div>
-
-                <!-- ฟิลด์รายละเอียด + หมวดหมู่ อยู่ด้านล่าง -->
-                <div class="bottom-row">
-                    <label>รายละเอียดหนังสือ* <textarea name="description" rows="4" required></textarea></label>
-                    <label>หมวดหมู่*
-                        <select name="category" required>
-                            <option value="">-- Select category --</option>
-                            <option value="Romance">Romance</option>
-                            <option value="Fantasy">Fantasy</option>
-                            <option value="Drama">Drama</option>
-                            <option value="Action">Action</option>
-                            <option value="History">History</option>
-                            <option value="Science fiction">Science fiction</option>
-                            <option value="Classic">Classic</option>
-                            <option value="Dystopian">Dystopian</option>
-                            <option value="Philosophy">Philosophy</option>
-                            <option value="Self-Help">Self-Help</option>
-                            <option value="Self-Improvement">Self-Improvement</option>
-                            <option value="Fiction">Fiction</option>
-                            <option value="Biography">Biography</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="button-row"><button type="submit">Add</button></div>        
-                </div> 
-                   
-            </form>
+                    <div class="button-row"><button type="submit">Add</button></div>        
+                    </div> 
+                    
+                </form>
+            </div>
         </div>
     </div>
-</div>
-</body>
+    </body>
 
-<script>
-const insertPhotoBtn = document.getElementById('insertPhotoBtn');
-const coverInput = document.getElementById('coverInput');
-const coverPreview = document.getElementById('coverPreview');
+    <script>
+    const form = document.getElementById("bookForm");
 
-// กดปุ่มเปิด dialog
-insertPhotoBtn.addEventListener('click', () => coverInput.click());
+    form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-coverInput.addEventListener('change', function() {
-    const file = this.files[0];
-    if(file){
-        const reader = new FileReader();
-        reader.onload = function(e){
-            coverPreview.src = e.target.result;
-            coverPreview.style.display = 'block'; // แสดง img
+    const book = {
+        title: form.title.value,
+        author: form.author.value,
+        price: form.price.value,
+        description: form.description.value,
+        category: form.category.value
+    };
+
+    const formData = new FormData();
+    formData.append("book", new Blob([JSON.stringify(book)], { type: "application/json" }));
+    formData.append("cover", form.cover.files[0]);
+
+    const res = await fetch("/api/books/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    if (res.ok) alert("เพิ่มหนังสือพร้อมรูปเรียบร้อย!");
+    });
+
+    const insertPhotoBtn = document.getElementById('insertPhotoBtn');
+    const coverInput = document.getElementById('coverInput');
+    const coverPreview = document.getElementById('coverPreview');
+
+    // กดปุ่มเปิด dialog
+    insertPhotoBtn.addEventListener('click', () => coverInput.click());
+
+    coverInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if(file){
+            const reader = new FileReader();
+            reader.onload = function(e){
+                coverPreview.src = e.target.result;
+                coverPreview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        } else {
+            coverPreview.src = '';
+            coverPreview.style.display = 'none';
         }
-        reader.readAsDataURL(file);
-    } else {
-        coverPreview.src = '';
-        coverPreview.style.display = 'none'; // ซ่อน img ถ้าไม่เลือกไฟล์
-    }
-});
+    });
 
 
-</script>
-</html>
+    </script>
+    </html>
