@@ -42,18 +42,18 @@
         <div class="books-layout">
     
             <!-- 📌 Filter Sidebar (ซ้าย) -->
-            <aside class="filter-sidebar">
-                <h3>Filter</h3>
-                <ul>
-                    <li><input type="checkbox"> Thriller</li>
-                    <li><input type="checkbox"> Fantasy</li>
-                    <li><input type="checkbox"> Romance</li>
-                    <li><input type="checkbox"> Horror</li>
-                    <li><input type="checkbox"> Sci-Fi</li>
-                    <li><input type="checkbox"> Comic</li>
-                    <li><input type="checkbox"> Self - Help</li>
-                </ul>
-            </aside>
+    <aside class="filter-sidebar">
+        <h3>Filter</h3>
+        <ul>
+            <li><input type="checkbox" class="filter-checkbox" value="Thriller"> Thriller</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Fantasy"> Fantasy</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Romance"> Romance</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Horror"> Horror</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Sci-Fi"> Sci-Fi</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Comic"> Comic</li>
+            <li><input type="checkbox" class="filter-checkbox" value="Self-Help"> Self - Help</li>
+        </ul>
+    </aside>
     
             <!-- 📚 Book Grid (ขวา) -->
             <div id="bookList" class="books-grid">Loading...</div>
@@ -192,6 +192,35 @@
 
         
         loadBooks();
+
+        // เมื่อคลิก checkbox → โหลดหนังสือใหม่ตามหมวด
+            document.querySelectorAll(".filter-checkbox").forEach(cb => {
+                cb.addEventListener("change", applyFilters);
+            });
+
+            function applyFilters() {
+                const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
+                    .map(cb => cb.value);
+
+                // ถ้าไม่เลือกฟิลเตอร์ → โหลดทั้งหมด
+                if (selected.length === 0) {
+                    loadBooks();
+                    return;
+                }
+
+                // เรียก API ฟิลเตอร์ (หลายหมวด)
+                const params = new URLSearchParams();
+                selected.forEach(c => params.append("category", c));
+
+                fetch(`${apiBase}/search?category=${selected.join(",")}`)
+                    .then(r => r.json())
+                    .then(renderBooks)
+                    .catch(err => {
+                        console.error(err);
+                        document.getElementById("bookList").innerHTML =
+                            "<div class='empty'>❌ Failed to load filtered books.</div>";
+                    });
+            }
     </script>
 
     <!-- Footer -->
