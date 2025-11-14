@@ -151,7 +151,7 @@ body {
 .footer-top {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 60px 12px; 
+  padding: 40px 60px 12px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
@@ -170,13 +170,13 @@ body {
 .ft-faq {
   grid-area: faq;
   justify-self: center;
-  
+
 }
 
 .ft-contact {
   grid-area: contact;
   justify-self: end;
-  
+
 }
 
 .ft-title {

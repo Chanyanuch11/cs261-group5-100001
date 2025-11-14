@@ -7,7 +7,7 @@
     <title>Bookstore</title>
     <link rel="stylesheet" href="stylesheet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="allbooks.css" />
 </head>
 
 <body>
@@ -37,14 +37,28 @@
     </header>
 
    
+    <!-- Books Section -->
     <section class="books-section">
-        <div class="books-header">
-            <h2>All Books</h2>
+        <div class="books-layout">
+    
+            <!-- 📌 Filter Sidebar (ซ้าย) -->
+            <aside class="filter-sidebar">
+                <h3>Filter</h3>
+                <ul>
+                    <li><input type="checkbox"> Thriller</li>
+                    <li><input type="checkbox"> Fantasy</li>
+                    <li><input type="checkbox"> Romance</li>
+                    <li><input type="checkbox"> Horror</li>
+                    <li><input type="checkbox"> Sci-Fi</li>
+                    <li><input type="checkbox"> Comic</li>
+                    <li><input type="checkbox"> Self - Help</li>
+                </ul>
+            </aside>
+    
+            <!-- 📚 Book Grid (ขวา) -->
+            <div id="bookList" class="books-grid">Loading...</div>
+    
         </div>
-        <div class="view-all-wrapper">
-            <a href="books.html" class="view-all-link">view all ></a>
-        </div>
-        <div id="bookList" class="books-grid">Loading...</div>
     </section>
 
     <!--  Script zone -->
@@ -79,20 +93,20 @@
 
         // แสดงหนังสือ
         function renderBooks(books) {
-            const container = document.getElementById("bookList");
-            container.innerHTML = "";
-            if (!books || books.length === 0) {
-                container.innerHTML = `<div class="empty">No books found.</div>`;
-                return;
-            }
-            books.forEach(b => {
-                const title = b.title || "Book’s name";
-                const author = b.author || "Author’s name";
-                const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
-                const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
-                const wrap = document.createElement("div");
-                wrap.className = "book-wrap";
-                wrap.innerHTML = `
+                const container = document.getElementById("bookList");
+                container.innerHTML = "";
+                if (!books || books.length === 0) {
+                    container.innerHTML = `<div class="empty">No books found.</div>`;
+                    return;
+                }
+                books.forEach(b => {
+                    const title = b.title || "Book’s name";
+                    const author = b.author || "Author’s name";
+                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
+                    const wrap = document.createElement("div");
+                    wrap.className = "book-wrap";
+                    wrap.innerHTML = `
           <article class="book-card">
             <img class="book-cover" src="${cover}" alt="Cover of ${title}">
             <h3 class="book-title">${title}</h3>
@@ -101,10 +115,11 @@
           </article>
           <button class="btn-add">+ Add to cart</button>
         `;
-                wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
-                container.appendChild(wrap);
-            });
-        }
+                    wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
+                    container.appendChild(wrap);
+                });
+            }
+
 
         // Add to cart และอัปเดต badge ตาม backend
         async function addToCart(bookId) {
@@ -185,30 +200,44 @@
             <div class="ft-ref">
                 <h3 class="ft-title">Reference</h3>
             </div>
+
             <div class="ft-genre">
                 <div class="ft-sub">Genre:</div>
                 <ul class="ft-list">
-                    <li>- xxxxxxxxxxxx</li>
-                    <li>- xxxxxxxxxxxx</li>
+                    <li>- Romance</li>
+                    <li>- Fantasy</li>
+                    <li>- Drama</li>
+                    <li>- Action</li>
+                    <li>- History</li>
+                    <li>- Science fiction</li>
                 </ul>
             </div>
+
             <div class="ft-faq">
                 <div class="ft-sub">FAQ:</div>
                 <ul class="ft-list">
-                    <li>- xxxxxxxxxxxx</li>
-                    <li>- xxxxxxxxxxxx</li>
+                    <li>- วิธีสั่งซื้อสินค้า</li>
+                    <li>- สั่งซื้อสินค้าไม่สำเร็จ</li>
+                    <li>- คำสั่งซื้อถูกยกเลิก</li>
+                    <li>- ชำระเงินไม่ตรงกับราคาสินค้าที่กำหนด</li>
+                    <li>- วิธีแก้ไขข้อมูลส่วนตัวเพื่อสั่งซื้อ</li>
+                    <li>- ต้องการเพิ่มสินค้าของตัวเองในเว็บไซต์</li>
                 </ul>
             </div>
+
             <div class="ft-contact">
                 <div class="ft-sub">Contact us:</div>
                 <ul class="ft-list">
-                    <li>- xxxxxxxxxxxx</li>
-                    <li>- xxxxxxxxxxxx</li>
+                    <li>Address: 99/999 หมู่ที่ 3</li>
+                    <li>ต.คลองหนึ่ง อ.คลองหลวง</li>
+                    <li>จ.ปทุมธานี 12120</li>
                 </ul>
-                <div class="ft-phone"><img src="img/phone.svg" class="ft-phone-icon"><span>000-000-0000</span></div>
+                <div class="ft-phone">
+                    <img src="img/phone.svg" class="ft-phone-icon" alt="phone icon">
+                    <span>999-999-9999</span>
+                </div>
             </div>
         </div>
-
         <div class="footer-slogan">“สโลแกน”</div>
 
         <div class="footer-bar">

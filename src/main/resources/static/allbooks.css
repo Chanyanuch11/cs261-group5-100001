@@ -50,139 +50,6 @@ body {
     opacity: 0;
 }
 
-/* ============ slides (พื้นที่รูปตรงกลางระหว่างแทบ) ============ */
-#slides {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: calc(100vw - (2 * var(--rail-w)));
-    height: 100%;
-    transform: translateX(-50%);
-    overflow: hidden;
-}
-
-#slides .inner {
-    width: 300%;
-    height: 100%;
-    display: flex;
-    transition: margin-left 700ms cubic-bezier(.77, 0, .175, 1);
-}
-
-#slides .slide {
-    width: 33.3333%;
-    height: 100%;
-}
-
-#slides .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* เลื่อนด้วย radio */
-#slide1:checked~#slides .inner {
-    margin-left: 0;
-}
-
-#slide2:checked~#slides .inner {
-    margin-left: -100%;
-}
-
-#slide3:checked~#slides .inner {
-    margin-left: -200%;
-}
-
-/* ============ side rails ============ */
-.rail {
-    position: absolute;
-    top: 0;
-    width: var(--rail-w);
-    height: var(--banner-h);
-    background: var(--rail-bg);
-}
-
-.rail.left {
-    left: 0;
-}
-
-.rail.right {
-    right: 0;
-}
-
-/* ============ arrow buttons  ============ */
-.rail label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: var(--arrow-box);
-    height: var(--arrow-box);
-    background: var(--arrow-bg);
-    display: block;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: transform .15s ease, opacity .15s ease;
-}
-
-/* รูปลูกศร */
-.rail label::before {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: var(--arrow-w);
-    height: var(--arrow-h);
-    background: var(--arrow-fill);
-    transform: translate(-50%, -50%);
-    -webkit-clip-path: polygon(100% 50%, 0 0, 0 100%);
-    clip-path: polygon(100% 50%, 0 0, 0 100%);
-}
-
-.rail.left label::before {
-    transform: translate(-50%, -50%) rotate(180deg);
-}
-
-#slide1:checked~.rail.right .n1,
-#slide2:checked~.rail.right .n2,
-#slide3:checked~.rail.right .n3,
-#slide1:checked~.rail.left .p1,
-#slide2:checked~.rail.left .p2,
-#slide3:checked~.rail.left .p3 {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-}
-
-/* ============ bullets ============ */
-#bullets {
-    position: absolute;
-    left: 50%;
-    bottom: 12px;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 12px;
-}
-
-#bullets label {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #d1d5db;
-    cursor: pointer;
-    transition: transform .2s, background .2s;
-}
-
-#bullets label:hover {
-    transform: scale(1.12);
-}
-
-#slide1:checked~#bullets label:nth-child(1),
-#slide2:checked~#bullets label:nth-child(2),
-#slide3:checked~#bullets label:nth-child(3) {
-    background: #6D6553;
-}
 
 .books-section {
     max-width: 1200px;
@@ -206,10 +73,10 @@ body {
 
 /* กริดการ์ด */
 .books-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 125px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 60px 40px;
+    /* row-gap / column-gap */
 }
 
 /* การ์ดเล่มหนังสือ */
@@ -332,19 +199,33 @@ body {
     display: none;
 }
 
+.books-layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 40px;
+}
 
+.filter-sidebar {
+    background: transparent;
+    font-family: "Libre Baskerville", serif;
+}
 
-
-.view-all-link {
-    display: block;
-    font-family: 'Libre Baskerville', serif;
-    font-weight: bold;
+.filter-sidebar h3 {
     font-size: 24px;
-    color: #92866E;
-    text-decoration: none;
-    text-align: right;
-    margin-right: -50px;
-    margin-top: -80;
-    transition: color 0.3s ease;
-    margin-bottom: 35px;
+    margin-bottom: 10px;
+    color: #6D6553;
+}
+
+.filter-sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.filter-sidebar li {
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: #6D6553;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
