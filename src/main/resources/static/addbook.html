@@ -61,23 +61,11 @@
                                     <label>ราคา*</label> <input type="number" name="price" step="0.01" required>
                                 </div>
                                 <div class="field-group">
-                                    <label>หมวดหมู่*</label>
-                                        <select name="category" required>
-                                            <option value="">- เลือกหมวดหมู่ -</option>
-                                            <option value="Romance">Romance</option>
-                                            <option value="Fantasy">Fantasy</option>
-                                            <option value="Drama">Drama</option>
-                                            <option value="Action">Action</option>
-                                            <option value="History">History</option>
-                                            <option value="Science fiction">Science fiction</option>
-                                            <option value="Classic">Classic</option>
-                                            <option value="Dystopian">Dystopian</option>
-                                            <option value="Philosophy">Philosophy</option>
-                                            <option value="Self-Help">Self-Help</option>
-                                            <option value="Self-Improvement">Self-Improvement</option>
-                                            <option value="Fiction">Fiction</option>
-                                            <option value="Biography">Biography</option>
-                                        </select>
+                                    <label for="category">หมวดหมู่:</label>
+                                    <select id="categorySelect">
+                                        <option value="">--เลือกหมวดหมู่--</option>
+                                    </select>
+                                    <input type="text" id="categoryInput" placeholder="พิมพ์หมวดหมู่ใหม่">
                                 </div>
                             </div>
                         </div>
@@ -94,60 +82,13 @@
                     <div class="button-row"><button type="submit">Add</button></div>        
                     </div> 
                     
+                    <input type="hidden" name="isbn" value="">
+                    <input type="hidden" name="stock" value="0">
                 </form>
             </div>
         </div>
     </div>
     </body>
 
-    <script>
-    const form = document.getElementById("bookForm");
-
-    form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const book = {
-        title: form.title.value,
-        author: form.author.value,
-        price: form.price.value,
-        description: form.description.value,
-        category: form.category.value
-    };
-
-    const formData = new FormData();
-    formData.append("book", new Blob([JSON.stringify(book)], { type: "application/json" }));
-    formData.append("cover", form.cover.files[0]);
-
-    const res = await fetch("/api/books/upload", {
-        method: "POST",
-        body: formData
-    });
-
-    if (res.ok) alert("เพิ่มหนังสือพร้อมรูปเรียบร้อย!");
-    });
-
-    const insertPhotoBtn = document.getElementById('insertPhotoBtn');
-    const coverInput = document.getElementById('coverInput');
-    const coverPreview = document.getElementById('coverPreview');
-
-    // กดปุ่มเปิด dialog
-    insertPhotoBtn.addEventListener('click', () => coverInput.click());
-
-    coverInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if(file){
-            const reader = new FileReader();
-            reader.onload = function(e){
-                coverPreview.src = e.target.result;
-                coverPreview.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        } else {
-            coverPreview.src = '';
-            coverPreview.style.display = 'none';
-        }
-    });
-
-
-    </script>
+    <script src="addbook.js"></script>
     </html>
