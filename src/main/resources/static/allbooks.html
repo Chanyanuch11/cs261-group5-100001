@@ -84,31 +84,34 @@
 
             // ค้นหา + ฟิลเตอร์ (ทำงานร่วมกัน)
             function searchAndFilter() {
-                const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
-                const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
-                    .map(cb => cb.value);
+                    const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+                    const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
+                        .map(cb => cb.value.toLowerCase()); // ตรงนี้ก็ lower
 
-                // กรองจาก allBooks (ไม่ใช้ backend)
-                let result = allBooks;
+                    let result = allBooks;
 
-                // 1) ใช้ search ก่อน
-                if (keyword) {
-                    result = result.filter(book =>
-                        book.title.toLowerCase().includes(keyword)
-                    );
+                    // 1) ค้นหาแบบ ignore case (ตัวพิมพ์เล็ก/ใหญ่ไม่สน)
+                    if (keyword) {
+                        result = result.filter(book =>
+                            book.title.toLowerCase().includes(keyword)
+                        );
+                    }
+
+                    // 2) ฟิลเตอร์หมวดแบบ ignore case
+                    if (selected.length > 0) {
+                        result = result.filter(book => {
+                            if (!book.category) return false;
+
+                            const bookCats = book.category
+                                .split(",")
+                                .map(c => c.trim().toLowerCase());
+
+                            return selected.some(cat => bookCats.includes(cat));
+                        });
+                    }
+
+                    renderBooks(result);
                 }
-
-                // 2) กรอง category แบบ OR
-                if (selected.length > 0) {
-                    result = result.filter(book => {
-                        if (!book.category) return false;
-                        const bookCats = book.category.split(",").map(c => c.trim());
-                        return selected.some(cat => bookCats.includes(cat)); // OR
-                    });
-                }
-
-                renderBooks(result);
-            }
 
             // Event ค้นหา
             document.getElementById("searchForm").addEventListener("submit", function (e) {
