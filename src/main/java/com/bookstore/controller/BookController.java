@@ -60,12 +60,10 @@ public class BookController {
     public List<String> getCategories() {
         return bookRepository.findDistinctCategories();
     }
-
-    @GetMapping("/{id}")
+ @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Long id) {
         return bookRepository.findById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
 }
- 
 }

@@ -41,12 +41,11 @@
     <a href="allbooks.html" class="back-btn">&lt; Back</a>
 
     <div class="detail-wrapper">
-        <!-- LEFT -->
-        <div class="left">
-            <img id="bookCover" class="book-cover" src="" alt="Cover">
-            <h2 id="bookTitle" class="book-title"></h2>
-            <p id="bookAuthor" class="book-author"></p>
-            <button id="addToCartBtn" class="btn-add-lg">+ Add to cart</button>
+        <div class="book-left">
+            <img id="bookCover" class="book-cover-lg" src="">
+            <h2 id="bookTitle" class="book-title">Book’s name</h2>
+            <p id="bookAuthor" class="book-author">Author’s name</p>
+            <button id="addBtn" class="btn-add-lg">+ Add to cart</button>
         </div>
 
         <!-- RIGHT -->
@@ -91,7 +90,8 @@
 
             document.getElementById("bookCover").src = book.coverUrl || "https://picsum.photos/400/500";
 
-            document.getElementById("addToCartBtn").onclick = () => addToCart(book.id);
+            document.getElementById("addBtn").onclick = () => addToCart(book.id);
+
         }
 
         // Add to cart
