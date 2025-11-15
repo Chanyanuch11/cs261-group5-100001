@@ -3,6 +3,10 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Libre Baskerville", "Noto Sans Thai", serif;
+    color: #6D6553;
+}
+
+.sidebar p{
     color: #494337;
 }
 
@@ -17,6 +21,10 @@
 .main-content {
     flex: 1;
     padding: 60px 90px;
+}
+
+.main-content h1{
+    color: #494337;
 }
 
 .book-list {
@@ -69,6 +77,7 @@
 }
 
 .info .title {
+    color: #6D6553;
     font-size: 20px;
     font-weight: bold;
 }
@@ -97,8 +106,21 @@
 }
 
 /* จำนวน */
-.stock-book .quantity {
-    min-width: 30px;
+.stock-book .quantity-input {
+    width: 25px;
     text-align: center;
     font-size: 16px;
+    border: 0px;
+    
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: none;
 }

@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             <i class="bi bi-trash delete-book-icon" data-action="delete" data-book-id="${book.id}"></i>
                         </div>
                         
-                        <img src="${book.coverUrl}" alt="${book.title}" width="120" height="160">
+                        <img src="${book.coverUrl}" alt="${book.title}">
                         
                         <div class="info">
                             <div class="title">${book.title}</div>
