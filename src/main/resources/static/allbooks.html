@@ -43,16 +43,10 @@
     
             <!-- 📌 Filter Sidebar (ซ้าย) -->
     <aside class="filter-sidebar">
-        <h3>Filter</h3>
-        <ul>
-            <li><input type="checkbox" class="filter-checkbox" value="Thriller"> Thriller</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Fantasy"> Fantasy</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Romance"> Romance</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Horror"> Horror</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Sci-Fi"> Sci-Fi</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Comic"> Comic</li>
-            <li><input type="checkbox" class="filter-checkbox" value="Self-Help"> Self - Help</li>
-        </ul>
+        <aside class="filter-sidebar">
+            <h3>Filter</h3>
+            <ul id="categoryList"></ul>
+        </aside>
     </aside>
     
             <!-- 📚 Book Grid (ขวา) -->
@@ -70,17 +64,48 @@
 
             // โหลดหนังสือทั้งหมดครั้งเดียว
             function loadBooks() {
-                fetch(apiBase)
-                    .then(r => r.json())
-                    .then(data => {
-                        allBooks = data;          // เก็บไว้ใช้ filter
-                        renderBooks(allBooks);    // แสดงทั้งหมด
-                    })
-                    .catch(() => {
-                        document.getElementById("bookList").innerHTML =
-                            "<div class='empty'>❌ Failed to load books.</div>";
+                    fetch(apiBase)
+                        .then(r => r.json())
+                        .then(data => {
+                            allBooks = data;
+                            renderBooks(allBooks);
+                            generateCategoryFilters(); // ← มาอยู่ตรงนี้
+                        })
+                        .catch(() => {
+                            document.getElementById("bookList").innerHTML =
+                                "<div class='empty'>❌ Failed to load books.</div>";
+                        });
+                }
+
+            function generateCategoryFilters() {
+                    const categorySet = new Set();
+
+                    allBooks.forEach(book => {
+                        if (book.category) {
+                            book.category.split(",").forEach(cat => {
+                                categorySet.add(cat.trim());
+                            });
+                        }
                     });
-            }
+
+                    const categories = Array.from(categorySet).sort();
+                    const ul = document.getElementById("categoryList");
+                    ul.innerHTML = "";
+
+                    categories.forEach(cat => {
+                        ul.innerHTML += `
+            <li>
+                <input type="checkbox" class="filter-checkbox" value="${cat}">
+                ${cat}
+            </li>
+        `;
+                    });
+
+                    // bind events (ต้อง bind หลังสร้าง checkbox)
+                    document.querySelectorAll(".filter-checkbox").forEach(cb => {
+                        cb.addEventListener("change", searchAndFilter);
+                    });
+                }
 
             // ค้นหา + ฟิลเตอร์ (ทำงานร่วมกัน)
             function searchAndFilter() {
@@ -99,16 +124,27 @@
 
                     // 2) ฟิลเตอร์หมวดแบบ ignore case
                     if (selected.length > 0) {
-                        result = result.filter(book => {
-                            if (!book.category) return false;
+                    result = result.filter(book => {
+                        if (!book.category) return false;
 
-                            const bookCats = book.category
-                                .split(",")
-                                .map(c => c.trim().toLowerCase());
+                        // normalize ฟอร์แมต เช่น sci-fi, sci - fi, sci fi, sci_fi
+                        const normalizedBookCats = book.category
+                            .split(",")
+                            .map(c =>
+                                c
+                                    .toLowerCase()
+                                    .replace(/[\s_-]+/g, "")   // ลบ space, -, _
+                            );
 
-                            return selected.some(cat => bookCats.includes(cat));
-                        });
-                    }
+                        const normalizedSelected = selected.map(cat =>
+                            cat
+                                .toLowerCase()
+                                .replace(/[\s_-]+/g, "")
+                        );
+
+                        return normalizedSelected.some(cat => normalizedBookCats.includes(cat));
+                    });
+                }
 
                     renderBooks(result);
                 }
@@ -140,7 +176,7 @@
 
                     wrap.innerHTML = `
                         <article class="book-card">
-                            <img class="book-cover" src="${b.coverUrl || ""}" alt="">
+                            <img class="book-cover" src="${b.coverUrl || 'https://picsum.photos/500/650?random=1'}" alt="">
                             <h3 class="book-title">${b.title}</h3>
                             <div class="book-author">${b.author}</div>
                             <div class="price-tag">฿${(b.price ?? 0).toLocaleString()}</div>
