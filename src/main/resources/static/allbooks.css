@@ -229,3 +229,8 @@ body {
     align-items: center;
     gap: 10px;
 }
+
+.book-link {
+    text-decoration: none;
+    color: inherit;
+}
