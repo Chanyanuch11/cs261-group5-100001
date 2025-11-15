@@ -2,6 +2,8 @@ package com.bookstore.controller;
 
 import com.bookstore.model.Book;
 import com.bookstore.repo.BookRepository;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -58,5 +60,12 @@ public class BookController {
     public List<String> getCategories() {
         return bookRepository.findDistinctCategories();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBookById(@PathVariable Long id) {
+        return bookRepository.findById(id)
+            .map(ResponseEntity::ok)
+            .orElse(ResponseEntity.notFound().build());
+}
  
 }
