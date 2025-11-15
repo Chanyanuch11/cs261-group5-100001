@@ -25,13 +25,13 @@
             </form>
 
             <div class="header-icons">
-                <a href="cart.html" class="cart" aria-label="Open cart">
-                    <img src="img/cart-icon.svg" alt="">
-                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
-                </a>
-                <a href="login.html" class="icon" aria-label="Login">
-                    <img src="img/BlankPF.png" alt="">
-                </a>
+                    <div class="profile-dropdown">
+                    <img src="img/BlankPF.png" alt="Profile" class="profile-pic">
+
+                    <div class="dropdown-menu">
+                        <a href="OrderStatus.html">Order Status</a>
+                        <a href="#" id="logoutLink" onclick="event.preventDefault(); logout();">Logout</a>
+                    </div>
             </div>
         </div>
     </header>
@@ -73,9 +73,6 @@
     <section class="books-section">
         <div class="books-header">
             <h2>All Books</h2>
-        </div>
-        <div class="view-all-wrapper">
-            <a href="books.html" class="view-all-link">view all ></a>
         </div>
         <div id="bookList" class="books-grid">Loading...</div>
     </section>
