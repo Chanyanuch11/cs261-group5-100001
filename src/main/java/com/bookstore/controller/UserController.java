@@ -60,7 +60,7 @@ public class UserController {
         }
     }
 
-    / Logout endpoint
+    // Logout endpoint
     @PostMapping("/logout")
     public ResponseEntity<LogoutResponse> logout(@RequestBody(required = false) User logoutRequest) {
         Long userId = null;
@@ -89,7 +89,7 @@ public class UserController {
     }
 
 
-    // ⚙️ Optional: Friendly error message for validation issues
+    //  Optional: Friendly error message for validation issues
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
