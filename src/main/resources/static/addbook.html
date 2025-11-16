@@ -1,38 +1,42 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Book Store</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="addbook.css" />
-        <link rel="stylesheet" href="stylesheet.css" />
-    </head>
-    <body>
-        <div class="container">
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="addbook.css" />
+    <link rel="stylesheet" href="stylesheet.css" />
+</head>
+
+<body>
+    <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="profile"> 
+            <div class="profile">
                 <img src="img\BlankPF.png" alt="Profile">
-                <p>admin</p> 
+                <p>admin</p>
             </div>
 
             <hr>
-            
+
             <nav>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                <a href="booklist.html" class="nav-link">Book List</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link active" >Add New Book</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link" href="#">Order List</a>
-                </li>
-            </ul>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="booklist.html" class="nav-link">Book List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active">Add New Book</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-order-list.html">Order List</a>
+                    </li>
+                </ul>
             </nav>
 
             <button onclick="logout()">Logout</button>
@@ -42,7 +46,8 @@
         <div class="main-content">
             <h1>เพิ่มรายการหนังสือ</h1>
             <div class="form-box">
-                <form id="bookForm" class="form" action="/api/books/books/add" method="post" enctype="multipart/form-data">   
+                <form id="bookForm" class="form" action="/api/books/books/add" method="post"
+                    enctype="multipart/form-data">
                     <div class="top-row">
                         <!-- รูป -->
                         <div class="cover-wrapper">
@@ -58,10 +63,10 @@
                             <label>ผู้เขียน* </label><input type="text" name="author" required>
                             <div class="fields-wrapper">
                                 <div class="field-group">
-                                    <label>ราคา*</label> <input type="number" name="price" step="0.01" required>
+                                    <label>ราคา*</label> <input type="number" name="price" step="0.01">
                                 </div>
                                 <div class="field-group">
-                                    <label for="category">หมวดหมู่:</label>
+                                    <label for="category">หมวดหมู่*</label>
                                     <select id="categorySelect">
                                         <option value="">--เลือกหมวดหมู่--</option>
                                     </select>
@@ -69,27 +74,24 @@
                                 </div>
                             </div>
                         </div>
-
-                        
-                        
                     </div>
 
                     <!-- ฟิลด์รายละเอียด + หมวดหมู่ อยู่ด้านล่าง -->
                     <div class="bottom-row">
                         <label>รายละเอียดหนังสือ* </label><textarea name="description" rows="4" required></textarea>
-                        
                     </div>
-                    <div class="button-row"><button type="submit">Add</button></div>        
-                    </div> 
-                    
-                    <input type="hidden" name="isbn" value="">
-                    <input type="hidden" name="stock" value="0">
-                </form>
+                    <div class="button-row"><button type="submit">Add</button></div>
             </div>
+
+            <input type="hidden" name="isbn" value="">
+            <input type="hidden" name="stock" value="0">
+            </form>
         </div>
     </div>
-    </body>
+    </div>
+</body>
 
-    <script src="addbook.js"></script>
-    <script src="logout.js"></script>
-    </html>
+<script src="addbook.js"></script>
+<script src="logout.js"></script>
+
+</html>
