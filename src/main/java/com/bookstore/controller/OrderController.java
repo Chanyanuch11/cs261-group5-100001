@@ -1,69 +1,58 @@
 package com.bookstore.controller;
 
 import com.bookstore.dto.OrderResponse;
-import com.bookstore.model.CartItem;
 import com.bookstore.model.Order;
-import com.bookstore.model.OrderItem;
-import com.bookstore.repo.CartRepository;
-import com.bookstore.repo.OrderRepository;
+import com.bookstore.repo.ShippingAddressRepository;
+import com.bookstore.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    private final OrderRepository orderRepository;
-    private final CartRepository cartRepository;
+    private final ShippingAddressRepository shippingAddressRepository;
+    private final OrderService orderService;
 
-    public OrderController(OrderRepository orderRepository, CartRepository cartRepository) {
-        this.orderRepository = orderRepository;
-        this.cartRepository = cartRepository;
+    public OrderController(ShippingAddressRepository shippingAddressRepository,
+                           OrderService orderService) {
+        this.shippingAddressRepository = shippingAddressRepository;
+        this.orderService = orderService;
     }
 
-    // ✅ Checkout: create order from cart items
+    // ✅ Checkout: create order from cart
     @PostMapping("/checkout/{userId}")
-    public ResponseEntity<?> checkout(@PathVariable Long userId) {
-        List<CartItem> cartItems = cartRepository.findByUserId(userId);
+    public ResponseEntity<?> checkout(
+            @PathVariable Long userId,
+            @RequestBody Map<String, Object> body) {
 
-        if (cartItems.isEmpty()) {
-            return ResponseEntity.badRequest().body("❌ Cart is empty");
+        Long addressId = ((Number) body.get("addressId")).longValue();
+
+        // ✅ ตรวจสอบว่า addressId เป็นของ userId เดียวกัน
+        var addr = shippingAddressRepository.findById(addressId)
+                .orElseThrow(() -> new IllegalArgumentException("❌ Address not found"));
+        if (!addr.getUser().getId().equals(userId)) {
+            return ResponseEntity.badRequest().body("❌ Address not yours");
         }
 
-        Order order = new Order();
-        order.setUserId(userId); // ✅ use the path variable userId
-        order.setOrderDate(LocalDateTime.now());
+        // ✅ Confirm and create order
+        Order saved = orderService.confirmOrder(userId);
 
-        double total = 0.0;
+        // ✅ Set shipping address then update DB
+        saved.setShippingAddressId(addressId);
+        orderService.updateOrder(saved);
 
-        for (CartItem cart : cartItems) {
-            OrderItem item = new OrderItem();
-            item.setBook(cart.getBook());
-            item.setQuantity(cart.getQuantity());
-            item.setPrice(cart.getBook().getPrice());
-            item.setOrder(order);
-
-            total += cart.getBook().getPrice() * cart.getQuantity();
-            order.getItems().add(item);
-        }
-
-        order.setTotal(total);
-        orderRepository.save(order);
-
-        // ✅ clear cart after checkout
-        cartRepository.deleteAll(cartItems);
-
-        return ResponseEntity.ok("✅ Order placed successfully!");
+        // ✅ Send back summary
+        return ResponseEntity.ok(OrderResponse.from(saved));
     }
-
 
     // ✅ Get all orders for a specific user
     @GetMapping("/{userId}")
     public List<OrderResponse> getOrders(@PathVariable Long userId) {
-        return orderRepository.findByUserId(userId)
+        return orderService.getOrdersForUser(userId)
                 .stream()
                 .map(OrderResponse::from)
                 .toList();

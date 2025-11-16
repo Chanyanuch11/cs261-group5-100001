@@ -1,108 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Sign Up - Bookstore</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .signup-container {
-      background: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 320px;
-      text-align: center;
-    }
-    input {
-      width: 90%;
-      padding: 8px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-    .login-link {
-      margin-top: 15px;
-      font-size: 14px;
-    }
-    .login-link a {
-      color: #2ecc71;
-      text-decoration: none;
-    }
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-    #result {
-      color: red;
-      margin-top: 10px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome • Sign up</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="signup-login.css" />
 </head>
 <body>
+  <main class="frame" role="main" aria-label="1920x1080 fixed viewport">
+    <section class="hero" aria-label="Visual">
+      <img src="assets/Picture.png" alt="Decorative placeholder" />
+    </section>
 
-  <div class="signup-container">
-    <h2>📝 Sign Up</h2>
-    <form id="signupForm">
-      <input type="text" id="username" placeholder="Username" required><br>
-      <input type="email" id="email" placeholder="Email" required><br>
-      <input type="password" id="password" placeholder="Password" required><br>
-      <button type="submit">Sign Up</button>
-    </form>
-    <p id="result"></p>
+    <section class="panel" aria-label="Register form">
+      <div class="card">
+        <div class="brand" aria-hidden="true"></div>
+        <div class="hey">Welcome!</div>
+        <h1 class="title">Sign up to your account</h1>
 
-    <div class="login-link">
-      Already have an account? <a href="login.html">Login here</a>
-    </div>
-  </div>
+        <form id="signupForm" novalidate>
+          <label class="field">
+            <span class="label">Name</span>
+			<input class="input" type="text" name="username" placeholder="username" required />
+          </label>
 
-  <script>
-    document.getElementById("signupForm").addEventListener("submit", function(e) {
-      e.preventDefault();
+          <label class="field">
+            <span class="label">Email</span>
+            <input class="input" type="email" name="email" placeholder="email" required />
+          </label>
 
-      fetch("http://localhost:8080/api/users/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: document.getElementById("username").value.trim(),
-          email: document.getElementById("email").value.trim(),
-          password: document.getElementById("password").value.trim()
-        })
-      })
-      .then(res => {
-        if (!res.ok) {
-          return res.json().then(errData => {
-            throw new Error(errData.message || "Signup failed");
-          });
-        }
-        return res.json();
-      })
-      .then(data => {
-        alert("✅ Signup successful! Please login now.");
-        window.location.href = "login.html";
-      })
-      .catch(err => {
-        document.getElementById("result").innerText = "❌ Signup failed: " + err.message;
-      });
-    });
-  </script>
+          <div class="field password-wrap">
+            <label class="label" for="password">Password</label>
+            <div class="input-wrap">
+              <input class="input" id="password" type="password" name="password" placeholder="password" minlength="8" required />
+              <button type="button" class="toggle-eye" id="toggleEye" aria-label="Toggle password visibility">Show</button>
+            </div>
+          </div>
 
+          <div class="actions">
+            <button class="btn primary" type="submit">Register</button>
+            <button class="btn ghost" type="button" onclick="goLogin()">Login</button>
+          </div>
+        </form>
+
+        <div class="divider" aria-hidden="true"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="signup-login.js"></script>
 </body>
 </html>

@@ -1,151 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>🛒 My Cart</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f4f4f4; }
-        button {
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .remove-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        .remove-btn:hover { background-color: #c0392b; }
-        .checkout-btn {
-            background-color: #2ecc71;
-            color: white;
-            padding: 10px 15px;
-            margin-top: 15px;
-        }
-        .checkout-btn:hover { background-color: #27ae60; }
-        .back-btn {
-            background-color: #3498db;
-            color: white;
-            padding: 8px 12px;
-            margin-right: 10px;
-        }
-        .back-btn:hover { background-color: #2980b9; }
-        #total { font-weight: bold; font-size: 18px; margin-top: 15px; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="stylesheet.css" />
+  <link rel="stylesheet" href="./cart.css" />
+  <title>🛒 My Cart</title>
 </head>
 <body>
+  <header class="sitebar">
+    <div class="row">
+      <div class="header-container" style="display:flex;align-items:center;gap:12px;width:100%;">
+        <div class="logo"><img src="img/logo.png" alt="Bookstore Logo" /></div>
+        <div class="search-bar" style="flex:1;display:flex;gap:8px;align-items:center;">
+          <input type="text" placeholder="Search" aria-label="Search books" />
+          <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="header-cart">
+          <a href="cart.html" class="cart" aria-label="Open cart">
+            <img src="img/cart-icon.svg" alt="" />
+          </a>
+        </div>
+        <div class="header-profile">
+          <a href="login.html" class="icon" aria-label="Login">
+            <img src="img/BlankPF.png" alt="" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
 
-    <h1>🛒 My Shopping Cart</h1>
-    <div id="userInfo"></div>
+  <main class="container">
+    <a class="crumb" href="#" onclick="goHome()">← Continue Shopping</a>
+    <h2 class="title">My Cart</h2>
 
-    <table id="cartTable">
-        <thead>
-            <tr>
-                <th>Book Title</th>
-                <th>Author</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="cartBody">
-            <tr><td colspan="6">Loading cart...</td></tr>
-        </tbody>
-    </table>
+    <section class="grid">
+      <div>
+        <div id="emptyState" style="display:none; color:var(--muted); padding:12px">
+          Your cart is empty 🕳️
+        </div>
 
-    <p id="total">Total: $0.00</p>
+        <div class="itemlist" id="cartList"></div>
 
-    <button class="back-btn" onclick="goHome()">← Continue Shopping</button>
-    <button class="checkout-btn" onclick="checkout()">✅ Checkout</button>
+        <div id="placeholders">
+          <div class="item skeleton">
+            <div class="skel-thumb"></div>
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <div class="skel" style="width:180px"></div>
+              <div class="skel-sm" style="width:140px"></div>
+              <div class="skel" style="width:80px; height:18px"></div>
+            </div>
+            <div style="display:flex; align-items:center;">
+              <div class="skel-btn"></div>
+            </div>
+          </div>
 
-    <script>
-        const userId = localStorage.getItem("userId");
-        const username = localStorage.getItem("username");
-        const apiCart = "http://localhost:8080/api/cart";
-        const apiOrders = "http://localhost:8080/api/orders";
+          <div class="item skeleton">
+            <div class="skel-thumb"></div>
+            <div style="display:flex; flex-direction:column; gap:10px">
+              <div class="skel" style="width:160px"></div>
+              <div class="skel-sm" style="width:120px"></div>
+              <div class="skel" style="width:60px; height:18px"></div>
+            </div>
+            <div style="display:flex; align-items:center;">
+              <div class="skel-btn"></div>
+            </div>
+          </div>
+        </div>
 
-        if (!userId) {
-            alert("Please log in first!");
-            window.location.href = "login.html";
-        } else {
-            document.getElementById("userInfo").innerText = `Welcome, ${username}`;
-        }
+        <template id="cart-item-tpl">
+          <div class="item">
+            <img class="thumb" src="" alt="book" />
+            <div class="meta">
+              <b class="title"></b>
+              <small class="author"></small>
+              <div class="price"></div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px">
+              <div class="qty">
+                <button type="button" class="btn-dec">−</button>
+                <span class="qty-num">1</span>
+                <button type="button" class="btn-inc">+</button>
+              </div>
+              <button class="remove">Remove</button>
+            </div>
+          </div>
+        </template>
+      </div>
 
-        // ✅ Load cart items
-        function loadCart() {
-            fetch(`${apiCart}/${userId}`)
-                .then(res => res.json())
-                .then(data => renderCart(data))
-                .catch(err => console.error("Error loading cart:", err));
-        }
+      <aside class="summary">
+        <h3>Order Summary</h3>
+        <div class="rows">
+          <div class="rowline"><span>Subtotal</span><b id="subtotal">฿0</b></div>
+          <div class="rowline"><span>Shipping Fee</span><span id="shipping">฿0</span></div>
+          <div class="rowline"><span>Discount</span><span id="discount">-฿0</span></div>
+          <div class="rowline total"><span>Total</span><b id="grandTotal">฿0</b></div>
+        </div>
+        <!-- เปลี่ยนให้เรียก goToCheckout() -->
+        <button class="checkout" onclick="goToCheckout()">Go to Checkout</button>
+      </aside>
+    </section>
+  </main>
 
-        // ✅ Render cart table
-        function renderCart(items) {
-            const body = document.getElementById("cartBody");
-            body.innerHTML = "";
-            let total = 0;
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="ft-ref"><h3 class="ft-title">Reference</h3></div>
+      <div class="ft-genre">
+        <div class="ft-sub">Genre:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-faq">
+        <div class="ft-sub">FAQ:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-contact">
+        <div class="ft-sub">Contact us:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+        <div class="ft-phone">
+          <img src="img/phone.svg" alt="" class="ft-phone-icon">
+          <span>000-000-0000</span>
+        </div>
+      </div>
+    </div>
 
-            if (items.length === 0) {
-                body.innerHTML = `<tr><td colspan="6">Your cart is empty 🕳️</td></tr>`;
-                document.getElementById("total").innerText = "Total: $0.00";
-                return;
-            }
+    <div class="footer-slogan">“สโลแกน”</div>
 
-            items.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                total += subtotal;
+    <div class="footer-bar">
+      <img src="img/logo.png" alt="Bookstore" class="ft-logo">
+      <div class="ft-power">Power by BookStore.com</div>
+      <div class="ft-socials">
+        <img src="img/youtube.svg" alt="YouTube">
+        <img src="img/facebook.svg" alt="Facebook">
+        <img src="img/instagram.svg" alt="Instagram">
+        <img src="img/mail.svg" alt="Email">
+      </div>
+    </div>
+  </footer>
 
-                const tr = document.createElement("tr");
-                tr.innerHTML = `
-                    <td>${item.title}</td>
-                    <td>${item.author}</td>
-                    <td>$${item.price.toFixed(2)}</td>
-                    <td>${item.quantity}</td>
-                    <td>$${subtotal.toFixed(2)}</td>
-                    <td><button class="remove-btn" onclick="removeItem(${item.id})">Remove</button></td>
-                `;
-                body.appendChild(tr);
-            });
+  <script>
+    const apiCart   = "http://localhost:8080/api/cart";
+    const userIdRaw = localStorage.getItem("userId");
+    const userId    = userIdRaw && userIdRaw !== "null" ? Number(userIdRaw) : null;
 
-            document.getElementById("total").innerText = `Total: $${total.toFixed(2)}`;
-        }
+    if (!userId || !Number.isFinite(userId)) {
+      alert("Please log in first.");
+      window.location.href = "login.html";
+    }
 
-        // ✅ Remove item
-        function removeItem(id) {
-            if (!confirm("Remove this item from cart?")) return;
-            fetch(`${apiCart}/remove/${id}`, { method: "DELETE" })
-                .then(res => {
-                    if (res.ok) loadCart();
-                    else alert("❌ Failed to remove item");
-                })
-                .catch(err => console.error("Error removing item:", err));
-        }
+    const THB = n => `฿${n.toFixed(0)}`;
 
-        // ✅ Checkout
-        function checkout() {
-            if (!confirm("Proceed to checkout?")) return;
+    function loadCart() {
+      fetch(`${apiCart}/${userId}`)
+        .then(res => res.json())
+        .then(items => renderCart(items))
+        .catch(err => console.error("Error loading cart:", err));
+    }
 
-            fetch(`${apiOrders}/checkout/${userId}`, { method: "POST" })
-                .then(res => res.text())
-                .then(msg => {
-                    alert(msg);
-                    window.location.href = "checkout.html";
-                })
-                .catch(err => console.error("Error during checkout:", err));
-        }
+    function renderCart(items) {
+      const list = document.getElementById("cartList");
+      const emptyState = document.getElementById("emptyState");
+      const placeholders = document.getElementById("placeholders");
+      const tpl = document.getElementById("cart-item-tpl");
 
-        // ✅ Back to Home
-        function goHome() {
-            window.location.href = "home.html";
-        }
+      list.innerHTML = "";
+      placeholders.style.display = "none";
 
-        // 🚀 Load cart on page load
-        loadCart();
-    </script>
+      if (!items || items.length === 0) {
+        emptyState.style.display = "block";
+        updateSummary(0, 0, 0);
+        return;
+      }
+      emptyState.style.display = "none";
+
+      let subtotal = 0;
+      items.forEach(it => {
+        subtotal += it.price * it.quantity;
+        const $ = tpl.content.cloneNode(true);
+        $.querySelector(".thumb").src = "img/book-placeholder.png";
+        $.querySelector(".title").textContent = it.title;
+        $.querySelector(".author").textContent = it.author || "";
+        $.querySelector(".price").textContent = THB(it.price);
+        $.querySelector(".qty-num").textContent = it.quantity;
+
+        $.querySelector(".remove").addEventListener("click", () => {
+          if (!confirm("Remove this item from cart?")) return;
+          fetch(`${apiCart}/remove/${it.id}`, { method: "DELETE" })
+            .then(r => r.ok ? loadCart() : alert("Failed to remove item."))
+            .catch(console.error);
+        });
+
+        $.querySelector(".btn-inc").addEventListener("click", () => {
+          fetch(`${apiCart}/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, book: { id: it.bookId }, quantity: 1 })
+          }).then(() => loadCart());
+        });
+
+        $.querySelector(".btn-dec").addEventListener("click", () => {
+          if (it.quantity <= 1) {
+            fetch(`${apiCart}/remove/${it.id}`, { method: "DELETE" }).then(() => loadCart());
+          } else {
+            fetch(`${apiCart}/add`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ userId, book: { id: it.bookId }, quantity: -1 })
+            }).then(() => loadCart());
+          }
+        });
+
+        list.appendChild($);
+      });
+
+	  const shipping = subtotal > 0 ? 40 : 0;
+
+	  // ✅ Apply discount if subtotal ≥ 300
+	  const discount = subtotal >= 300 ? 40 : 0;
+
+	  updateSummary(subtotal, shipping, discount);
+
+    }
+
+    function updateSummary(subtotal, shipping, discount) {
+      document.getElementById("subtotal").textContent = THB(subtotal);
+      document.getElementById("shipping").textContent = THB(shipping);
+      document.getElementById("discount").textContent = `- ${THB(discount)}`;
+      document.getElementById("grandTotal").textContent = THB(subtotal + shipping - discount);
+    }
+
+    // ✅ ใช้อันนี้แทนการยิง POST
+    function goToCheckout(){
+      window.location.href = "checkout.html";
+    }
+
+    function goHome() { window.location.href = "index.html"; }
+
+    loadCart();
+  </script>
 </body>
 </html>

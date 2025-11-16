@@ -1,0 +1,151 @@
+:root{
+  --bg: #FFFEFA;
+  --paper: #FFFEFA;
+  --hero: #D3CBB9;
+  --accent: #B6A88A;
+  --muted: #F0EEE8;
+  --text: #92866E;
+  --text-weak: rgba(146,134,110,.8);
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body{
+  font-family: "Libre Baskerville", serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame{
+  width: 1920px;
+  height: 1080px;
+  background: var(--paper);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+
+/* left image */
+.hero{
+  background: var(--hero);
+  display: grid;
+  place-items: center;
+}
+.hero img{
+  width: 960px;
+  height: 1080px;
+  object-fit: cover;
+  display: block;
+}
+
+/* form panel */
+.panel{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px;
+  background: var(--paper);
+}
+
+.card{
+  width: 100%;
+  max-width: 400px;
+}
+
+.brand {
+  width: 260px;
+  height: 147px;
+  flex-shrink: 0;
+  aspect-ratio: 260 / 147;
+  background: url("assets/d48882a5-5363-406e-9368-7aae5d36b071 1.png") center/cover no-repeat;
+  margin-inline: auto;
+  margin-bottom: 24px;
+  border-radius: 6px;
+}
+
+.hey{ color: var(--text-weak); font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.title{ color: var(--text); font-size: 32px; font-weight: 700; text-align: center; margin-top: 4px; }
+
+.field{ display: block; margin-top: 24px; }
+/* extra spacing only before the Email field (second field) */
+#signupForm > label.field:nth-of-type(2){ margin-top: 24px; }
+.label{ font-weight: 700; font-size: 24px; color: var(--text); display: block; margin-bottom: 8px; transition: color .2s ease; }
+
+.input{
+  width: 100%;
+  background: var(--muted);
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 16px;
+  color: var(--accent);
+  font-size: 20px;
+  outline: none;
+  transition: all 0.25s ease;
+}
+.input:focus{
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(182,168,138,.25);
+}
+.input:focus::placeholder{ color: rgba(255,255,255,0.8); }
+.field:focus-within .label{ color: var(--accent); }
+
+.password-wrap{ position: relative; }
+.password-wrap .input-wrap{ position: relative; }
+/* ensure text doesn't sit under the toggle button */
+.password-wrap .input{ padding-right: 72px; }
+.toggle-eye {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--accent);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.toggle-eye:hover {
+  background: var(--white);
+  color: var(--accent);
+}
+
+.actions{ margin-top: 24px; display: grid; gap: 12px; }
+.btn{ height: 60px; border-radius: 4px; font-weight: 700; font-size: 24px; cursor: pointer; transition: 0.2s ease; }
+.btn.primary{ background: var(--accent); color: var(--white); border: 0; }
+.btn.ghost{ background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+.btn.primary:hover { filter: brightness(0.9); }
+
+.divider{ width: 1px; height: 22px; background: var(--muted); margin: 16px auto; }
+
+.back-link {
+  position: absolute;
+  top: 45px; /* Adjusted to 88px from the top */
+  left: calc(50% + 75px); /* Move slightly to the right */
+  transform: translateX(-50%); /* Adjust for centering */
+  color: var(--accent);
+  font-size: 24px;
+  text-decoration: none;
+  font-weight: 700;
+  z-index: 10;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}

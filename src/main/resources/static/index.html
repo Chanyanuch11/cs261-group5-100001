@@ -1,39 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bookstore</title>
-  <link rel="stylesheet" href="stylesheet.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookstore</title>
+    <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="index.css" />
 </head>
+
 <body>
     <header class="header">
-    <div class="header-container">
-        <div class="logo">
-        <img src="img/logo.png" alt="Bookstore Logo">
-        </div>
-
-        <div class="search-bar">
-        <input type="text" placeholder="Search">
-        <button><i class="fa fa-search"></i></button>
-        </div>
-
-        <div class="header-icons">
-            <a href="cart.html">
-            <div class="circle">
-                <img src="img/cart-icon.png" alt="Cart Icon">
-            </div>
-            </a> 
-        </a>
-        <a href="login.html" class="icon">
-            <div class="circle">
+        <div class="header-container">
+            <div class="logo">
                 <img src="img/logo.png" alt="Bookstore Logo">
             </div>
-        </a>
+
+            <form id="searchForm" class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search" aria-label="Search books">
+                <button type="submit" class="search-image-btn" aria-label="Search">
+                    <img src="img/search.svg" alt="Search">
+                </button>
+            </form>
+
+            <div class="header-icons">
+                <a href="cart.html" class="cart" aria-label="Open cart">
+                    <img src="img/cart-icon.svg" alt="">
+                    <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
+                </a>
+                <a href="login.html" class="icon" aria-label="Login">
+                    <img src="img/BlankPF.png" alt="">
+                </a>
+            </div>
         </div>
-    </div>
     </header>
 
+    <!-- Banner -->
+    <section id="slider" aria-roledescription="carousel" aria-label="Promotion Slides">
+        <h2 class="sr-only">Promotion Slides</h2>
+        <input type="radio" name="slider" id="slide1" checked>
+        <input type="radio" name="slider" id="slide2">
+        <input type="radio" name="slider" id="slide3">
 
+        <div id="slides">
+            <div class="inner">
+                <article class="slide"><img src="img/promotion.png" alt="Promotion 1"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 2"></article>
+                <article class="slide"><img src="img/BlankSlide.png" alt="Promotion 3"></article>
+            </div>
+        </div>
+
+        <div class="rail left">
+            <label for="slide3" class="prev p1"></label>
+            <label for="slide1" class="prev p2"></label>
+            <label for="slide2" class="prev p3"></label>
+        </div>
+        <div class="rail right">
+            <label for="slide2" class="next n1"></label>
+            <label for="slide3" class="next n2"></label>
+            <label for="slide1" class="next n3"></label>
+        </div>
+
+        <div id="bullets">
+            <label for="slide1"></label>
+            <label for="slide2"></label>
+            <label for="slide3"></label>
+        </div>
+    </section>
+
+    <!-- Books Section -->
+    <section class="books-section">
+        <div class="books-header">
+            <h2>All Books</h2>
+        </div>
+        <div class="view-all-wrapper">
+            <a href="allbooks.html" class="view-all-link">view all ></a>
+        </div>
+        <div id="bookList" class="books-grid">Loading...</div>
+    </section>
+
+    <!--  Script zone -->
+    <script>
+        const apiBase = "http://localhost:8080/api/books";
+        const cartApi = "http://localhost:8080/api/cart";
+
+        // โหลดหนังสือทั้งหมด
+        function loadBooks() {
+            fetch(apiBase)
+                .then(r => r.json())
+                .then(renderBooks)
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML = "<div class='empty'>❌ Failed to load books.</div>";
+                });
+        }
+
+        // ค้นหาหนังสือ
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const keyword = document.getElementById("searchInput").value.trim();
+            if (!keyword) return loadBooks();
+            const params = new URLSearchParams();
+            params.append("keyword", keyword);
+            fetch(`${apiBase}/search?${params.toString()}`)
+                .then(r => r.json())
+                .then(renderBooks)
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML = "<div class='empty'>❌ Search failed.</div>";
+                });
+        });
+
+        // แสดงหนังสือ
+        function renderBooks(books) {
+            const container = document.getElementById("bookList");
+            container.innerHTML = "";
+
+            if (!books || books.length === 0) {
+                container.innerHTML = `<div class="empty">No books found.</div>`;
+                return;
+            }
+
+            // จำกัดเหลือ 8 เล่ม
+            const limitedBooks = books.slice(0, 8);
+
+            limitedBooks.forEach(b => {
+                const title = b.title || "Book’s name";
+                const author = b.author || "Author’s name";
+                const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
+
+                const wrap = document.createElement("div");
+                wrap.className = "book-wrap";
+                wrap.innerHTML = `
+    <a href="bookdetail.html?id=${b.id}" class="book-link">
+        <article class="book-card">
+            <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+            <h3 class="book-title">${title}</h3>
+            <div class="book-author">${author}</div>
+            <div class="price-tag">฿${price}</div>
+        </article>
+    </a>
+    <button class="btn-add">+ Add to cart</button>
+`;
+
+                wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
+                container.appendChild(wrap);
+            });
+        }
+
+
+        // Add to cart และอัปเดต badge ตาม backend
+        async function addToCart(bookId) {
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("⚠️ Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+            userId = Number(userId);
+            if (!bookId) return alert("❌ Missing book ID");
+
+            const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+            try {
+                const res = await fetch(`${cartApi}/add`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cartItem)
+                });
+                const text = await res.text();
+                if (res.ok) {
+                    await fetchCartCount(userId); // ✅ ดึงข้อมูลจริงจาก backend
+                    alert("✅ Book added to cart!");
+                } else {
+                    console.error("❌ Backend error:", text);
+                    alert("❌ Failed to add to cart");
+                }
+            } catch (err) {
+                console.error("⚠️ Network error:", err);
+                alert("⚠️ Could not reach backend");
+            }
+        }
+
+        // ดึงจำนวนสินค้าในตะกร้าจริงจาก backend
+        async function fetchCartCount(userId) {
+            try {
+                const res = await fetch(`${cartApi}/${userId}`);
+                if (!res.ok) throw new Error("Fetch failed");
+                const items = await res.json();
+                const count = Array.isArray(items)
+                    ? items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+                    : 0;
+                setCartCount(userId, count);
+            } catch (err) {
+                console.error("⚠️ Failed to fetch cart count:", err);
+            }
+        }
+
+        // === badge helpers ===
+        function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
+        function getCartCount(userId) { const v = localStorage.getItem(badgeKey(userId)); return v ? Number(v) : 0; }
+        function setCartCount(userId, n) { localStorage.setItem(badgeKey(userId), String(Math.max(0, n | 0))); renderCartBadge(userId); }
+        function renderCartBadge(userId) {
+            const el = document.getElementById('cartBadge');
+            if (!el) return;
+            const n = getCartCount(userId);
+            el.textContent = n;
+            el.classList.toggle('is-zero', n <= 0);
+        }
+
+        // โหลดข้อมูลจริงเมื่อหน้าเริ่ม
+        document.addEventListener('DOMContentLoaded', async () => {
+            const uid = localStorage.getItem("userId");
+            if (uid) {
+                await fetchCartCount(uid); // ดึงข้อมูลจาก backend
+            } else {
+                renderCartBadge(uid);
+            }
+        });
+
+        // Auto slide
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('slider');
+            const radios = Array.from(slider.querySelectorAll('input[name="slider"]'));
+            if (!radios.length) return;
+            let idx = radios.findIndex(r => r.checked);
+            const go = (n) => { idx = (n + radios.length) % radios.length; radios[idx].checked = true; };
+            const next = () => go(idx + 1);
+            let timer;
+            const start = () => { stop(); timer = setInterval(next, 5000); };
+            const stop = () => { if (timer) clearInterval(timer); };
+            slider.addEventListener('change', (e) => { if (e.target.name === 'slider') { idx = radios.indexOf(e.target); start(); } });
+            start();
+        });
+
+        loadBooks();
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="ft-ref">
+                <h3 class="ft-title">Reference</h3>
+            </div>
+
+            <div class="ft-genre">
+                <div class="ft-sub">Genre:</div>
+                <ul class="ft-list">
+                    <li>- Romance</li>
+                    <li>- Fantasy</li>
+                    <li>- Drama</li>
+                    <li>- Action</li>
+                    <li>- History</li>
+                    <li>- Science fiction</li>
+                </ul>
+            </div>
+
+            <div class="ft-faq">
+                <div class="ft-sub">FAQ:</div>
+                <ul class="ft-list">
+                    <li>- วิธีสั่งซื้อสินค้า</li>
+                    <li>- สั่งซื้อสินค้าไม่สำเร็จ</li>
+                    <li>- คำสั่งซื้อถูกยกเลิก</li>
+                    <li>- ชำระเงินไม่ตรงกับราคาสินค้าที่กำหนด</li>
+                    <li>- วิธีแก้ไขข้อมูลส่วนตัวเพื่อสั่งซื้อ</li>
+                    <li>- ต้องการเพิ่มสินค้าของตัวเองในเว็บไซต์</li>
+                </ul>
+            </div>
+
+            <div class="ft-contact">
+                <div class="ft-sub">Contact us:</div>
+                <ul class="ft-list">
+                    <li>Address: 99/999 หมู่ที่ 3</li>
+                    <li>ต.คลองหนึ่ง อ.คลองหลวง</li>
+                    <li>จ.ปทุมธานี 12120</li>
+                </ul>
+                <div class="ft-phone">
+                    <img src="img/phone.svg" class="ft-phone-icon" alt="phone icon">
+                    <span>999-999-9999</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-slogan">“สโลแกน”</div>
+
+        <div class="footer-bar">
+            <img src="img/logo.png" class="ft-logo">
+            <div class="ft-power">Power by BookStore.com</div>
+            <div class="ft-socials">
+                <img src="img/youtube.svg"><img src="img/facebook.svg"><img src="img/instagram.svg"><img
+                    src="img/mail.svg">
+            </div>
+        </div>
+    </footer>
 </body>
+
 </html>

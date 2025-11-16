@@ -1,105 +1,267 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <title>Book Store</title>
-    <link rel="stylesheet" href="cart.css" />
-    <link rel="stylesheet" href="checkout.css" />
-    <link rel="stylesheet" href="stylesheet.css" />  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="cart.css"/>
+  <link rel="stylesheet" href="checkout.css"/>
+  <link rel="stylesheet" href="stylesheet.css"/>
 </head>
 <body>
-    <header class="header">
+
+  <header class="header">
     <div class="header-container">
-        <div class="logo">
-        <img src="img/logo.png" alt="Bookstore Logo">
-        </div>
+      <div class="logo"><img src="img/logo.png" alt="Bookstore Logo"></div>
 
-        <div class="search-bar">
-        <input type="text" placeholder="Search">
-        <button><i class="fa fa-search"></i></button>
-        </div>
+      <div class="search-bar">
+        <input type="text" placeholder="Search" aria-label="Search books">
+        <button aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
 
-        <div class="header-icons">
-            <a href="cart.html">
-            <div class="circle">
-                <img src="img/cart-icon.png" alt="Cart Icon">
-            </div>
-            </a> 
+      <div class="header-cart">
+        <a href="cart.html" class="cart" aria-label="Open cart">
+          <img src="img/cart-icon.png" alt="">
+          <span id="cartBadge" class="cart-badge"></span>
         </a>
-        <a href="login.html" class="icon">
-            <div class="circle">
-                <img src="img/logo.png" alt="Bookstore Logo">
-            </div>
+      </div>
+
+      <div class="header-profile">
+        <a href="login.html" class="icon" aria-label="Login">
+          <img src="img/BlankPF.png" alt="">
         </a>
-        </div>
+      </div>
     </div>
-    </header>
+  </header>
 
-    <div class="content">
-        <div class = "Step">
-        <p>Step 1 : Shipping Address
-            <img class="icon" width="10" height="10" src="https://img.icons8.com/ios-glyphs/30/sort-down.png" alt="sort-down"/>
-        </p>
+  <div class="content back">
+    <a href="cart.html" class="back-to-cart-btn"><span>← Back to Cart</span></a>
+    <hr>
+    <p class="Title">Checkout</p>
+  </div>
+
+  <!-- ========== STEP 1: CONFIRM ORDER ========== -->
+  <div class="content">
+    <div class="Step"><p>Step 1 : Confirm Order <span class="arrow">&#9660;</span></p></div>
+    <div class="Detail" id="OrderDetail">
+      <div class="Summary-Head">
+        <div class="Item-Row">
+          <span class="Item-Title">BOOK TITLE / ชื่อหนังสือ</span>
+          <span class="Item-Price">TOTAL / ยอดรวม</span>
         </div>
+      </div>
 
-        <div class="Detail">
-            <form class="Address">
-                <div class="Address-Row">
-                        <label class="Address-Text" for="fname">*Name / ชื่อ</label>
-                        <input class="Address-Form" type="text" id="fname" name="fname" placeholder="*Name / ชื่อ">
-                </div>
+      <div class="Order-List" id="cartList"></div>
 
-                <div class="Address-Row">
-                    <label class="Address-Text" for="lname">*Surname / นามสกุล</label>
-                    <input class="Address-Form" type="text" id="lname" name="lname" placeholder="Surname / นามสกุล">
-                </div>
-                    
-                <div class="Address-Row">
-                <label class="Address-Text" for="telephone">*Telephone / เบอร์โทรศัพท์</label>
-                <input class="Address-Form" type="number" id="telephone" name="telephone" placeholder="Telephone / เบอร์โทรศัพท์">
-                </div>
-
-                <div class="Address-Row">
-                    <label class="Address-Text" for="address1">*Address 1 / ที่อยู่</label>
-                    <input class="Address-Form" type="text" id="address1" name="address1" placeholder="Address 1 / ที่อยู่">
-                </div>
-                    
-                <div class="Address-Row">
-                    <label class="Address-Text" for="address2">Address 2 / ที่อยู่ (ต่อ)</label>
-                    <input class="Address-Form" type="text" id="address2" name="address2" placeholder="Address 2 / ที่อยู่ (ต่อ)">
-                </div>
-
-                <div class="Address-Row">
-                    <label class="Address-Text" for="province">*Province / จังหวัด</label>
-                    <input class="Address-Form" type="text" id="province" name="province" placeholder="Province / จังหวัด">
-                </div>
-
-                <div class="Address-Row">
-                    <label class="Address-Text" for="district">*District / อำเภอ</label>
-                    <input class="Address-Form" type="text" id="district" name="district" placeholder="District / อำเภอ">
-                </div>
-
-                <div class="Address-Row">
-                    <label class="Address-Text" for="postcode">*Postcode / รหัสไปรษณีย์</label>
-                    <input class="Address-Form" type="number" id="postcode" name="postcode" placeholder="Postcode / รหัสไปรษณีย์">
-                </div>
-                <div class="Address-Row Button-Row">
-                    <input class="Address-Confirm" type="submit" value="Confirm">
-                </div>
-            </form>  
-        </div>
+      <div class="Summary" id="summary">
+        <div class="Sum-Row"><span>Sub Total / ยอดรวม :</span><span id="subTotal">฿0.00</span></div>
+        <div class="Sum-Row"><span>Shipping Fee / ค่าจัดส่ง :</span><span id="shipping">฿0.00</span></div>
+        <div class="Sum-Row"><span>Discount / ส่วนลด :</span><span id="discount">-฿0.00</span></div>
+        <div class="Sum-Row total"><span>Total / ยอดรวมทั้งสิ้น :</span><span id="grandTotal">฿0.00</span></div>
+        <button class="Confirm-Btn" id="step1NextBtn">Confirm</button>
+      </div>
     </div>
+  </div>
+
+  <!-- ========== STEP 2: SHIPPING ADDRESS ========== -->
+  <div class="content">
+    <div class="Step"><p>Step 2 : Shipping Address <span class="arrow">&#9660;</span></p></div>
+    <div class="Detail">
+      <form id="addressForm" class="Address" action="#" method="post">
+        <div class="Row">
+          <label class="Address-Text" for="fname">*Name / ชื่อ</label>
+          <input class="Address-Form" type="text" id="fname" placeholder="*Name / ชื่อ" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="lname">*Surname / นามสกุล</label>
+          <input class="Address-Form" type="text" id="lname" placeholder="*Surname / นามสกุล" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="telephone">*Telephone / เบอร์โทรศัพท์</label>
+          <input class="Address-Form" type="tel" id="telephone" placeholder="*Telephone / เบอร์โทรศัพท์" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="address1">*Address 1 / ที่อยู่</label>
+          <input class="Address-Form" type="text" id="address1" placeholder="*Address 1 / ที่อยู่" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="address2">Address 2 / ที่อยู่ (ต่อ)</label>
+          <input class="Address-Form" type="text" id="address2" placeholder="Address 2 / ที่อยู่ (ต่อ)">
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="province">*Province / จังหวัด</label>
+          <input class="Address-Form" type="text" id="province" placeholder="*Province / จังหวัด" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="district">*District / อำเภอ</label>
+          <input class="Address-Form" type="text" id="district" placeholder="*District / อำเภอ" required>
+        </div>
+
+        <div class="Row">
+          <label class="Address-Text" for="postcode">*Postcode / รหัสไปรษณีย์</label>
+          <input class="Address-Form" type="text" id="postcode" placeholder="*Postcode / รหัสไปรษณีย์" required>
+        </div>
+
+        <div class="Row Button-Row">
+          <button class="Confirm-Btn" type="submit" id="step2ConfirmBtn">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== STEP 3: PAYMENT ========== -->
+  <div class="content Step3">
+    <div class="Step"><p>Step 3 : Payment Method <span class="arrow">&#9660;</span></p></div>
+    <div class="Detail">
+      <form id="paymentForm" class="Payment" action="#" method="post" enctype="multipart/form-data">
+        <div class="Payment-Detail-Container">
+          <p class="font-20 bold">*Bank Transfer / โอนผ่านบัญชีธนาคาร</p>
+        </div>
+
+        <div class="Payment-Detail-Container Payment-Box">
+          <input class="Select-Bank" type="radio" id="KBANK" name="bank" value="kbank">
+          <img class="Bank-Logo" src="https://image.tnews.co.th/uploads/images/contents/w1024/2025/01/CxaKtWLdkIgsdkMFfda3.webp?x-image-process=style/lg-webp" alt="KBANK">
+          <div class="Bank-Text">
+            <p class="font-20">ธนาคารกสิกรไทย</p>
+            <p class="font-20">123-4-56789-0</p>
+            <p class="font-20">ร้านบุ๊คสโตร์</p>
+          </div>
+        </div>
+
+        <div class="Payment-Detail-Container Payment-Box">
+          <input class="Select-Bank" type="radio" id="SCB" name="bank" value="scb">
+          <img class="Bank-Logo" src="https://img.salehere.co.th/p/1200x0/2019/01/29/ph5b5aiwe7hl.jpg" alt="SCB">
+          <div class="Bank-Text">
+            <p class="font-20">ธนาคารไทยพาณิชย์</p>
+            <p class="font-20">123-4-56789-0</p>
+            <p class="font-20">ร้านบุ๊คสโตร์</p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="Row">
+          <div class="Column">
+            <div class="Payment-Detail-Container Amount">
+              <label class="font-20 bold" for="amount">*Amount / ยอดเงินที่ชำระ</label>
+            </div>
+            <div class="Payment-Detail-Container Amount">
+              <input class="Payment-Form" type="number" step="0.01" min="0" id="amount" name="amount" placeholder="ยอดเงิน เช่น 100.00">
+            </div>
+          </div>
+
+          <div class="Column">
+            <div class="Payment-Detail-Container Date">
+              <label class="font-20 bold" for="date">*Date / วันที่โอน</label>
+            </div>
+            <div class="Payment-Detail-Container Date">
+              <input class="Payment-Form" type="date" id="date" name="date">
+            </div>
+          </div>
+
+          <div class="Column">
+            <div class="Payment-Detail-Container Time">
+              <label class="font-20 bold" for="time">*Time / เวลาโอน</label>
+            </div>
+            <div class="Payment-Detail-Container Time">
+              <input class="Payment-Form" type="time" id="time" name="time">
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="Payment-Detail-Container Slip">
+          <div class="Payment-Detail-Container">
+            <p class="font-20 bold">*Upload Slip / แนบสลิป</p>
+          </div>
+          <div class="Payment-Detail-Container file-upload-wrapper">
+            <label class="choose-file-btn" for="slip">Choose File</label>
+            <span id="file-name">ยังไม่ได้เลือกไฟล์</span>
+            <input class="Select-Slip" type="file" id="slip" name="slip">
+          </div>
+        </div>
+
+        <div class="Row Button-Row">
+          <button class="Confirm-Btn" type="submit">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Overlay -->
+  <div id="successMessage" class="Success">
+    <img class="logo" src="assets/d48882a5-5363-406e-9368-7aae5d36b071 1.png" alt="Bookstore Logo">
+    <h2>Thank you for your purchase!</h2>
+    <p>Your order has been successfully placed.</p>
+    <button id="backHomeBtn">Back to Homepage</button>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="ft-ref"><h3 class="ft-title">Reference</h3></div>
+      <div class="ft-genre">
+        <div class="ft-sub">Genre:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-faq">
+        <div class="ft-sub">FAQ:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+      </div>
+      <div class="ft-contact">
+        <div class="ft-sub">Contact us:</div>
+        <ul class="ft-list">
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+          <li>- xxxxxxxxxxxx</li>
+        </ul>
+        <div class="ft-phone">
+          <img src="img/phone.svg" alt="" class="ft-phone-icon">
+          <span>000-000-0000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-slogan">“สโลแกน”</div>
+
+    <div class="footer-bar">
+      <img src="img/logo.png" alt="Bookstore" class="ft-logo">
+      <div class="ft-power">Power by BookStore.com</div>
+      <div class="ft-socials">
+        <img src="img/youtube.svg" alt="YouTube">
+        <img src="img/facebook.svg" alt="Facebook">
+        <img src="img/instagram.svg" alt="Instagram">
+        <img src="img/mail.svg" alt="Email">
+      </div>
+    </div>
+  </footer>
+
+  <script src="checkout.js"></script>
 </body>
-<script>
-const step = document.querySelector('.Step');
-const detail = document.querySelector('.Detail');
-
-step.addEventListener('click', () => {
-  detail.classList.toggle('active');
-});
-</script>
 </html>
