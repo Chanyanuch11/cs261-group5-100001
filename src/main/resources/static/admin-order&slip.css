@@ -1,0 +1,144 @@
+/* พื้นหลังรวม + ฟอนต์ */
+body {
+    margin: 0;
+    font-family: "Prompt", sans-serif;
+    background-color: #dbe6f2;      /* ขอบฟ้าจาง ๆ รอบหน้า */
+}
+
+/* Layout หลัก */
+.page-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ------------ Sidebar ------------ */
+.sidebar {
+    width: 230px;
+    background-color: #f3e7a7;      /* เหลืองอ่อนแบบในรูป */
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.admin-box {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.admin-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #d1c39c;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c4b292;
+    font-size: 26px;
+}
+
+.admin-text {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #8c6f4a;
+}
+
+.menu {
+    list-style: none;
+    margin: 0;
+    padding: 25px 0;
+    border-top: 1px solid #e0d3aa;
+}
+
+.menu li {
+    padding: 10px 0;
+    font-size: 20px;
+    color: #8c6f4a;
+    cursor: pointer;
+}
+
+.menu li.active {
+    font-weight: bold;
+}
+
+/* ปุ่ม Logout */
+.logout-btn {
+    margin-top: auto;
+    align-self: center;
+    width: 120px;
+    padding: 10px 0;
+    border: none;
+    border-radius: 3px;
+    font-size: 18px;
+    background-color: #bda588;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* ------------ Content ------------ */
+.content {
+    flex: 1;
+    background-color: #fdf8ef;   /* ครีมอ่อน */
+    padding: 40px 60px;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin: 0 0 40px;
+    text-align: center;
+    font-size: 28px;
+    color: #7a5a3a;
+}
+
+/* ------------ Table ------------ */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #7a5a3a;
+    font-size: 16px;
+}
+
+.order-table th,
+.order-table td {
+    padding: 10px 16px;
+    text-align: left;
+}
+
+.order-table thead tr {
+    border-bottom: 2px solid #b79b7b;
+}
+
+.order-table tbody tr {
+    height: 36px;
+}
+
+/* ไอคอน ✔ ❌ แบบกล่องสีเขียว/แดง */
+.status-icons {
+    display: flex;
+    gap: 6px;
+}
+
+.icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    border: 2px solid transparent;
+}
+
+.icon.check {
+    background-color: #c9e7c3;
+    border-color: #4f9150;
+    color: #2f5f32;
+}
+
+.icon.cross {
+    background-color: #f5c7c3;
+    border-color: #b95a54;
+    color: #7e2b29;
+}
