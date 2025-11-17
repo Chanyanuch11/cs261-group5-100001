@@ -10,6 +10,7 @@ import com.bookstore.dto.AdminOrderSummaryResponse;
 import com.bookstore.model.User;
 import com.bookstore.repo.UserRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,4 +95,19 @@ public class OrderController {
         Order order = orderService.getOrder(orderId);
         return ResponseEntity.ok(OrderResponse.from(order));
     }
+
+    @GetMapping("/debug/{orderId}")
+public ResponseEntity<?> debugOrder(@PathVariable Long orderId) {
+    Order order = orderService.getOrder(orderId);
+    
+    Map<String, Object> debug = new HashMap<>();
+    debug.put("orderId", order.getId());
+    debug.put("subTotal", order.getSubTotal());
+    debug.put("shippingFee", order.getShippingFee());
+    debug.put("discount", order.getDiscount());  // ✅ Check this value
+    debug.put("total", order.getTotal());
+    debug.put("status", order.getStatus());
+    
+    return ResponseEntity.ok(debug);
+}
 }

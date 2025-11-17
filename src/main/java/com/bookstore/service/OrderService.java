@@ -11,10 +11,12 @@ public class OrderService {
 
     private final OrderRepository orderRepo;
     private final CartRepository cartRepo;
+    private final BookRepository bookRepo;
 
-    public OrderService(OrderRepository orderRepo, CartRepository cartRepo) {
+    public OrderService(OrderRepository orderRepo, CartRepository cartRepo, BookRepository bookRepo) {
         this.orderRepo = orderRepo;
         this.cartRepo = cartRepo;
+        this.bookRepo = bookRepo;
     }
 
     // ✅ Create order from cart
@@ -45,11 +47,17 @@ public class OrderService {
         order.setStatus("PENDING_PAYMENT");
 
         for (CartItem ci : cartItems) {
+            Book book = ci.getBook();
+            if (book.getStock() < ci.getQuantity()) {
+                throw new IllegalStateException("Not enough stock for book: " + book.getTitle());
+            }
+            book.setStock(book.getStock() - ci.getQuantity());
+            bookRepo.save(book);
             OrderItem oi = new OrderItem();
             oi.setOrder(order);
-            oi.setBook(ci.getBook());
+            oi.setBook(book);
             oi.setQuantity(ci.getQuantity());
-            oi.setPrice(ci.getBook().getPrice()); // ✅ include price
+            oi.setPrice(book.getPrice());
             order.getItems().add(oi);
         }
 
