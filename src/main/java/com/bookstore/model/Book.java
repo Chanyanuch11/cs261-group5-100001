@@ -17,6 +17,9 @@ public class Book {
     private String category;
     
     private int stock;
+
+    @Lob
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String description;
     private String coverUrl;
 
