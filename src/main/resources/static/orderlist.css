@@ -1,148 +1,147 @@
-/* พื้นหลังรวม + ฟอนต์ */
-body {
-    margin: 0;
-    font-family: "Prompt", sans-serif;
-    background-color: #dbe6f2;      /* ขอบฟ้าจาง ๆ รอบหน้า */
-}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Libre Baskerville", "Noto Sans Thai", serif;
 
-/* Layout หลัก */
-.page-container {
-    display: flex;
-    min-height: 100vh;
-}
+    }
 
-/* ------------ Sidebar ------------ */
-.sidebar {
-    width: 230px;
-    background-color: #f3e7a7;      /* เหลืองอ่อนแบบในรูป */
-    padding: 25px 20px;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
+    body {
+        display: flex;
+        min-height: 100vh;
+        background: #f5f1e8;
+        color: #403a2a;
+        min-height: 100vh;
+    }
 
-/* โปรไฟล์ admin (แทน admin-box / admin-icon เดิม) */
-.profile {
-    text-align: center;
-    margin-bottom: 40px;
-}
 
-.profile img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 1px solid #d1c39c;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto 8px;
-}
+    .main-content {
+        flex: 1;
+        padding: 60px 90px;
+    }
 
-.profile p {
-    margin: 0;
-    font-size: 18px;
-    color: #8c6f4a;
-}
+    .page-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
 
-.menu {
-    list-style: none;
-    margin: 0;
-    padding: 25px 0;
-    border-top: 1px solid #e0d3aa;
-}
 
-.menu li {
-    padding: 10px 0;
-    font-size: 20px;
-    color: #8c6f4a;
-    cursor: pointer;
-}
+    .orders-table-container {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
 
-.menu li.active {
-    font-weight: bold;
-}
+    .orders-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-/* ปุ่ม Logout */
-.logout-btn {
-    margin-top: auto;
-    align-self: center;
-    width: 120px;
-    padding: 10px 0;
-    border: none;
-    border-radius: 3px;
-    font-size: 18px;
-    background-color: #bda588;
-    color: #fff;
-    cursor: pointer;
-}
+    .orders-table th {
+        background: #f5eebf;
+        padding: 16px;
+        text-align: left;
+        font-weight: 600;
+    }
 
-/* ------------ Content ------------ */
-.content {
-    flex: 1;
-    background-color: #fdf8ef;   /* ครีมอ่อนเต็มฝั่งขวา */
-    padding: 40px 60px;
-    box-sizing: border-box;
-}
+    .orders-table td {
+        padding: 16px;
+        border-bottom: 1px solid #e6e0cf;
+    }
 
-/* กล่องด้านในสำหรับจัดกึ่งกลางตาราง */
-.content-inner {
-    max-width: 900px;
-    margin: 0 auto;
-}
+    .orders-table tr:hover {
+        background: #fafaf8;
+    }
 
-h1 {
-    margin: 0 0 40px;
-    text-align: center;
-    font-size: 28px;
-    color: #7a5a3a;
-}
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #7a7461;
+    }
 
-/* ------------ Table ------------ */
-.order-table {
-    width: 100%;
-    border-collapse: collapse;
-    color: #7a5a3a;
-    font-size: 16px;
-}
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 
-.order-table th,
-.order-table td {
-    padding: 10px 16px;
-    text-align: left;
-}
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
 
-.order-table thead tr {
-    border-bottom: 2px solid #b79b7b;
-}
+    .status-complete {
+        background: #d4edda;
+        color: #155724;
+    }
 
-.order-table tbody tr {
-    height: 36px;
-}
+    .status-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
 
-/* ไอคอน ✔ ❌ แบบกล่องสีเขียว/แดง */
-.status-icons {
-    display: flex;
-    gap: 6px;
-}
 
-.icon {
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    border: 2px solid transparent;
-}
+    .action-cell {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
 
-.icon.check {
-    background-color: #c9e7c3;
-    border-color: #4f9150;
-    color: #2f5f32;
-}
+    .btn-view {
+        padding: 8px 16px;
+        background: #B6A88A;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+    }
 
-.icon.cross {
-    background-color: #f5c7c3;
-    border-color: #b95a54;
-    color: #7e2b29;
-}
+    .btn-view:hover {
+        background: #a39578;
+    }
+
+    .btn-approve {
+        padding: 6px 10px;
+        background: #28a745;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        transition: background 0.2s;
+    }
+
+    .btn-approve:hover {
+        background: #218838;
+    }
+
+    .btn-reject {
+        padding: 6px 10px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        transition: background 0.2s;
+    }
+
+    .btn-reject:hover {
+        background: #c82333;
+    }
+
+    .btn-approve:disabled,
+    .btn-reject:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
