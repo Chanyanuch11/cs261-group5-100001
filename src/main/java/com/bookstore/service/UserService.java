@@ -32,4 +32,21 @@ public class UserService {
 
         return Optional.empty(); // fail
     }
+
+    // ✅ Logout: invalidate user session/token
+    // ในอนาคตสามารถเพิ่ม token blacklisting หรือ session invalidation ได้ที่นี่
+    public boolean logout(Long userId) {
+        // ตรวจสอบว่า user มีอยู่จริงหรือไม่ (optional)
+        if (userId != null) {
+            Optional<User> user = userRepository.findById(userId);
+            if (user.isPresent()) {
+                // ในอนาคตสามารถเพิ่ม logic สำหรับ:
+                // - ลบ JWT token จาก blacklist
+                // - ลบ session จาก database
+                // - อัปเดต last logout time
+                return true;
+            }
+        }
+        return false;
+    }
 }

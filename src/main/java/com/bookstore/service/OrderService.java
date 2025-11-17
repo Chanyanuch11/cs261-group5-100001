@@ -67,4 +67,15 @@ public class OrderService {
     public List<Order> getOrdersForUser(Long userId) {
         return orderRepo.findByUserId(userId);
     }
+    
+    // ✅ Admin ใช้ดึง order ทั้งหมด
+    public List<Order> getAllOrders() {
+        return orderRepo.findAll();
+    }
+
+    // ✅ ใช้ดึง order ตาม id (เอาไว้เปลี่ยน status)
+    public Order getOrder(Long orderId) {
+        return orderRepo.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    }
 }

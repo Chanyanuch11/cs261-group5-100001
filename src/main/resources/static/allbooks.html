@@ -14,7 +14,13 @@
     <header class="header">
         <div class="header-container">
             <div class="logo">
+<<<<<<< HEAD
                 <img src="img/logo.png" alt="Bookstore Logo">
+=======
+                <a href="index.html">
+                    <img src="img/logo.png" alt="Bookstore Logo">
+                </a>
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
             </div>
 
             <form id="searchForm" class="search-bar">
@@ -29,6 +35,7 @@
                     <img src="img/cart-icon.svg" alt="">
                     <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
                 </a>
+<<<<<<< HEAD
                 <a href="login.html" class="icon" aria-label="Login">
                     <img src="img/BlankPF.png" alt="">
                 </a>
@@ -58,10 +65,40 @@
             <!-- 📚 Book Grid (ขวา) -->
             <div id="bookList" class="books-grid">Loading...</div>
     
+=======
+                <div class="profile-dropdown">
+                    <img src="img/BlankPF.png" alt="Profile" class="profile-pic">
+            
+                    <div class="dropdown-menu">
+                        <a href="OrderStatus.html">Order Status</a>
+                        <a href="#" onclick="logout(); return false;">Logout</a>
+                    </div>
+                </div>
+        </div>
+    </header>
+
+
+    <!-- Books Section -->
+    <section class="books-section">
+        <div class="books-layout">
+
+            <!-- 📌 Filter Sidebar (ซ้าย) -->
+            <aside class="filter-sidebar">
+                <aside class="filter-sidebar">
+                    <h3>Filter</h3>
+                    <ul id="categoryList"></ul>
+                </aside>
+            </aside>
+
+            <!-- 📚 Book Grid (ขวา) -->
+            <div id="bookList" class="books-grid">Loading...</div>
+
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
         </div>
     </section>
 
     <!--  Script zone -->
+<<<<<<< HEAD
         <script>
             const apiBase = "http://localhost:8080/api/books";
             const cartApi = "http://localhost:8080/api/cart";
@@ -126,6 +163,114 @@
 
             // Render หนังสือ
             function renderBooks(books) {
+=======
+    <script>
+        const apiBase = "http://localhost:8080/api/books";
+        const cartApi = "http://localhost:8080/api/cart";
+
+        let allBooks = []; // เก็บหนังสือทั้งหมดไว้สำหรับ filter
+
+        // โหลดหนังสือทั้งหมดครั้งเดียว
+        function loadBooks() {
+            fetch(apiBase)
+                .then(r => r.json())
+                .then(data => {
+                    allBooks = data;
+                    renderBooks(allBooks);
+                    generateCategoryFilters(); // ← มาอยู่ตรงนี้
+                })
+                .catch(() => {
+                    document.getElementById("bookList").innerHTML =
+                        "<div class='empty'>❌ Failed to load books.</div>";
+                });
+        }
+
+        function generateCategoryFilters() {
+            const categorySet = new Set();
+
+            allBooks.forEach(book => {
+                if (book.category) {
+                    book.category.split(",").forEach(cat => {
+                        categorySet.add(cat.trim());
+                    });
+                }
+            });
+
+            const categories = Array.from(categorySet).sort();
+            const ul = document.getElementById("categoryList");
+            ul.innerHTML = "";
+
+            categories.forEach(cat => {
+                ul.innerHTML += `
+            <li>
+                <input type="checkbox" class="filter-checkbox" value="${cat}">
+                ${cat}
+            </li>
+        `;
+            });
+
+            // bind events (ต้อง bind หลังสร้าง checkbox)
+            document.querySelectorAll(".filter-checkbox").forEach(cb => {
+                cb.addEventListener("change", searchAndFilter);
+            });
+        }
+
+        // ค้นหา + ฟิลเตอร์ (ทำงานร่วมกัน)
+        function searchAndFilter() {
+            const keyword = document.getElementById("searchInput").value.trim().toLowerCase();
+            const selected = [...document.querySelectorAll(".filter-checkbox:checked")]
+                .map(cb => cb.value.toLowerCase()); // ตรงนี้ก็ lower
+
+            let result = allBooks;
+
+            // 1) ค้นหาแบบ ignore case (ตัวพิมพ์เล็ก/ใหญ่ไม่สน)
+            if (keyword) {
+                result = result.filter(book =>
+                    book.title.toLowerCase().includes(keyword)
+                );
+            }
+
+            // 2) ฟิลเตอร์หมวดแบบ ignore case
+            if (selected.length > 0) {
+                result = result.filter(book => {
+                    if (!book.category) return false;
+
+                    // normalize ฟอร์แมต เช่น sci-fi, sci - fi, sci fi, sci_fi
+                    const normalizedBookCats = book.category
+                        .split(",")
+                        .map(c =>
+                            c
+                                .toLowerCase()
+                                .replace(/[\s_-]+/g, "")   // ลบ space, -, _
+                        );
+
+                    const normalizedSelected = selected.map(cat =>
+                        cat
+                            .toLowerCase()
+                            .replace(/[\s_-]+/g, "")
+                    );
+
+                    return normalizedSelected.some(cat => normalizedBookCats.includes(cat));
+                });
+            }
+
+            renderBooks(result);
+        }
+
+        // Event ค้นหา
+        document.getElementById("searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            searchAndFilter();
+        });
+
+        // Event ฟิลเตอร์
+        document.querySelectorAll(".filter-checkbox").forEach(cb => {
+            cb.addEventListener("change", searchAndFilter);
+        });
+
+        // Render หนังสือ
+        function renderBooks(books) {
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
                 const container = document.getElementById("bookList");
                 container.innerHTML = "";
 
@@ -135,10 +280,20 @@
                 }
 
                 books.forEach(b => {
+<<<<<<< HEAD
+=======
+                    // ✅ ประกาศตัวแปรที่ใช้ใน template
+                    const title = b.title || "Book’s name";
+                    const author = b.author || "Author’s name";
+                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
+                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
+
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
                     const wrap = document.createElement("div");
                     wrap.className = "book-wrap";
 
                     wrap.innerHTML = `
+<<<<<<< HEAD
                         <article class="book-card">
                             <img class="book-cover" src="${b.coverUrl || ""}" alt="">
                             <h3 class="book-title">${b.title}</h3>
@@ -147,12 +302,25 @@
                         </article>
                         <button class="btn-add">+ Add to cart</button>
                         `;
+=======
+    <a href="bookdetail.html?id=${b.id}" class="book-link">
+        <article class="book-card">
+            <img class="book-cover" src="${cover}" alt="Cover of ${title}">
+            <h3 class="book-title">${title}</h3>
+            <div class="book-author">${author}</div>
+            <div class="price-tag">฿${price}</div>
+        </article>
+    </a>
+    <button class="btn-add">+ Add to cart</button>
+`;
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
 
                     wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
                     container.appendChild(wrap);
                 });
             }
 
+<<<<<<< HEAD
             // ===== Cart =====
             async function addToCart(bookId) {
                 let userId = localStorage.getItem("userId");
@@ -206,6 +374,61 @@
             // Start
             document.addEventListener('DOMContentLoaded', () => loadBooks());
         </script>
+=======
+        // ===== Cart =====
+        async function addToCart(bookId) {
+            let userId = localStorage.getItem("userId");
+            if (!userId) {
+                alert("⚠️ Please log in first!");
+                window.location.href = "login.html";
+                return;
+            }
+            userId = Number(userId);
+
+            const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+
+            try {
+                const res = await fetch(`${cartApi}/add`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(cartItem)
+                });
+
+                if (res.ok) {
+                    await fetchCartCount(userId);
+                    alert("✅ Book added to cart!");
+                } else {
+                    alert("❌ Failed to add to cart");
+                }
+            } catch {
+                alert("⚠️ Could not reach backend");
+            }
+        }
+
+        async function fetchCartCount(userId) {
+            const res = await fetch(`${cartApi}/${userId}`);
+            const items = await res.json();
+            const count = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+            setCartCount(userId, count);
+        }
+
+        function badgeKey(userId) { return `cartCount_${userId || 'guest'}`; }
+        function getCartCount(userId) { return Number(localStorage.getItem(badgeKey(userId))) || 0; }
+        function setCartCount(userId, n) {
+            localStorage.setItem(badgeKey(userId), String(n));
+            renderCartBadge(userId);
+        }
+        function renderCartBadge(userId) {
+            const el = document.getElementById('cartBadge');
+            const n = getCartCount(userId);
+            el.textContent = n;
+            el.classList.toggle('is-zero', n <= 0);
+        }
+
+        // Start
+        document.addEventListener('DOMContentLoaded', () => loadBooks());
+    </script>
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
 
     <!-- Footer -->
     <footer class="footer">
