@@ -21,26 +21,24 @@ body {
     box-sizing: border-box;
 }
 
-.admin-box {
+/* โปรไฟล์ admin (แทน admin-box / admin-icon เดิม) */
+.profile {
     text-align: center;
     margin-bottom: 40px;
 }
 
-.admin-icon {
+.profile img {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     border: 1px solid #d1c39c;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #c4b292;
-    font-size: 26px;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 8px;
 }
 
-.admin-text {
-    margin-top: 10px;
+.profile p {
+    margin: 0;
     font-size: 18px;
     color: #8c6f4a;
 }
@@ -80,9 +78,15 @@ body {
 /* ------------ Content ------------ */
 .content {
     flex: 1;
-    background-color: #fdf8ef;   /* ครีมอ่อน */
+    background-color: #fdf8ef;   /* ครีมอ่อนเต็มฝั่งขวา */
     padding: 40px 60px;
     box-sizing: border-box;
+}
+
+/* กล่องด้านในสำหรับจัดกึ่งกลางตาราง */
+.content-inner {
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 h1 {

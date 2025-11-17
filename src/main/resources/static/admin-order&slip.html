@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin – Order List</title>
-     <link rel="stylesheet" href="stylesheet.css" />
+    <link rel="stylesheet" href="stylesheet.css" />
     <link rel="stylesheet" href="admin-order&slip.css">
 
 </head>
@@ -13,11 +13,9 @@
 
     <!-- Sidebar -->
     <aside class="sidebar">
-        <div class="admin-box">
-            <div class="admin-icon">
-                <span>👤</span>
-            </div>
-            <p class="admin-text">admin</p>
+        <div class="profile">
+            <img src="img/BlankPF.png" alt="Profile">
+            <p>admin</p>
         </div>
 
         <nav>
@@ -33,86 +31,64 @@
 
     <!-- Main content -->
     <main class="content">
-        <h1>ตรวจสอบคำสั่งซื้อและใบเสร็จ</h1>
+        <div class="content-inner">
+            <h1>ตรวจสอบคำสั่งซื้อและใบเสร็จ</h1>
 
-        <table class="order-table">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Username</th>
-                    <th>Book</th>
-                    <th>Time</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th>Price</th>
-                </tr>
-            </thead>
+            <table class="order-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Username</th>
+                        <th>Book</th>
+                        <th>Time</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="status-icons">
-                            <span class="icon check">✔</span>
-                            <span class="icon cross">✖</span>
-                        </div>
-                    </td>
-                    <td>12BYenIncident</td>
-                    <td>เขบขีวิตต้องรอด</td>
-                    <td>23:59:13</td>
-                    <td>03/11/2025</td>
-                    <td>1</td>
-                    <td>฿479</td>
-                </tr>
+              <tbody>
+    <tr data-order-id="1">
+        <td>
+            <div class="status-icons">
+                <button type="button" class="icon check" data-action="approve">✔</button>
+                <button type="button" class="icon cross" data-action="reject">✖</button>
+            </div>
+        </td>
+        <td>12BYenIncident</td>
+        <td>แบบชีวิตต้องรอด</td>
+        <td>23:59:13</td>
+        <td>03/11/2025</td>
+        <td>1</td>
+        <td>฿479</td>
+    </tr>
 
-                <tr>
-                    <td>
-                        <div class="status-icons">
-                            <span class="icon check">✔</span>
-                            <span class="icon cross">✖</span>
-                        </div>
-                    </td>
-                    <td>MoriatyNiisan</td>
-                    <td>Animal Farm</td>
-                    <td>10:11:54</td>
-                    <td>24/10/2025</td>
-                    <td>1</td>
-                    <td>฿261</td>
-                </tr>
+    <tr data-order-id="2">
+        <td>
+            <div class="status-icons">
+    <button type="button" class="icon check">✔</button>
+    <button type="button" class="icon cross">✖</button>
+</div>
 
-                <tr>
-                    <td>
-                        <div class="status-icons">
-                            <span class="icon check">✔</span>
-                            <span class="icon cross">✖</span>
-                        </div>
-                    </td>
-                    <td>MoriatyNiisan</td>
-                    <td>แดดยาว NEVER DIE</td>
-                    <td>10:11:54</td>
-                    <td>24/10/2025</td>
-                    <td>2</td>
-                    <td>฿646</td>
-                </tr>
+        </td>
+        <td>MoriatyNiisan</td>
+        <td>Animal Farm</td>
+        <td>10:11:54</td>
+        <td>24/10/2025</td>
+        <td>1</td>
+        <td>฿261</td>
+    </tr>
+</tbody>
 
-                <tr>
-                    <td>
-                        <div class="status-icons">
-                            <span class="icon check">✔</span>
-                            <span class="icon cross">✖</span>
-                        </div>
-                    </td>
-                    <td>SherlyHolmes</td>
-                    <td>เขบขีวิตต้องรอด</td>
-                    <td>01:45:23</td>
-                    <td>19/10/2025</td>
-                    <td>1</td>
-                    <td>฿479</td>
-                </tr>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </main>
 
 </div>
 
 </body>
+
+<script src="admin-order&slip.js"></script>
+<script src="logout.js"></script>
+
 </html>
