@@ -1,9 +1,3 @@
-// Logout functionality
-// ฟังก์ชันสำหรับจัดการ Logout
-
-/**
- * ฟังก์ชัน logout - เรียก API backend เพื่อ logout และลบข้อมูลจาก localStorage
- */
 async function logout() {
     const userId = localStorage.getItem("userId");
     
@@ -73,6 +67,7 @@ function isLoggedIn() {
  * อัปเดต UI ของ profile icon ให้แสดง logout เมื่อ login อยู่
  */
 function updateProfileIcon() {
+    // อัปเดต profile links แบบเดิม (สำหรับหน้า cart, books, checkout)
     const profileLinks = document.querySelectorAll('a[href="login.html"].icon, a.icon[aria-label="Login"]');
     
     profileLinks.forEach(link => {
@@ -89,6 +84,40 @@ function updateProfileIcon() {
             link.onclick = null;
         }
     });
+    
+    // อัปเดต dropdown menu logout link (สำหรับหน้า index)
+    const logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+        if (isLoggedIn()) {
+            // แสดง logout link เมื่อ login อยู่
+            logoutLink.style.display = 'block';
+            logoutLink.onclick = function(e) {
+                e.preventDefault();
+                logout();
+            };
+        } else {
+            // ซ่อน logout link เมื่อยังไม่ login
+            logoutLink.style.display = 'none';
+        }
+    }
+    
+    // อัปเดต profile dropdown ให้แสดง/ซ่อนตามสถานะ login
+    const profileDropdown = document.querySelector('.profile-dropdown');
+    if (profileDropdown) {
+        if (isLoggedIn()) {
+            profileDropdown.style.display = 'block';
+        } else {
+            // ถ้ายังไม่ login อาจจะซ่อน dropdown หรือแสดงเป็น login link
+            const loginLink = profileDropdown.querySelector('a[href="login.html"]');
+            if (!loginLink) {
+                // ถ้าไม่มี login link ให้สร้าง
+                const dropdownMenu = profileDropdown.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.innerHTML = '<a href="login.html">Login</a>';
+                }
+            }
+        }
+    }
 }
 
 // อัปเดต profile icon เมื่อหน้าเว็บโหลดเสร็จ
