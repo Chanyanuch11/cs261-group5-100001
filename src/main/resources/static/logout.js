@@ -1,0 +1,127 @@
+async function logout() {
+    const userId = localStorage.getItem("userId");
+    
+    try {
+        // เรียก API logout ที่ backend
+        const response = await fetch("http://localhost:8080/api/users/logout", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                id: userId ? Number(userId) : null
+            })
+        });
+
+        const result = await response.json();
+        
+        // ลบข้อมูลทั้งหมดจาก localStorage
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+        
+        // ลบข้อมูล cart count ที่เกี่ยวข้องกับ user
+        if (userId) {
+            localStorage.removeItem(`cartCount_${userId}`);
+        }
+        
+        // ลบ cart count สำหรับ guest
+        localStorage.removeItem("cartCount_guest");
+        
+        // แสดงข้อความสำเร็จ
+        if (result.success) {
+            alert("✅ " + (result.message || "Logout successful!"));
+        } else {
+            // แม้ว่า backend จะไม่สำเร็จ แต่เราก็ลบ localStorage แล้ว
+            alert("✅ Logged out successfully!");
+        }
+        
+        // Redirect ไปหน้า login
+        window.location.href = "login.html";
+        
+    } catch (error) {
+        console.error("⚠️ Error during logout:", error);
+        
+        // แม้ว่าจะมี error แต่ก็ลบ localStorage เพื่อความปลอดภัย
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+        if (userId) {
+            localStorage.removeItem(`cartCount_${userId}`);
+        }
+        localStorage.removeItem("cartCount_guest");
+        
+        alert("✅ Logged out (local data cleared)");
+        window.location.href = "login.html";
+    }
+}
+
+/**
+ * ตรวจสอบว่าผู้ใช้ login อยู่หรือไม่
+ */
+function isLoggedIn() {
+    return localStorage.getItem("userId") !== null;
+}
+
+/**
+ * อัปเดต UI ของ profile icon ให้แสดง logout เมื่อ login อยู่
+ */
+function updateProfileIcon() {
+    // อัปเดต profile links แบบเดิม (สำหรับหน้า cart, books, checkout)
+    const profileLinks = document.querySelectorAll('a[href="login.html"].icon, a.icon[aria-label="Login"]');
+    
+    profileLinks.forEach(link => {
+        if (isLoggedIn()) {
+            // เปลี่ยนเป็น logout เมื่อ login อยู่
+            link.setAttribute("aria-label", "Logout");
+            link.setAttribute("title", "Logout");
+            link.onclick = function(e) {
+                e.preventDefault();
+                logout();
+            };
+        } else {
+            // ถ้ายังไม่ login ให้ไปหน้า login ตามปกติ
+            link.onclick = null;
+        }
+    });
+    
+    // อัปเดต dropdown menu logout link (สำหรับหน้า index)
+    const logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+        if (isLoggedIn()) {
+            // แสดง logout link เมื่อ login อยู่
+            logoutLink.style.display = 'block';
+            logoutLink.onclick = function(e) {
+                e.preventDefault();
+                logout();
+            };
+        } else {
+            // ซ่อน logout link เมื่อยังไม่ login
+            logoutLink.style.display = 'none';
+        }
+    }
+    
+    // อัปเดต profile dropdown ให้แสดง/ซ่อนตามสถานะ login
+    const profileDropdown = document.querySelector('.profile-dropdown');
+    if (profileDropdown) {
+        if (isLoggedIn()) {
+            profileDropdown.style.display = 'block';
+        } else {
+            // ถ้ายังไม่ login อาจจะซ่อน dropdown หรือแสดงเป็น login link
+            const loginLink = profileDropdown.querySelector('a[href="login.html"]');
+            if (!loginLink) {
+                // ถ้าไม่มี login link ให้สร้าง
+                const dropdownMenu = profileDropdown.querySelector('.dropdown-menu');
+                if (dropdownMenu) {
+                    dropdownMenu.innerHTML = '<a href="login.html">Login</a>';
+                }
+            }
+        }
+    }
+}
+
+// อัปเดต profile icon เมื่อหน้าเว็บโหลดเสร็จ
+document.addEventListener('DOMContentLoaded', function() {
+    updateProfileIcon();
+});
+
