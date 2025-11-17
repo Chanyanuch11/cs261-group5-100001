@@ -64,7 +64,11 @@ body {
     margin-bottom: 20px;
 }
 
+<<<<<<< HEAD
+.books-header hผผ2 {
+=======
 .books-header h2 {
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
     font-size: 36px;
     font-family: "Libre Baskerville", serif;
     color: #92866E;
@@ -228,9 +232,12 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+<<<<<<< HEAD
+=======
 }
 
 .book-link {
     text-decoration: none;
     color: inherit;
+>>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
 }
