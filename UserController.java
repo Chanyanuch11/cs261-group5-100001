@@ -47,19 +47,16 @@ public class UserController {
 
         if (user.isPresent()) {
             User u = user.get();
-            String role = u.getEmail().equalsIgnoreCase("admin@admin.com") ? "ADMIN" : "USER";
-
             LoginResponse response = new LoginResponse(
-                    u.getId(),
+                    u.getId(),                        // include user ID
                     "Login successful!",
                     u.getUsername(),
-                    u.getEmail(),
-                    role
+                    u.getEmail()
             );
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401)
-                    .body(new LoginResponse(null, "Invalid email or password", null, null, null));
+                    .body(new LoginResponse(null, "Invalid email or password", null, null));
         }
     }
 
@@ -91,12 +88,7 @@ public class UserController {
         }
     }
 
-
-<<<<<<< HEAD
     // ⚙️ Optional: Friendly error message for validation issues
-=======
-    //  Optional: Friendly error message for validation issues
->>>>>>> 38e1360945b16f8ce61c55fb7abee60fd3d1c7b7
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()
