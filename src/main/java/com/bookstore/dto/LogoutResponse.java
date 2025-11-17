@@ -25,4 +25,3 @@ public class LogoutResponse {
         this.success = success;
     }
 }
-

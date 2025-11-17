@@ -88,4 +88,10 @@ public class OrderController {
 
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long orderId) {
+        Order order = orderService.getOrder(orderId);
+        return ResponseEntity.ok(OrderResponse.from(order));
+    }
 }

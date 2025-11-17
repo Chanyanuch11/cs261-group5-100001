@@ -1,5 +1,6 @@
 // checkout.js — Step 1: Order, Step 2: Address, Step 3: Payment
 const API_BASE = 'http://localhost:8080';
+const cartApi = `${API_BASE}/api/cart`;
 
 const $ = (sel, p = document) => p.querySelector(sel);
 const $$ = (sel, p = document) => Array.from(p.querySelectorAll(sel));
@@ -15,59 +16,144 @@ function getUserId() {
   }
   return id;
 }
-function badgeKey(uid){ return `cartCount_${uid}`; }
-function updateCartBadge(uid, n){
-  const badge = $id('cartBadge');
-  if (!badge) return;
-  const val = Math.max(0, Number(n)||0);
-  badge.textContent = val > 0 ? String(val) : '';
-  badge.style.display = val > 0 ? 'inline-block' : 'none';
+
+function badgeKey(userId) {
+  return `cartCount_${userId || 'guest'}`;
 }
+
+// =========================
+// Update badge (wrapper เพื่อรองรับโค้ดเก่า)
+// =========================
+
+
+// =========================
+// Add to Cart
+// =========================
+async function addToCart(bookId) {
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    alert("⚠️ Please log in first!");
+    window.location.href = "login.html";
+    return;
+  }
+  userId = Number(userId);
+  if (!bookId) return alert("❌ Missing book ID");
+
+  const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+
+  try {
+    const res = await fetch(`${cartApi}/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartItem)
+    });
+
+    const text = await res.text();
+
+    if (res.ok) {
+      await fetchCartCount(userId); // ← อัปเดตจริงจาก backend
+      alert("✅ Book added to cart!");
+    } else {
+      console.error("❌ Backend error:", text);
+      alert("❌ Failed to add to cart");
+    }
+  } catch (err) {
+    console.error("⚠️ Network error:", err);
+    alert("⚠️ Could not reach backend");
+  }
+}
+
+// =========================
+// Fetch real backend cart data
+// =========================
+async function fetchCartCount(userId) {
+  try {
+    const res = await fetch(`${cartApi}/${userId}`);
+    if (!res.ok) throw new Error("Fetch failed");
+
+    const items = await res.json();
+
+    const count = Array.isArray(items)
+      ? items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+      : 0;
+
+    setCartCount(userId, count);
+  } catch (err) {
+    console.error("⚠️ Failed to fetch cart count:", err);
+  }
+}
+
+// =========================
+// Count + LocalStorage
+// =========================
+function getCartCount(userId) {
+  const v = localStorage.getItem(badgeKey(userId));
+  return v ? Number(v) : 0;
+}
+
+function setCartCount(userId, n) {
+  localStorage.setItem(badgeKey(userId), String(Math.max(0, n | 0)));
+  renderCartBadge(userId);
+}
+
+function renderCartBadge(userId) {
+  const el = document.getElementById('cartBadge');
+  if (!el) return;
+  const n = getCartCount(userId);
+
+  el.textContent = n > 0 ? String(n) : "";
+  el.style.display = n > 0 ? "inline-block" : "none";
+}
+
+function updateCartBadge(uid, n) {
+  setCartCount(uid, Math.max(0, Number(n) || 0));
+}
+
 
 /* ---------- accordion & step gating ---------- */
 const stepEls = $$('.Step');
 const detailEls = stepEls.map(s => s.nextElementSibling);
-const state = { step1Done:false, step2Done:false };
+const state = { step1Done: false, step2Done: false };
 
-function goToStep(n){
-  stepEls.forEach((s,i)=>{
-    s.classList.toggle('active', i === n-1);
-    detailEls[i]?.classList.toggle('active', i === n-1);
+function goToStep(n) {
+  stepEls.forEach((s, i) => {
+    s.classList.toggle('active', i === n - 1);
+    detailEls[i]?.classList.toggle('active', i === n - 1);
   });
 }
-function canOpen(i){
-  if (i===0) return true;                         // Step 1 always openable
-  if (i===1) return state.step1Done;              // Step 2 after Step 1
-  if (i===2) return state.step1Done && state.step2Done; // Step 3 after Step 2
+function canOpen(i) {
+  if (i === 0) return true;                         // Step 1 always openable
+  if (i === 1) return state.step1Done;              // Step 2 after Step 1
+  if (i === 2) return state.step1Done && state.step2Done; // Step 3 after Step 2
   return false;
 }
-function bindAccordion(){
-  stepEls.forEach((step, i)=>{
+function bindAccordion() {
+  stepEls.forEach((step, i) => {
     const tryOpen = () => {
       if (!canOpen(i)) {
-        if (i===1) alert('Please confirm your order (Step 1) first.');
-        if (i===2) alert('Please complete shipping address (Step 2) first.');
+        if (i === 1) alert('Please confirm your order (Step 1) first.');
+        if (i === 2) alert('Please complete shipping address (Step 2) first.');
         return;
       }
-      goToStep(i+1);
+      goToStep(i + 1);
     };
-    step.setAttribute('role','button');
-    step.setAttribute('tabindex','0');
+    step.setAttribute('role', 'button');
+    step.setAttribute('tabindex', '0');
     step.addEventListener('click', tryOpen);
-    step.addEventListener('keydown', e=>{
-      if (e.key==='Enter' || e.key===' ') { e.preventDefault(); tryOpen(); }
+    step.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tryOpen(); }
     });
   });
 }
 
 /* ---------- Step 1: Order Summary ---------- */
-const listBox   = $id('cartList');
-const subEl     = $id('subTotal');
-const shipEl    = $id('shipping');
-const discEl    = $id('discount');
-const totalEl   = $id('grandTotal');
+const listBox = $id('cartList');
+const subEl = $id('subTotal');
+const shipEl = $id('shipping');
+const discEl = $id('discount');
+const totalEl = $id('grandTotal');
 
-async function loadCartSummary(){
+async function loadCartSummary() {
   const uid = getUserId(); if (!uid) return;
   const res = await fetch(`${API_BASE}/api/cart/${uid}`);
   if (!res.ok) { alert(await res.text()); return; }
@@ -75,12 +161,12 @@ async function loadCartSummary(){
 
   listBox.innerHTML = '';
   let subtotal = 0;
-  items.forEach(it=>{
+  items.forEach(it => {
     const line = Number(it.price) * Number(it.quantity);
     subtotal += line;
     const row = document.createElement('div');
     row.className = 'Order-Item';
-    row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:8px 0;';
+    row.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;';
     row.innerHTML = `
       <div>
         <div style="font-weight:600">${it.title}</div>
@@ -99,14 +185,14 @@ async function loadCartSummary(){
   const total = subtotal + shipping - discount;
 
 
-  subEl.textContent   = THB(subtotal);
-  shipEl.textContent  = THB(shipping);
-  discEl.textContent  = `-${THB(discount).slice(1)}`;
+  subEl.textContent = THB(subtotal);
+  shipEl.textContent = THB(shipping);
+  discEl.textContent = `-${THB(discount).slice(1)}`;
   totalEl.textContent = THB(total);
 }
 
 // Step 1 → Step 2
-$('#step1NextBtn')?.addEventListener('click', ()=>{
+$('#step1NextBtn')?.addEventListener('click', () => {
   state.step1Done = true;
   goToStep(2);
 });
@@ -114,25 +200,25 @@ $('#step1NextBtn')?.addEventListener('click', ()=>{
 /* ---------- Step 2: Address (save & go next) ---------- */
 const addressForm = $id('addressForm');
 
-addressForm?.addEventListener('submit', async (e)=>{
+addressForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   // basic validation
   const need = (id, label) => ($id(id)?.value.trim() ? '' : `Please fill in ${label}\n`);
   let msg = '';
-  msg += need('fname','First name');
-  msg += need('lname','Last name');
-  msg += need('telephone','Phone number');
-  msg += need('address1','Address');
-  msg += need('province','Province');
-  msg += need('district','District');
-  msg += need('postcode','Postal code');
+  msg += need('fname', 'First name');
+  msg += need('lname', 'Last name');
+  msg += need('telephone', 'Phone number');
+  msg += need('address1', 'Address');
+  msg += need('province', 'Province');
+  msg += need('district', 'District');
+  msg += need('postcode', 'Postal code');
 
   const phone = $id('telephone')?.value.trim();
   if (phone && !/^\d{9,10}$/.test(phone)) msg += 'Invalid phone number (9–10 digits)\n';
   const pc = $id('postcode')?.value.trim();
   if (pc && !/^\d{5}$/.test(pc)) msg += 'Postal code must be 5 digits\n';
 
-  if (msg){ alert('Please check your address:\n' + msg); return; }
+  if (msg) { alert('Please check your address:\n' + msg); return; }
 
   const uid = getUserId(); if (!uid) return;
 
@@ -149,12 +235,12 @@ addressForm?.addEventListener('submit', async (e)=>{
   };
 
   const btn = $('#step2ConfirmBtn');
-  btn?.setAttribute('disabled','true');
+  btn?.setAttribute('disabled', 'true');
 
-  try{
+  try {
     // save address (optional but typical)
     const res = await fetch(`${API_BASE}/api/addresses`, {
-      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error(await res.text() || `HTTP ${res.status}`);
     const saved = await res.json();
@@ -162,21 +248,21 @@ addressForm?.addEventListener('submit', async (e)=>{
 
     state.step2Done = true;
     goToStep(3);
-  }catch(err){
+  } catch (err) {
     alert('Failed to save address: ' + err.message);
-  }finally{
+  } finally {
     btn?.removeAttribute('disabled');
   }
 });
 
 /* ---------- Step 3: Payment (place order) ---------- */
 const paymentForm = $id('paymentForm');
-const fileInput   = $id('slip');
-const fileName    = $id('file-name');
+const fileInput = $id('slip');
+const fileName = $id('file-name');
 const successMessage = $id('successMessage');
-const backHomeBtn    = $id('backHomeBtn');
+const backHomeBtn = $id('backHomeBtn');
 
-fileInput?.addEventListener('change', ()=>{
+fileInput?.addEventListener('change', () => {
   fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'No file selected';
 });
 
@@ -191,9 +277,9 @@ paymentForm?.addEventListener('submit', async (e) => {
   if (!addressId) return alert('Missing shipping address.');
 
   const amount = $id('amount').value.trim();
-  const date   = $id('date').value.trim();
-  const time   = $id('time').value.trim();
-  const file   = $id('slip').files[0];
+  const date = $id('date').value.trim();
+  const time = $id('time').value.trim();
+  const file = $id('slip').files[0];
   const bankEl = $$('input[name="bank"]').find(r => r.checked);
   if (!bankEl) return alert('Please select a bank.');
   const bank = bankEl.value.toUpperCase();
@@ -246,10 +332,13 @@ paymentForm?.addEventListener('submit', async (e) => {
 backHomeBtn?.addEventListener('click', () => window.location.href = 'index.html');
 
 /* ---------- init ---------- */
-document.addEventListener('DOMContentLoaded', ()=>{
-  const uid = getUserId(); if (!uid) return;
+document.addEventListener('DOMContentLoaded', async () => {
+  const uid = getUserId();
+  if (!uid) return;
+
   bindAccordion();
   goToStep(1);
   loadCartSummary();
-  updateCartBadge(uid, Number(localStorage.getItem(badgeKey(uid)) || 0));
+  await fetchCartCount(uid);
+  renderCartBadge(uid);
 });

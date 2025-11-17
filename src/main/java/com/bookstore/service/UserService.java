@@ -20,14 +20,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ✅ Login: check email first, then compare password manually
+    // ✅ Login: supports both hardcoded admin and normal users
     public Optional<User> login(String email, String password) {
-        Optional<User> user = userRepository.findByEmail(email);
+        // 👑 Hardcoded admin login
+        if (email.equalsIgnoreCase("admin@admin.com") && password.equals("bookstore")) {
+            User admin = new User();
+            admin.setId(0L); // placeholder ID (not stored in DB)
+            admin.setUsername("Admin");
+            admin.setEmail(email);
+            admin.setPassword(password);
+            return Optional.of(admin);
+        }
 
-        if (user.isPresent()) {
-            if (user.get().getPassword().equals(password)) {
-                return user; // success
-            }
+        // 👤 Normal user login
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent() && user.get().getPassword().equals(password)) {
+            return user;
         }
 
         return Optional.empty(); // fail

@@ -47,16 +47,19 @@ public class UserController {
 
         if (user.isPresent()) {
             User u = user.get();
+            String role = u.getEmail().equalsIgnoreCase("admin@admin.com") ? "ADMIN" : "USER";
+
             LoginResponse response = new LoginResponse(
-                    u.getId(),                        // include user ID
+                    u.getId(),
                     "Login successful!",
                     u.getUsername(),
-                    u.getEmail()
+                    u.getEmail(),
+                    role
             );
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(401)
-                    .body(new LoginResponse(null, "Invalid email or password", null, null));
+                    .body(new LoginResponse(null, "Invalid email or password", null, null, null));
         }
     }
 
