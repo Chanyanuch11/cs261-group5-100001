@@ -1,6 +1,5 @@
 const API_BASE_URL = 'http://localhost:8080/api';
-
-
+const cartApi = `${API_BASE_URL}/cart`;
 function getUserId() {
   const id = Number(localStorage.getItem('userId'));
   if (!id) {
@@ -9,6 +8,100 @@ function getUserId() {
     return null;
   }
   return id;
+}
+
+// =========================
+// Update badge (wrapper เพื่อรองรับโค้ดเก่า)
+// =========================
+
+
+// =========================
+// ฟังก์ชันจัดการ Cart Badge
+// =========================
+function badgeKey(userId) {
+  return `cartBadge_${userId}`;
+}
+
+function getCartCount(userId) {
+  return Number(localStorage.getItem(badgeKey(userId)) || 0);
+}
+
+function setCartCount(userId, n) {
+  localStorage.setItem(badgeKey(userId), Math.max(0, Number(n) || 0));
+  renderCartBadge(userId);
+}
+
+function renderCartBadge(userId) {
+  const el = document.getElementById('cartBadge');
+  if (!el) return;
+  const count = getCartCount(userId);
+  el.textContent = count > 0 ? count : "";
+  el.classList.toggle('is-zero', count === 0);
+}
+
+// =========================
+// Fetch จำนวนสินค้าจริงจาก backend
+// =========================
+async function fetchCartCount(userId) {
+  try {
+    const res = await fetch(`${cartApi}/${userId}`);
+    if (!res.ok) throw new Error("Fetch failed");
+    const items = await res.json();
+    const total = Array.isArray(items)
+      ? items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+      : 0;
+    setCartCount(userId, total);
+  } catch (err) {
+    console.error("Failed to fetch cart count:", err);
+  }
+}
+
+// =========================
+// เรียกตอนโหลดหน้า
+// =========================
+function initCartBadge() {
+  const userId = localStorage.getItem('userId');
+  if (!userId) return;
+  fetchCartCount(userId);
+}
+
+window.addEventListener('DOMContentLoaded', initCartBadge);
+
+// =========================
+// Add to Cart
+// =========================
+async function addToCart(bookId) {
+  let userId = localStorage.getItem("userId");
+  if (!userId) {
+    alert("⚠️ Please log in first!");
+    window.location.href = "login.html";
+    return;
+  }
+  userId = Number(userId);
+  if (!bookId) return alert("❌ Missing book ID");
+
+  const cartItem = { userId, book: { id: bookId }, quantity: 1 };
+
+  try {
+    const res = await fetch(`${cartApi}/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartItem)
+    });
+
+    const text = await res.text();
+
+    if (res.ok) {
+      await fetchCartCount(userId); // ← อัปเดต badge
+      alert("✅ Book added to cart!");
+    } else {
+      console.error("❌ Backend error:", text);
+      alert("❌ Failed to add to cart");
+    }
+  } catch (err) {
+    console.error("⚠️ Network error:", err);
+    alert("⚠️ Could not reach backend");
+  }
 }
 
 function formatDate(dateString) {
@@ -42,7 +135,9 @@ async function loadOrders() {
   const contentDiv = document.getElementById('orderContent');
 
   try {
-    
+    const userId = getUserId();
+    if (!userId) return; // ถ้าไม่มี user ให้เด้งไป login แล้วหยุด
+
     const response = await fetch(`${API_BASE_URL}/orders/${userId}`);
 
     if (!response.ok) {
@@ -140,4 +235,7 @@ async function loadOrders() {
   }
 }
 
-window.addEventListener('DOMContentLoaded', loadOrders);
+window.addEventListener('DOMContentLoaded', () => {
+  initCartBadge(); // อัปเดต badge
+  loadOrders();    // โหลดรายการสั่งซื้อ
+});

@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <header class="header">
+    <header class="header">
         <div class="header-container">
             <div class="logo">
                 <img src="img/logo.png" alt="Bookstore Logo">
@@ -28,18 +28,7 @@
                 </button>
             </form>
 
-<<<<<<< HEAD
             <div class="header-icons">
-                    <div class="profile-dropdown">
-                    <img src="img/BlankPF.png" alt="Profile" class="profile-pic">
-
-                    <div class="dropdown-menu">
-                        <a href="OrderStatus.html">Order Status</a>
-                        <a href="#">Logout</a>
-                    </div>
-            </div>
-=======
-          <div class="header-icons">
                 <a href="cart.html" class="cart" aria-label="Open cart">
                     <img src="img/cart-icon.svg" alt="">
                     <span id="cartBadge" class="cart-badge is-zero" aria-live="polite">0</span>
@@ -52,14 +41,8 @@
                         <a href="#" onclick="logout(); return false;">Logout</a>
                     </div>
                 </div>
-<<<<<<< HEAD
             </div>
-=======
->>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
-        </div>
->>>>>>> 38e1360945b16f8ce61c55fb7abee60fd3d1c7b7
     </header>
-
 
     <!-- Banner -->
     <section id="slider" aria-roledescription="carousel" aria-label="Promotion Slides">
@@ -137,29 +120,6 @@
 
         // แสดงหนังสือ
         function renderBooks(books) {
-<<<<<<< HEAD
-                const container = document.getElementById("bookList");
-                container.innerHTML = "";
-
-                if (!books || books.length === 0) {
-                    container.innerHTML = `<div class="empty">No books found.</div>`;
-                    return;
-                }
-
-                // จำกัดเหลือ 8 เล่ม
-                const limitedBooks = books.slice(0, 8);
-
-                limitedBooks.forEach(b => {
-                    const title = b.title || "Book’s name";
-                    const author = b.author || "Author’s name";
-                    const price = (b.price ?? 0).toLocaleString('en-US', { maximumFractionDigits: 0 });
-                    const cover = b.coverUrl || "https://picsum.photos/500/650?random=1";
-
-                    const wrap = document.createElement("div");
-                    wrap.className = "book-wrap";
-                    wrap.innerHTML = `
-          <article class="book-card">
-=======
             const container = document.getElementById("bookList");
             container.innerHTML = "";
 
@@ -182,22 +142,10 @@
                 wrap.innerHTML = `
     <a href="bookdetail.html?id=${b.id}" class="book-link">
         <article class="book-card">
->>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
             <img class="book-cover" src="${cover}" alt="Cover of ${title}">
             <h3 class="book-title">${title}</h3>
             <div class="book-author">${author}</div>
             <div class="price-tag">฿${price}</div>
-<<<<<<< HEAD
-          </article>
-          <button class="btn-add">+ Add to cart</button>
-        `;
-
-                    wrap.querySelector(".btn-add").addEventListener("click", () => addToCart(b.id));
-                    container.appendChild(wrap);
-                });
-            }
-
-=======
         </article>
     </a>
     <button class="btn-add">+ Add to cart</button>
@@ -207,7 +155,6 @@
                 container.appendChild(wrap);
             });
         }
->>>>>>> 4440fa7255c2b417775c21ba3358adca6278602d
 
 
         // Add to cart และอัปเดต badge ตาม backend

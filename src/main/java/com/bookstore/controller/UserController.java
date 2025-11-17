@@ -92,11 +92,7 @@ public class UserController {
     }
 
 
-<<<<<<< HEAD
-    // ⚙️ Optional: Friendly error message for validation issues
-=======
     //  Optional: Friendly error message for validation issues
->>>>>>> 38e1360945b16f8ce61c55fb7abee60fd3d1c7b7
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         String errorMessage = ex.getBindingResult()

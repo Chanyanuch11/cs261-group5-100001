@@ -3,7 +3,7 @@ package com.bookstore.dto;
 import com.bookstore.model.OrderItem;
 
 public class OrderItemResponse {
-     private Long bookId;
+    private Long bookId;
     private String title;
     private String author;
     private String category;
@@ -16,6 +16,7 @@ public class OrderItemResponse {
         res.title = item.getBook().getTitle();
         res.author = item.getBook().getAuthor();
         res.category = item.getBook().getCategory();
+        res.price = item.getBook().getPrice();
         res.quantity = item.getQuantity();
         return res;
     }

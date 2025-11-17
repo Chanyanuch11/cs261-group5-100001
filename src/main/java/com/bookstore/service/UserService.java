@@ -57,8 +57,4 @@ public class UserService {
         }
         return false;
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 38e1360945b16f8ce61c55fb7abee60fd3d1c7b7

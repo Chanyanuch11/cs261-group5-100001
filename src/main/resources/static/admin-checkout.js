@@ -1,7 +1,7 @@
-
+// ⚙️ Configuration
 const API_BASE_URL = 'http://localhost:8080/api';
 
-//  LOGIN CHECK - Redirect if not admin
+// ✅ LOGIN CHECK - Redirect if not admin
 function checkAdminAuth() {
     const email = localStorage.getItem('email');
     if (email?.toLowerCase() !== 'admin@admin.com') {
@@ -19,7 +19,7 @@ const ORDER_ID = urlParams.get('orderId');
 let currentOrder = null;
 let currentPayment = null;
 
-// Format date (Thai Buddhist calendar)
+// 📅 Format date (Thai Buddhist calendar)
 function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
@@ -36,7 +36,7 @@ function getThaiMonth(monthIndex) {
     return months[monthIndex];
 }
 
-//  Format time
+// ⏰ Format time
 function formatTime(timeString) {
     if (!timeString) return '-';
     if (timeString.includes('T')) {
@@ -48,7 +48,7 @@ function formatTime(timeString) {
     return timeString.substring(0, 5);
 }
 
-//  Open slip modal
+// 🖼️ Open slip modal
 function openSlipModal(slipUrl) {
     const modal = document.getElementById('slipModal');
     const img = document.getElementById('slipImage');
@@ -56,7 +56,7 @@ function openSlipModal(slipUrl) {
     modal.classList.add('active');
 }
 
-//  Close slip modal
+// ❌ Close slip modal
 function closeSlipModal() {
     const modal = document.getElementById('slipModal');
     modal.classList.remove('active');
@@ -69,7 +69,7 @@ document.getElementById('slipModal')?.addEventListener('click', function(e) {
     }
 });
 
-//  Get username from User API
+// 👤 Get username from User API
 async function getUsername(userId) {
     try {
         const response = await fetch(`${API_BASE_URL}/users/${userId}`);
@@ -83,21 +83,21 @@ async function getUsername(userId) {
     return `User${userId}`;
 }
 
-//  Get payment for order
+// 💳 Get payment for order
 async function getPaymentForOrder(orderId) {
     try {
-        console.log('Fetching payment for order:', orderId);
+        console.log('🔍 Fetching payment for order:', orderId);
         const response = await fetch(`${API_BASE_URL}/payments/order/${orderId}`);
         
         if (!response.ok) {
-            console.warn(' Payment not found (might not be submitted yet)');
+            console.warn('⚠️ Payment not found (might not be submitted yet)');
             return null;
         }
         
         const payments = await response.json();
-        console.log(' Payment response:', payments);
+        console.log('📦 Payment response:', payments);
         
-        //  Handle both array and single object
+        // ✅ Handle both array and single object
         if (Array.isArray(payments)) {
             const payment = payments.length > 0 ? payments[0] : null;
             console.log('✅ Using payment:', payment);
@@ -112,7 +112,7 @@ async function getPaymentForOrder(orderId) {
     }
 }
 
-//  Format bank name for display
+// ✅ Format bank name for display
 function getBankDisplayName(bankCode) {
     const banks = {
         'kbank': 'ธนาคารกสิกรไทย (KBANK)',
@@ -125,7 +125,7 @@ function getBankDisplayName(bankCode) {
 
 // Load order details
 async function loadOrderDetails() {
-    // Check auth first
+    // ✅ Check auth first
     if (!checkAdminAuth()) {
         return;
     }
@@ -141,7 +141,7 @@ async function loadOrderDetails() {
     const usernameDiv = document.getElementById('username');
     
     try {
-        //  FIXED: Use the correct endpoint that matches your backend
+        // ✅ FIXED: Use the correct endpoint that matches your backend
         console.log('🔍 Fetching order from:', `${API_BASE_URL}/orders/order/${ORDER_ID}`);
         
         const response = await fetch(`${API_BASE_URL}/orders/order/${ORDER_ID}`);
@@ -165,7 +165,7 @@ async function loadOrderDetails() {
 
         // Get payment info
         currentPayment = await getPaymentForOrder(ORDER_ID);
-        console.log(' Current payment:', currentPayment);
+        console.log('💰 Current payment:', currentPayment);
 
         // Build HTML
         let html = `
@@ -176,7 +176,7 @@ async function loadOrderDetails() {
         // Add items - with better error handling
         if (currentOrder.items && currentOrder.items.length > 0) {
             currentOrder.items.forEach(item => {
-                //  Handle multiple possible field names
+                // ✅ Handle multiple possible field names
                 const itemName = item.title || item.bookTitle || item.name || 'Unknown Item';
                 const itemPrice = parseFloat(item.price) || 0;
                 const itemQuantity = parseInt(item.quantity) || 1;
@@ -213,7 +213,7 @@ async function loadOrderDetails() {
                 <div class="payment-info">
         `;
 
-        // Payment info with safe fallbacks
+        // ✅ Payment info with safe fallbacks
         if (currentPayment) {
             console.log('💳 Displaying payment info:', currentPayment);
             
@@ -247,7 +247,7 @@ async function loadOrderDetails() {
                     </div>
             `;
 
-            //  Show slip if available
+            // ✅ Show slip if available
             if (currentPayment.slipFileName) {
                 const slipUrl = `http://localhost:8080/uploads/${currentPayment.slipFileName}`;
                 html += `
@@ -273,7 +273,7 @@ async function loadOrderDetails() {
                 `;
             }
         } else {
-            //  No payment record yet
+            // ✅ No payment record yet
             html += `
                     <div class="info-row">
                         <span class="info-value" style="color: #999;">Payment information not submitted yet</span>
